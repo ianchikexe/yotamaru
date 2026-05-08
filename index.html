@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YOTAMARU | SITYA EDITION</title>
+    <!-- Подключаем шрифт "Почерк" и основной минималистичный шрифт -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        :root {
+            --neon: #fff;
+            --shadow: rgba(255, 255, 255, 0.5);
+            --bg: #000;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Caveat', cursive; /* Шрифт-почерк */
+            overflow-x: hidden;
+            line-height: 1.4;
+        }
+
+        /* Текст светится */
+        h1, h2, p, li, span, button {
+            text-shadow: 0 0 10px var(--shadow), 0 0 20px var(--shadow);
+            letter-spacing: 1px;
+        }
+
+        /* Экран проверки и правил */
+        #gatekeeper {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .terminal {
+            border: 1px solid #222;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            background: #050505;
+            box-shadow: 0 0 40px rgba(255,255,255,0.05);
+        }
+
+        .terminal h2 { font-size: 24px; margin-bottom: 20px; text-align: center; }
+        .rules { font-family: 'Inter', sans-serif; font-size: 13px; color: #888; margin-bottom: 25px; text-align: left; line-height: 1.6; }
+        .rules b { color: #fff; }
+
+        .accept-btn {
+            width: 100%;
+            background: none;
+            border: 1px solid #fff;
+            color: #fff;
+            padding: 12px;
+            cursor: pointer;
+            font-family: 'Caveat';
+            font-size: 20px;
+            transition: 0.3s;
+        }
+
+        .accept-btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px #fff; }
+
+        /* Шапка и Языки */
+        header { padding: 40px 20px; text-align: center; }
+        .lang-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            color: #444;
+            cursor: pointer;
+            font-size: 18px;
+            transition: 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .lang-btn.active { color: #fff; text-shadow: 0 0 10px #fff; }
+
+        .main-title { font-size: 70px; margin-bottom: 10px; }
+
+        /* Контент */
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px 100px; opacity: 0; transition: 2s ease; }
+
+        .product-card {
+            border: 1px solid #111;
+            padding: 40px;
+            margin-bottom: 50px;
+            background: rgba(255,255,255,0.01);
+            transition: 0.5s;
+        }
+
+        .product-card:hover { border-color: #333; transform: translateY(-5px); }
+
+        .price-tag { font-size: 28px; color: #fff; margin-bottom: 20px; display: block; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        
+        .info-block { margin-top: 20px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 100; color: #ccc; }
+        
+        ul { list-style: none; margin: 20px 0; }
+        li { margin-bottom: 8px; font-size: 20px; }
+        li::before { content: "• "; color: #fff; }
+
+        .buy-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 24px;
+            border: 1px solid #fff;
+            padding: 10px 40px;
+            transition: 0.3s;
+        }
+
+        .buy-link:hover { background: #fff; color: #000; }
+
+        .reviews { text-align: center; color: #555; text-decoration: none; display: block; font-size: 20px; margin-top: 40px; }
+        .reviews:hover { color: #fff; }
+
+    </style>
+</head>
+<body>
+
+<!-- Экран входа -->
+<div id="gatekeeper">
+    <div class="terminal">
+        <h2 id="welcome-txt">WELCOME TO YOTAMARU</h2>
+        <div class="rules" id="rules-txt">
+            1. <b>Responsibility:</b> The buyer is fully responsible for payment commissions.<br>
+            2. <b>Usage:</b> Software is provided "as is" with HWID protection.<br>
+            3. <b>Privacy:</b> Your data is encrypted and not shared.<br>
+            4. <b>Verification:</b> By entering, you confirm you are not a bot.
+        </div>
+        <button class="accept-btn" onclick="enterSite()">ACCESS SYSTEM</button>
+    </div>
+</div>
+
+<div class="container" id="main-content">
+    <header>
+        <div class="lang-switcher">
+            <button class="lang-btn active" onclick="switchLang('ru', this)">RU</button>
+            <button class="lang-btn" onclick="switchLang('kz', this)">KZ</button>
+            <button class="lang-btn" onclick="switchLang('en', this)">EN</button>
+        </div>
+        <h1 class="main-title">YOTAMARU</h1>
+        <p style="font-size: 20px; color: #666;" id="sub-title">Sitya Minimalistic Store</p>
+    </header>
+
+    <!-- Товар 1 -->
+    <div class="product-card">
+        <span class="price-tag">🔥 Эмулятор — 3000₸ | 550₽ | 1250G</span>
+        <p class="info-block" id="desc1">Визуальное оформление и полная оптимизация BlueStacks.</p>
+        <ul id="list1">
+            <li>Красивый и удобный интерфейс</li>
+            <li>Отсутствие рекламы</li>
+            <li>Повышение FPS и плавность</li>
+            <li>Встроенный фикс сенсы</li>
+            <li>Вход по HWID</li>
+        </ul>
+        <a href="https://t.me/yotamaru666" class="buy-link" id="btn-buy1">Приобрести 😍</a>
+    </div>
+
+    <!-- Товар 2 -->
+    <div class="product-card">
+        <span class="price-tag">🔥 Эмулятор + Оптимизация — 4500₸ | 750₽ | 1750G</span>
+        <p class="info-block" id="desc2">Подходит для CS 2, VALORANT, DOTA 2. Максимальный FPS и стабильность системы.</p>
+        <ul id="list2">
+            <li>Полная оптимизация Windows</li>
+            <li>Минимальная задержка (Input Lag)</li>
+            <li>Стабильность 100% без вылетов</li>
+            <li>Приоритет процессов</li>
+        </ul>
+        <a href="https://t.me/yotamaru666" class="buy-link" id="btn-buy2">Приобрести 😘</a>
+    </div>
+
+    <p style="text-align: center; color: #444; font-size: 14px; font-family: 'Inter';">Способы оплаты: Stars, ЮMoney, Kaspi, Card</p>
+    <a href="https://t.me/BlueStacksReview" class="reviews" id="rev-link">Читать отзывы →</a>
+</div>
+
+<script>
+    function enterSite() {
+        document.getElementById('gatekeeper').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('gatekeeper').style.display = 'none';
+            document.getElementById('main-content').style.opacity = '1';
+        }, 800);
+    }
+
+    const translations = {
+        ru: {
+            sub: "Sitya Minimalistic Store",
+            welcome: "ДОБРО ПОЖАЛОВАТЬ",
+            rules: "1. <b>Комиссия:</b> Покупатель несет полную ответственность за оплату комиссии.<br>2. <b>Лицензия:</b> Система входа по HWID.<br>3. <b>Гарантия:</b> Плавный геймплей без вылетов.",
+            btn: "ВОЙТИ В СИСТЕМУ",
+            desc1: "Визуальное оформление и полная оптимизация BlueStacks.",
+            desc2: "Подходит для CS 2, VALORANT, DOTA 2. Максимальный FPS и стабильность системы.",
+            buy: "Приобрести",
+            rev: "Читать отзывы →"
+        },
+        kz: {
+            sub: "Sitya Минималистік дүкені",
+            welcome: "ҚОШ КЕЛДІҢІЗ",
+            rules: "1. <b>Комиссия:</b> Сатып алушы комиссияны төлеуге толық жауапты.<br>2. <b>Лицензия:</b> HWID арқылы кіру жүйесі.<br>3. <b>Кепілдік:</b> Қатып қалусыз біркелкі ойын.",
+            btn: "ЖҮЙЕГЕ КІРУ",
+            desc1: "BlueStacks-ті визуалды безендіру және толық оңтайландыру.",
+            desc2: "CS 2, VALORANT, DOTA 2 үшін қолайлы. Максималды FPS және жүйе тұрақтылығы.",
+            buy: "Сатып алу",
+            rev: "Пікірлерді оқу →"
+        },
+        en: {
+            sub: "Sitya Minimalistic Store",
+            welcome: "WELCOME SYSTEM",
+            rules: "1. <b>Fees:</b> Buyer is responsible for all transaction fees.<br>2. <b>Security:</b> HWID-based access system.<br>3. <b>Performance:</b> Smooth gameplay and zero crashes.",
+            btn: "ACCESS SYSTEM",
+            desc1: "Visual overhaul and full BlueStacks optimization.",
+            desc2: "Perfect for CS 2, VALORANT, DOTA 2. Max FPS and system stability.",
+            buy: "Purchase",
+            rev: "Read reviews →"
+        }
+    };
+
+    function switchLang(lang, btn) {
+        // Переключаем активную кнопку
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        // Меняем текст
+        const t = translations[lang];
+        document.getElementById('sub-title').innerText = t.sub;
+        document.getElementById('welcome-txt').innerText = t.welcome;
+        document.getElementById('rules-txt').innerHTML = t.rules;
+        document.querySelector('.accept-btn').innerText = t.btn;
+        document.getElementById('desc1').innerText = t.desc1;
+        document.getElementById('desc2').innerText = t.desc2;
+        document.getElementById('btn-buy1').innerText = t.buy + " 😍";
+        document.getElementById('btn-buy2').innerText = t.buy + " 😘";
+        document.getElementById('rev-link').innerText = t.rev;
+    }
+</script>
+
+</body>
+</html>
