@@ -3,33 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YOTAMARU | ELITE</title>
-    <!-- Подключаем красивый рукописный шрифт и моноширинный для системы -->
+    <title>YOTAMARU | ELITE ACCESS</title>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         :root {
-            --primary: #e0e0e0;
-            --glow-color: rgba(255, 255, 255, 0.6);
-            --bg-dark: #020202;
-            --accent-gray: #2a2a2e;
+            --primary: #ffffff;
+            --glow: rgba(255, 255, 255, 0.8);
+            --bg: #000000;
+            --card-bg: rgba(20, 20, 22, 0.6);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; cursor: crosshair; }
 
         body {
             font-family: 'JetBrains Mono', monospace;
-            background-color: var(--bg-dark);
+            background-color: var(--bg);
             color: var(--primary);
             overflow-x: hidden;
         }
 
-        /* ЖИВЫЕ ОБОИ (ИНТЕРАКТИВНАЯ СЕТЬ) */
-        #canvas-bg {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background: radial-gradient(circle at center, #0a0a0c 0%, #000 100%);
-        }
+        #canvas-bg { position: fixed; inset: 0; z-index: -1; }
 
         /* ЗАГРУЗКА */
         #loader {
@@ -44,346 +37,285 @@
         }
         .loading-text {
             font-family: 'Caveat', cursive;
-            font-size: 2.5rem;
-            color: #fff;
-            text-shadow: 0 0 20px var(--glow-color);
-            margin-bottom: 20px;
+            font-size: 3rem;
+            text-shadow: 0 0 20px var(--glow);
         }
 
-        /* СИСТЕМА ПРОВЕРКИ (TERMINAL) */
+        /* ТЕРМИНАЛ */
         #captcha-gate {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.9);
+            background: #000;
             z-index: 4000;
             display: flex;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
         }
-        .terminal-window {
-            width: 90%;
-            max-width: 700px;
+        .terminal {
+            width: 80%;
+            max-width: 600px;
             padding: 40px;
             border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(10, 10, 12, 0.8);
-            box-shadow: 0 0 50px rgba(0,0,0,1);
-        }
-        .typewriter-box {
-            min-height: 150px;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 30px;
-            color: #888;
         }
 
         /* КОНТЕНТ */
-        .main-content {
+        .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 60px 20px;
             opacity: 0;
-            transition: 2.5s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: 2s;
         }
-        .is-ready { opacity: 1; }
+        .visible { opacity: 1; }
 
-        /* РУКОПИСНЫЙ СВЕТЯЩИЙСЯ ТЕКСТ */
-        .handwritten-glow {
+        /* ГЛИТЧ ЭФФЕКТ ДЛЯ ЗАГОЛОВКА */
+        .glitch {
             font-family: 'Caveat', cursive;
-            font-size: 5rem;
-            color: #fff;
-            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px var(--glow-color);
-            margin-bottom: 10px;
+            font-size: 6rem;
+            position: relative;
+            display: inline-block;
+            text-shadow: 0 0 30px var(--glow);
+        }
+        .glitch:hover::before {
+            content: 'Yotamaru';
+            position: absolute;
+            left: 2px;
+            text-shadow: -2px 0 #ff00c1;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
         }
 
-        header { text-align: center; margin-bottom: 100px; }
+        @keyframes glitch-anim {
+            0% { clip: rect(31px, 9999px, 94px, 0); }
+            20% { clip: rect(62px, 9999px, 42px, 0); }
+            100% { clip: rect(10px, 9999px, 85px, 0); }
+        }
+
+        header { text-align: center; margin-bottom: 80px; }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
         }
 
         .card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: var(--card-bg);
+            border: 1px solid rgba(255,255,255,0.05);
             padding: 40px;
-            transition: 0.6s ease;
-            position: relative;
-            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: 0.4s;
         }
         .card:hover {
-            background: rgba(255, 255, 255, 0.05);
             border-color: #fff;
-            box-shadow: 0 0 30px rgba(255,255,255,0.1);
+            transform: scale(1.02);
+            box-shadow: 0 0 40px rgba(255,255,255,0.05);
         }
 
-        .card h2 {
-            font-family: 'Caveat', cursive;
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            color: #fff;
-        }
+        .card h2 { font-family: 'Caveat', cursive; font-size: 2.5rem; margin-bottom: 15px; }
 
-        .price {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 20px 0;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
+        .price { font-size: 1.4rem; margin: 20px 0; font-weight: bold; border-left: 3px solid #fff; padding-left: 15px; }
 
-        ul { list-style: none; margin-bottom: 30px; }
-        li { margin-bottom: 12px; color: #999; font-size: 0.9rem; }
-        li::before { content: "— "; color: #fff; }
+        ul { list-style: none; margin-bottom: 30px; color: #777; font-size: 0.9rem; }
+        li::before { content: "> "; color: #fff; }
 
         /* КНОПКИ */
-        .buy-button {
+        .btn {
             display: block;
             width: 100%;
-            padding: 20px;
-            margin-top: 10px;
+            padding: 18px;
+            margin-top: 12px;
             border: 1px solid #fff;
             background: transparent;
             color: #fff;
             text-decoration: none;
             text-align: center;
             font-weight: bold;
-            letter-spacing: 2px;
-            font-size: 0.8rem;
-            transition: 0.4s;
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            transition: 0.3s;
         }
-        .buy-button:hover {
-            background: #fff;
+        .btn:hover { background: #fff; color: #000; box-shadow: 0 0 25px #fff; }
+
+        /* Кнопка ОТЗЫВЫ */
+        .btn-reviews {
+            border-color: #00d2ff;
+            color: #00d2ff;
+            margin-top: 30px;
+        }
+        .btn-reviews:hover {
+            background: #00d2ff;
             color: #000;
-            box-shadow: 0 0 20px #fff;
+            box-shadow: 0 0 25px #00d2ff;
         }
 
-        .lang-btn {
-            background: none;
-            border: 1px solid #333;
-            color: #666;
-            padding: 5px 15px;
-            margin: 0 5px;
-            cursor: pointer;
-            font-family: inherit;
-        }
-        .lang-btn:hover { border-color: #fff; color: #fff; }
+        .lang-zone { text-align: right; margin-bottom: 30px; }
+        .l-btn { background: none; border: 1px solid #222; color: #444; padding: 5px 12px; margin-left: 5px; font-family: inherit; }
+        .l-btn:hover { color: #fff; border-color: #fff; }
 
-        footer {
-            text-align: center;
-            margin-top: 100px;
-            padding: 40px;
-            font-size: 0.7rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            opacity: 0.3;
-        }
+        footer { padding: 60px; text-align: center; opacity: 0.2; font-size: 0.6rem; letter-spacing: 5px; }
     </style>
 </head>
 <body>
 
-    <!-- Живой фон -->
     <canvas id="canvas-bg"></canvas>
 
     <!-- Загрузка -->
     <div id="loader">
-        <div class="loading-text">Yotamaru elite...</div>
-        <div style="width: 200px; height: 1px; background: #222;">
-            <div id="load-bar" style="width: 0%; height: 100%; background: #fff; box-shadow: 0 0 10px #fff;"></div>
+        <div class="loading-text">system_init...</div>
+        <div style="width: 150px; height: 1px; background: #111; margin-top: 20px;">
+            <div id="bar" style="width: 0%; height: 100%; background: #fff;"></div>
         </div>
     </div>
 
-    <!-- Защита (Terminal) -->
+    <!-- Капча -->
     <div id="captcha-gate" style="display: none;">
-        <div class="terminal-window">
-            <div class="typewriter-box" id="term-text"></div>
-            <button id="auth-btn" class="buy-button" style="width: auto; display: none;" onclick="unlock()">ПОДТВЕРДИТЬ ЛИЧНОСТЬ</button>
+        <div class="terminal">
+            <div id="type-area" style="min-height: 120px; font-size: 0.9rem; color: #555; margin-bottom: 30px;"></div>
+            <button id="entry-btn" class="btn" style="display: none;" onclick="enter()">INITIALIZE SESSION</button>
         </div>
     </div>
 
-    <div class="main-content" id="ui">
-        <div style="text-align: right; margin-bottom: 20px;">
-            <button class="lang-btn" onclick="setLang('ru')">RU</button>
-            <button class="lang-btn" onclick="setLang('en')">EN</button>
-            <button class="lang-btn" onclick="setLang('kz')">KZ</button>
+    <div class="container" id="main">
+        <div class="lang-zone">
+            <button class="l-btn" onclick="ln('ru')">RU</button>
+            <button class="l-btn" onclick="ln('en')">EN</button>
+            <button class="l-btn" onclick="ln('kz')">KZ</button>
         </div>
 
         <header>
-            <h1 class="handwritten-glow" id="title">Yotamaru</h1>
-            <p style="letter-spacing: 10px; font-size: 0.7rem; opacity: 0.5;">PREMIUM EMULATION & OPTIMIZATION</p>
+            <h1 class="glitch" id="main-title">Yotamaru</h1>
+            <p style="letter-spacing: 12px; font-size: 0.6rem; opacity: 0.4; margin-top: 15px;">PREMIUM SOFTWARE SOLUTIONS</p>
         </header>
 
         <div class="grid">
-            <!-- Pack 1 -->
             <div class="card">
-                <h2 id="p1-name">Yotamaru Emulator</h2>
+                <h2 id="p1-t">Yotamaru Emulator</h2>
                 <div class="price">3000₸ | 550₽ | 1250G</div>
-                <ul id="p1-features">
-                    <li>Custom Visual Interface</li>
-                    <li>Zero Ads Policy</li>
-                    <li>FPS Stabilization</li>
-                    <li>HWID Security Lock</li>
-                    <li>Advanced Sensi Fix</li>
+                <ul id="p1-l">
+                    <li>Visual Optimization</li>
+                    <li>Zero Ads Experience</li>
+                    <li>FPS Stability Fix</li>
+                    <li>Sensi Fix Engine</li>
+                    <li>HWID Protection</li>
                 </ul>
-                <a href="https://t.me" class="buy-button">TELEGRAM STARS</a>
-                <a href="https://t.me" class="buy-button">OTHER METHODS</a>
+                <a href="https://t.me/yotamaru666" class="btn" onclick="play()">PURCHASE ACCESS</a>
+                <a href="https://t.me/BlueStacksReview" class="btn btn-reviews" onclick="play()">VIEW REVIEWS</a>
             </div>
 
-            <!-- Pack 2 -->
             <div class="card">
-                <h2 id="p2-name">PC Optimization</h2>
+                <h2 id="p2-t">System Boost Pro</h2>
                 <div class="price">4500₸ | 750₽ | 1750G</div>
-                <ul id="p2-features">
+                <ul id="p2-l">
+                    <li>Global PC Optimization</li>
                     <li>Universal Game Support</li>
-                    <li>CS 2 / Valorant / Dota 2</li>
                     <li>Input Lag Reduction</li>
-                    <li>Latency Stabilization</li>
-                    <li>Elite Tech Support</li>
+                    <li>Max Frame Consistency</li>
+                    <li>VIP Tech Support</li>
                 </ul>
-                <a href="https://t.me" class="buy-button">TELEGRAM STARS</a>
-                <a href="https://t.me" class="buy-button">OTHER METHODS</a>
+                <a href="https://t.me/yotamaru666" class="btn" onclick="play()">PURCHASE ACCESS</a>
+                <a href="https://t.me/BlueStacksReview" class="btn btn-reviews" onclick="play()">VIEW REVIEWS</a>
             </div>
         </div>
 
         <footer>
-            TRANS-CODE: YTMR-88 // BUYER PAYS ALL COMMISSIONS // 2026
+            YOTAMARU_ELITE // EST 2026 // SECURE_CONNECTION
         </footer>
     </div>
 
+    <!-- Аудио для клика (опционально) -->
+    <audio id="click-snd" src="https://soundjay.com"></audio>
+
     <script>
-        // ЛОГИКА ЖИВЫХ ОБОЕВ (СЕТЬ)
+        // ФОН (Particle Network)
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
-        let particles = [];
-        const mouse = { x: null, y: null, radius: 150 };
+        let pts = [];
+        window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+        window.onresize();
 
-        window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2;
-                this.vx = Math.random() * 1 - 0.5;
-                this.vy = Math.random() * 1 - 0.5;
+        class Pt {
+            constructor() { 
+                this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height;
+                this.vx = (Math.random()-0.5)*0.8; this.vy = (Math.random()-0.5)*0.8;
             }
-            update() {
-                this.x += this.vx; this.y += this.vy;
-                if (this.x > canvas.width || this.x < 0) this.vx *= -1;
-                if (this.y > canvas.height || this.y < 0) this.vy *= -1;
-                
-                let dx = mouse.x - this.x;
-                let dy = mouse.y - this.y;
-                let distance = Math.sqrt(dx*dx + dy*dy);
-                if (distance < mouse.radius) {
-                    this.x -= dx/20; this.y -= dy/20;
-                }
-            }
-            draw() {
-                ctx.fillStyle = 'rgba(255,255,255,0.5)';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-                ctx.fill();
+            step() {
+                this.x+=this.vx; this.y+=this.vy;
+                if(this.x<0||this.x>canvas.width) this.vx*=-1;
+                if(this.y<0||this.y>canvas.height) this.vy*=-1;
             }
         }
+        for(let i=0;i<80;i++) pts.push(new Pt());
 
-        function init() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            particles = [];
-            for (let i = 0; i < 100; i++) particles.push(new Particle());
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => { p.update(); p.draw(); });
-            connect();
-            requestAnimationFrame(animate);
-        }
-
-        function connect() {
-            for (let a = 0; a < particles.length; a++) {
-                for (let b = a; b < particles.length; b++) {
-                    let dist = ((particles[a].x - particles[b].x)**2 + (particles[a].y - particles[b].y)**2);
-                    if (dist < 15000) {
-                        ctx.strokeStyle = `rgba(255,255,255,${1 - dist/15000})`;
+        function loop() {
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "rgba(255,255,255,0.2)";
+            pts.forEach(p => {
+                p.step();
+                ctx.beginPath(); ctx.arc(p.x,p.y,1,0,Math.PI*2); ctx.fill();
+                pts.forEach(p2 => {
+                    let d = (p.x-p2.x)**2 + (p.y-p2.y)**2;
+                    if(d<12000) {
+                        ctx.strokeStyle = `rgba(255,255,255,${1 - d/12000})`;
                         ctx.lineWidth = 0.5;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[a].x, particles[a].y);
-                        ctx.lineTo(particles[b].x, particles[b].y);
-                        ctx.stroke();
+                        ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p2.x,p2.y); ctx.stroke();
                     }
-                }
-            }
+                });
+            });
+            requestAnimationFrame(loop);
         }
-        init(); animate();
+        loop();
 
-        // ЛОГИКА ЗАГРУЗКИ И ПЕЧАТИ
-        let load = 0;
-        const bar = document.getElementById('load-bar');
-        const timer = setInterval(() => {
-            load += 2;
-            bar.style.width = load + '%';
-            if (load >= 100) {
-                clearInterval(timer);
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('captcha-gate').style.display = 'flex';
-                startTyping();
+        // ЗАГРУЗКА
+        let prg = 0;
+        const b = document.getElementById('bar');
+        const itv = setInterval(() => {
+            prg += 3;
+            b.style.width = prg + '%';
+            if(prg>=100) {
+                clearInterval(itv);
+                document.getElementById('loader').style.display='none';
+                document.getElementById('captcha-gate').style.display='flex';
+                type();
             }
-        }, 30);
+        }, 40);
 
-        const terminalLines = [
-            "> Инициализация защищенного канала...",
-            "> Проверка аппаратных ключей HWID...",
-            "> Анализ окружения: Угрозы не обнаружены.",
-            "> Доступ к Yotamaru Elite разрешен."
-        ];
-
-        function startTyping() {
-            let lineIdx = 0;
-            let charIdx = 0;
-            const target = document.getElementById('term-text');
-
-            function type() {
-                if (lineIdx < terminalLines.length) {
-                    let currentLine = terminalLines[lineIdx];
-                    target.innerHTML += currentLine[charIdx];
-                    charIdx++;
-                    if (charIdx >= currentLine.length) {
-                        target.innerHTML += "<br>";
-                        lineIdx++;
-                        charIdx = 0;
-                        setTimeout(type, 400);
-                    } else {
-                        setTimeout(type, 30);
-                    }
-                } else {
-                    document.getElementById('auth-btn').style.display = 'block';
-                }
+        // ПЕЧАТЬ ТЕКСТА
+        const lines = ["> Encrypting tunnel...", "> Hardware verification...", "> Security status: [CLEAN]", "> Welcome to Yotamaru Elite."];
+        function type() {
+            let l=0, c=0;
+            const target = document.getElementById('type-area');
+            function step() {
+                if(l < lines.length) {
+                    target.innerHTML += lines[l][c];
+                    c++;
+                    if(c >= lines[l].length) { target.innerHTML += "<br>"; l++; c=0; setTimeout(step, 300); }
+                    else setTimeout(step, 30);
+                } else document.getElementById('entry-btn').style.display='block';
             }
-            type();
+            step();
         }
 
-        function unlock() {
-            document.getElementById('captcha-gate').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('captcha-gate').style.display = 'none';
-                document.getElementById('ui').classList.add('is-ready');
-            }, 600);
+        function enter() {
+            play();
+            document.getElementById('captcha-gate').style.display='none';
+            document.getElementById('main').classList.add('visible');
         }
+
+        function play() { document.getElementById('click-snd').play().catch(()=>{}); }
 
         // ПЕРЕВОДЫ
-        const translations = {
-            ru: { title: "Yotamaru", p1: "Эмулятор Yotamaru", p2: "Оптимизация ПК" },
-            en: { title: "Yotamaru", p1: "Yotamaru Emulator", p2: "PC Optimization" },
-            kz: { title: "Yotamaru", p1: "Yotamaru Эмуляторы", p2: "ПК Оңтайландыру" }
+        const langs = {
+            ru: { t: "Yotamaru", p1: "Эмулятор Yotamaru", p2: "Оптимизация ПК" },
+            en: { t: "Yotamaru", p1: "Yotamaru Emulator", p2: "PC Optimization" },
+            kz: { t: "Yotamaru", p1: "Yotamaru Эмуляторы", p2: "ПК Оңтайландыру" }
         };
 
-        function setLang(l) {
-            document.getElementById('title').innerText = translations[l].title;
-            document.getElementById('p1-name').innerText = translations[l].p1;
-            document.getElementById('p2-name').innerText = translations[l].p2;
+        function ln(s) {
+            document.getElementById('main-title').innerText = langs[s].t;
+            document.getElementById('p1-t').innerText = langs[s].p1;
+            document.getElementById('p2-t').innerText = langs[s].p2;
         }
     </script>
 </body>
