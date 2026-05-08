@@ -3,320 +3,251 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YOTAMARU | ELITE ACCESS</title>
+    <title>YOTAMARU | SITYA EDITION</title>
+    <!-- Подключаем шрифт "Почерк" и основной минималистичный шрифт -->
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
         :root {
-            --primary: #ffffff;
-            --glow: rgba(255, 255, 255, 0.8);
-            --bg: #000000;
-            --card-bg: rgba(20, 20, 22, 0.6);
+            --neon: #fff;
+            --shadow: rgba(255, 255, 255, 0.5);
+            --bg: #000;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; cursor: crosshair; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'JetBrains Mono', monospace;
-            background-color: var(--bg);
-            color: var(--primary);
+            background: var(--bg);
+            color: #fff;
+            font-family: 'Caveat', cursive; /* Шрифт-почерк */
             overflow-x: hidden;
+            line-height: 1.4;
         }
 
-        #canvas-bg { position: fixed; inset: 0; z-index: -1; }
+        /* Текст светится */
+        h1, h2, p, li, span, button {
+            text-shadow: 0 0 10px var(--shadow), 0 0 20px var(--shadow);
+            letter-spacing: 1px;
+        }
 
-        /* ЗАГРУЗКА */
-        #loader {
+        /* Экран проверки и правил */
+        #gatekeeper {
             position: fixed;
-            inset: 0;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: #000;
+            z-index: 10000;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
             align-items: center;
-            z-index: 5000;
-        }
-        .loading-text {
-            font-family: 'Caveat', cursive;
-            font-size: 3rem;
-            text-shadow: 0 0 20px var(--glow);
+            justify-content: center;
+            padding: 20px;
         }
 
-        /* ТЕРМИНАЛ */
-        #captcha-gate {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 4000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            backdrop-filter: blur(15px);
-        }
         .terminal {
-            width: 80%;
-            max-width: 600px;
-            padding: 40px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* КОНТЕНТ */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 60px 20px;
-            opacity: 0;
-            transition: 2s;
-        }
-        .visible { opacity: 1; }
-
-        /* ГЛИТЧ ЭФФЕКТ ДЛЯ ЗАГОЛОВКА */
-        .glitch {
-            font-family: 'Caveat', cursive;
-            font-size: 6rem;
-            position: relative;
-            display: inline-block;
-            text-shadow: 0 0 30px var(--glow);
-        }
-        .glitch:hover::before {
-            content: 'Yotamaru';
-            position: absolute;
-            left: 2px;
-            text-shadow: -2px 0 #ff00c1;
-            clip: rect(44px, 450px, 56px, 0);
-            animation: glitch-anim 5s infinite linear alternate-reverse;
-        }
-
-        @keyframes glitch-anim {
-            0% { clip: rect(31px, 9999px, 94px, 0); }
-            20% { clip: rect(62px, 9999px, 42px, 0); }
-            100% { clip: rect(10px, 9999px, 85px, 0); }
-        }
-
-        header { text-align: center; margin-bottom: 80px; }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 30px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            border: 1px solid rgba(255,255,255,0.05);
-            padding: 40px;
-            backdrop-filter: blur(10px);
-            transition: 0.4s;
-        }
-        .card:hover {
-            border-color: #fff;
-            transform: scale(1.02);
+            border: 1px solid #222;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            background: #050505;
             box-shadow: 0 0 40px rgba(255,255,255,0.05);
         }
 
-        .card h2 { font-family: 'Caveat', cursive; font-size: 2.5rem; margin-bottom: 15px; }
+        .terminal h2 { font-size: 24px; margin-bottom: 20px; text-align: center; }
+        .rules { font-family: 'Inter', sans-serif; font-size: 13px; color: #888; margin-bottom: 25px; text-align: left; line-height: 1.6; }
+        .rules b { color: #fff; }
 
-        .price { font-size: 1.4rem; margin: 20px 0; font-weight: bold; border-left: 3px solid #fff; padding-left: 15px; }
-
-        ul { list-style: none; margin-bottom: 30px; color: #777; font-size: 0.9rem; }
-        li::before { content: "> "; color: #fff; }
-
-        /* КНОПКИ */
-        .btn {
-            display: block;
+        .accept-btn {
             width: 100%;
-            padding: 18px;
-            margin-top: 12px;
+            background: none;
             border: 1px solid #fff;
-            background: transparent;
             color: #fff;
-            text-decoration: none;
-            text-align: center;
-            font-weight: bold;
-            font-size: 0.75rem;
-            letter-spacing: 3px;
+            padding: 12px;
+            cursor: pointer;
+            font-family: 'Caveat';
+            font-size: 20px;
             transition: 0.3s;
         }
-        .btn:hover { background: #fff; color: #000; box-shadow: 0 0 25px #fff; }
 
-        /* Кнопка ОТЗЫВЫ */
-        .btn-reviews {
-            border-color: #00d2ff;
-            color: #00d2ff;
+        .accept-btn:hover { background: #fff; color: #000; box-shadow: 0 0 20px #fff; }
+
+        /* Шапка и Языки */
+        header { padding: 40px 20px; text-align: center; }
+        .lang-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            color: #444;
+            cursor: pointer;
+            font-size: 18px;
+            transition: 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .lang-btn.active { color: #fff; text-shadow: 0 0 10px #fff; }
+
+        .main-title { font-size: 70px; margin-bottom: 10px; }
+
+        /* Контент */
+        .container { max-width: 900px; margin: 0 auto; padding: 0 20px 100px; opacity: 0; transition: 2s ease; }
+
+        .product-card {
+            border: 1px solid #111;
+            padding: 40px;
+            margin-bottom: 50px;
+            background: rgba(255,255,255,0.01);
+            transition: 0.5s;
+        }
+
+        .product-card:hover { border-color: #333; transform: translateY(-5px); }
+
+        .price-tag { font-size: 28px; color: #fff; margin-bottom: 20px; display: block; border-bottom: 1px solid #222; padding-bottom: 10px; }
+        
+        .info-block { margin-top: 20px; font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 100; color: #ccc; }
+        
+        ul { list-style: none; margin: 20px 0; }
+        li { margin-bottom: 8px; font-size: 20px; }
+        li::before { content: "• "; color: #fff; }
+
+        .buy-link {
+            display: inline-block;
             margin-top: 30px;
-        }
-        .btn-reviews:hover {
-            background: #00d2ff;
-            color: #000;
-            box-shadow: 0 0 25px #00d2ff;
+            color: #fff;
+            text-decoration: none;
+            font-size: 24px;
+            border: 1px solid #fff;
+            padding: 10px 40px;
+            transition: 0.3s;
         }
 
-        .lang-zone { text-align: right; margin-bottom: 30px; }
-        .l-btn { background: none; border: 1px solid #222; color: #444; padding: 5px 12px; margin-left: 5px; font-family: inherit; }
-        .l-btn:hover { color: #fff; border-color: #fff; }
+        .buy-link:hover { background: #fff; color: #000; }
 
-        footer { padding: 60px; text-align: center; opacity: 0.2; font-size: 0.6rem; letter-spacing: 5px; }
+        .reviews { text-align: center; color: #555; text-decoration: none; display: block; font-size: 20px; margin-top: 40px; }
+        .reviews:hover { color: #fff; }
+
     </style>
 </head>
 <body>
 
-    <canvas id="canvas-bg"></canvas>
-
-    <!-- Загрузка -->
-    <div id="loader">
-        <div class="loading-text">system_init...</div>
-        <div style="width: 150px; height: 1px; background: #111; margin-top: 20px;">
-            <div id="bar" style="width: 0%; height: 100%; background: #fff;"></div>
+<!-- Экран входа -->
+<div id="gatekeeper">
+    <div class="terminal">
+        <h2 id="welcome-txt">WELCOME TO YOTAMARU</h2>
+        <div class="rules" id="rules-txt">
+            1. <b>Responsibility:</b> The buyer is fully responsible for payment commissions.<br>
+            2. <b>Usage:</b> Software is provided "as is" with HWID protection.<br>
+            3. <b>Privacy:</b> Your data is encrypted and not shared.<br>
+            4. <b>Verification:</b> By entering, you confirm you are not a bot.
         </div>
+        <button class="accept-btn" onclick="enterSite()">ACCESS SYSTEM</button>
+    </div>
+</div>
+
+<div class="container" id="main-content">
+    <header>
+        <div class="lang-switcher">
+            <button class="lang-btn active" onclick="switchLang('ru', this)">RU</button>
+            <button class="lang-btn" onclick="switchLang('kz', this)">KZ</button>
+            <button class="lang-btn" onclick="switchLang('en', this)">EN</button>
+        </div>
+        <h1 class="main-title">YOTAMARU</h1>
+        <p style="font-size: 20px; color: #666;" id="sub-title">Sitya Minimalistic Store</p>
+    </header>
+
+    <!-- Товар 1 -->
+    <div class="product-card">
+        <span class="price-tag">🔥 Эмулятор — 3000₸ | 550₽ | 1250G</span>
+        <p class="info-block" id="desc1">Визуальное оформление и полная оптимизация BlueStacks.</p>
+        <ul id="list1">
+            <li>Красивый и удобный интерфейс</li>
+            <li>Отсутствие рекламы</li>
+            <li>Повышение FPS и плавность</li>
+            <li>Встроенный фикс сенсы</li>
+            <li>Вход по HWID</li>
+        </ul>
+        <a href="https://t.me/yotamaru666" class="buy-link" id="btn-buy1">Приобрести 😍</a>
     </div>
 
-    <!-- Капча -->
-    <div id="captcha-gate" style="display: none;">
-        <div class="terminal">
-            <div id="type-area" style="min-height: 120px; font-size: 0.9rem; color: #555; margin-bottom: 30px;"></div>
-            <button id="entry-btn" class="btn" style="display: none;" onclick="enter()">INITIALIZE SESSION</button>
-        </div>
+    <!-- Товар 2 -->
+    <div class="product-card">
+        <span class="price-tag">🔥 Эмулятор + Оптимизация — 4500₸ | 750₽ | 1750G</span>
+        <p class="info-block" id="desc2">Подходит для CS 2, VALORANT, DOTA 2. Максимальный FPS и стабильность системы.</p>
+        <ul id="list2">
+            <li>Полная оптимизация Windows</li>
+            <li>Минимальная задержка (Input Lag)</li>
+            <li>Стабильность 100% без вылетов</li>
+            <li>Приоритет процессов</li>
+        </ul>
+        <a href="https://t.me/yotamaru666" class="buy-link" id="btn-buy2">Приобрести 😘</a>
     </div>
 
-    <div class="container" id="main">
-        <div class="lang-zone">
-            <button class="l-btn" onclick="ln('ru')">RU</button>
-            <button class="l-btn" onclick="ln('en')">EN</button>
-            <button class="l-btn" onclick="ln('kz')">KZ</button>
-        </div>
+    <p style="text-align: center; color: #444; font-size: 14px; font-family: 'Inter';">Способы оплаты: Stars, ЮMoney, Kaspi, Card</p>
+    <a href="https://t.me/BlueStacksReview" class="reviews" id="rev-link">Читать отзывы →</a>
+</div>
 
-        <header>
-            <h1 class="glitch" id="main-title">Yotamaru</h1>
-            <p style="letter-spacing: 12px; font-size: 0.6rem; opacity: 0.4; margin-top: 15px;">PREMIUM SOFTWARE SOLUTIONS</p>
-        </header>
+<script>
+    function enterSite() {
+        document.getElementById('gatekeeper').style.opacity = '0';
+        setTimeout(() => {
+            document.getElementById('gatekeeper').style.display = 'none';
+            document.getElementById('main-content').style.opacity = '1';
+        }, 800);
+    }
 
-        <div class="grid">
-            <div class="card">
-                <h2 id="p1-t">Yotamaru Emulator</h2>
-                <div class="price">3000₸ | 550₽ | 1250G</div>
-                <ul id="p1-l">
-                    <li>Visual Optimization</li>
-                    <li>Zero Ads Experience</li>
-                    <li>FPS Stability Fix</li>
-                    <li>Sensi Fix Engine</li>
-                    <li>HWID Protection</li>
-                </ul>
-                <a href="https://t.me/yotamaru666" class="btn" onclick="play()">PURCHASE ACCESS</a>
-                <a href="https://t.me/BlueStacksReview" class="btn btn-reviews" onclick="play()">VIEW REVIEWS</a>
-            </div>
-
-            <div class="card">
-                <h2 id="p2-t">System Boost Pro</h2>
-                <div class="price">4500₸ | 750₽ | 1750G</div>
-                <ul id="p2-l">
-                    <li>Global PC Optimization</li>
-                    <li>Universal Game Support</li>
-                    <li>Input Lag Reduction</li>
-                    <li>Max Frame Consistency</li>
-                    <li>VIP Tech Support</li>
-                </ul>
-                <a href="https://t.me/yotamaru666" class="btn" onclick="play()">PURCHASE ACCESS</a>
-                <a href="https://t.me/BlueStacksReview" class="btn btn-reviews" onclick="play()">VIEW REVIEWS</a>
-            </div>
-        </div>
-
-        <footer>
-            YOTAMARU_ELITE // EST 2026 // SECURE_CONNECTION
-        </footer>
-    </div>
-
-    <!-- Аудио для клика (опционально) -->
-    <audio id="click-snd" src="https://soundjay.com"></audio>
-
-    <script>
-        // ФОН (Particle Network)
-        const canvas = document.getElementById('canvas-bg');
-        const ctx = canvas.getContext('2d');
-        let pts = [];
-        window.onresize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
-        window.onresize();
-
-        class Pt {
-            constructor() { 
-                this.x = Math.random()*canvas.width; this.y = Math.random()*canvas.height;
-                this.vx = (Math.random()-0.5)*0.8; this.vy = (Math.random()-0.5)*0.8;
-            }
-            step() {
-                this.x+=this.vx; this.y+=this.vy;
-                if(this.x<0||this.x>canvas.width) this.vx*=-1;
-                if(this.y<0||this.y>canvas.height) this.vy*=-1;
-            }
+    const translations = {
+        ru: {
+            sub: "",
+            welcome: "ДОБРО ПОЖАЛОВАТЬ",
+            rules: "1. <b>Комиссия:</b> Покупатель несет полную ответственность за оплату комиссии.<br>2. <b>Лицензия:</b> Система входа по HWID.<br>3. <b>Гарантия:</b> Плавный геймплей без вылетов.",
+            btn: "ВОЙТИ В СИСТЕМУ",
+            desc1: "Визуальное оформление и полная оптимизация BlueStacks.",
+            desc2: "Подходит для CS 2, VALORANT, DOTA 2. Максимальный FPS и стабильность системы.",
+            buy: "Приобрести",
+            rev: "Читать отзывы →"
+        },
+        kz: {
+            sub: "Sitya Минималистік дүкені",
+            welcome: "ҚОШ КЕЛДІҢІЗ",
+            rules: "1. <b>Комиссия:</b> Сатып алушы комиссияны төлеуге толық жауапты.<br>2. <b>Лицензия:</b> HWID арқылы кіру жүйесі.<br>3. <b>Кепілдік:</b> Қатып қалусыз біркелкі ойын.",
+            btn: "ЖҮЙЕГЕ КІРУ",
+            desc1: "BlueStacks-ті визуалды безендіру және толық оңтайландыру.",
+            desc2: "CS 2, VALORANT, DOTA 2 үшін қолайлы. Максималды FPS және жүйе тұрақтылығы.",
+            buy: "Сатып алу",
+            rev: "Пікірлерді оқу →"
+        },
+        en: {
+            sub: "",
+            welcome: "WELCOME SYSTEM",
+            rules: "1. <b>Fees:</b> Buyer is responsible for all transaction fees.<br>2. <b>Security:</b> HWID-based access system.<br>3. <b>Performance:</b> Smooth gameplay and zero crashes.",
+            btn: "ACCESS SYSTEM",
+            desc1: "Visual overhaul and full BlueStacks optimization.",
+            desc2: "Perfect for CS 2, VALORANT, DOTA 2. Max FPS and system stability.",
+            buy: "Purchase",
+            rev: "Read reviews →"
         }
-        for(let i=0;i<80;i++) pts.push(new Pt());
+    };
 
-        function loop() {
-            ctx.clearRect(0,0,canvas.width,canvas.height);
-            ctx.fillStyle = "rgba(255,255,255,0.2)";
-            pts.forEach(p => {
-                p.step();
-                ctx.beginPath(); ctx.arc(p.x,p.y,1,0,Math.PI*2); ctx.fill();
-                pts.forEach(p2 => {
-                    let d = (p.x-p2.x)**2 + (p.y-p2.y)**2;
-                    if(d<12000) {
-                        ctx.strokeStyle = `rgba(255,255,255,${1 - d/12000})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p2.x,p2.y); ctx.stroke();
-                    }
-                });
-            });
-            requestAnimationFrame(loop);
-        }
-        loop();
+    function switchLang(lang, btn) {
+        // Переключаем активную кнопку
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-        // ЗАГРУЗКА
-        let prg = 0;
-        const b = document.getElementById('bar');
-        const itv = setInterval(() => {
-            prg += 3;
-            b.style.width = prg + '%';
-            if(prg>=100) {
-                clearInterval(itv);
-                document.getElementById('loader').style.display='none';
-                document.getElementById('captcha-gate').style.display='flex';
-                type();
-            }
-        }, 40);
+        // Меняем текст
+        const t = translations[lang];
+        document.getElementById('sub-title').innerText = t.sub;
+        document.getElementById('welcome-txt').innerText = t.welcome;
+        document.getElementById('rules-txt').innerHTML = t.rules;
+        document.querySelector('.accept-btn').innerText = t.btn;
+        document.getElementById('desc1').innerText = t.desc1;
+        document.getElementById('desc2').innerText = t.desc2;
+        document.getElementById('btn-buy1').innerText = t.buy + " 😍";
+        document.getElementById('btn-buy2').innerText = t.buy + " 😘";
+        document.getElementById('rev-link').innerText = t.rev;
+    }
+</script>
 
-        // ПЕЧАТЬ ТЕКСТА
-        const lines = ["> Encrypting tunnel...", "> Hardware verification...", "> Security status: [CLEAN]", "> Welcome to Yotamaru Elite."];
-        function type() {
-            let l=0, c=0;
-            const target = document.getElementById('type-area');
-            function step() {
-                if(l < lines.length) {
-                    target.innerHTML += lines[l][c];
-                    c++;
-                    if(c >= lines[l].length) { target.innerHTML += "<br>"; l++; c=0; setTimeout(step, 300); }
-                    else setTimeout(step, 30);
-                } else document.getElementById('entry-btn').style.display='block';
-            }
-            step();
-        }
-
-        function enter() {
-            play();
-            document.getElementById('captcha-gate').style.display='none';
-            document.getElementById('main').classList.add('visible');
-        }
-
-        function play() { document.getElementById('click-snd').play().catch(()=>{}); }
-
-        // ПЕРЕВОДЫ
-        const langs = {
-            ru: { t: "Yotamaru", p1: "Эмулятор Yotamaru", p2: "Оптимизация ПК" },
-            en: { t: "Yotamaru", p1: "Yotamaru Emulator", p2: "PC Optimization" },
-            kz: { t: "Yotamaru", p1: "Yotamaru Эмуляторы", p2: "ПК Оңтайландыру" }
-        };
-
-        function ln(s) {
-            document.getElementById('main-title').innerText = langs[s].t;
-            document.getElementById('p1-t').innerText = langs[s].p1;
-            document.getElementById('p2-t').innerText = langs[s].p2;
-        }
-    </script>
 </body>
 </html>
