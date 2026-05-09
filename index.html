@@ -28,7 +28,6 @@
             background: #000;
         }
 
-        /* НОВАЯ ЗАГРУЗКА */
         #loader {
             position: fixed;
             inset: 0;
@@ -38,15 +37,10 @@
             justify-content: center;
             align-items: center;
             z-index: 5000;
-            text-transform: uppercase;
-            letter-spacing: 5px;
         }
-        .matrix-text {
-            font-size: 0.8rem;
-            color: #fff;
-            margin-top: 15px;
-            height: 20px;
-        }
+        .load-title { font-size: 1.5rem; letter-spacing: 5px; color: #fff; margin-bottom: 20px; }
+        .bar-container { width: 200px; height: 2px; background: #111; }
+        #load-bar { width: 0%; height: 100%; background: #fff; box-shadow: 0 0 10px #fff; transition: 0.1s; }
 
         #captcha-gate {
             position: fixed;
@@ -57,30 +51,17 @@
             justify-content: center;
             align-items: center;
         }
-        .terminal-window {
-            width: 90%;
-            max-width: 600px;
-            padding: 30px;
-            border-left: 2px solid #fff;
-            background: #050505;
-        }
-        .typewriter-box {
-            min-height: 100px;
-            font-size: 0.9rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            color: #fff;
-        }
+        .terminal-window { width: 90%; max-width: 600px; padding: 30px; border-left: 2px solid #fff; background: #050505; }
+        .typewriter-box { min-height: 80px; font-size: 0.9rem; color: #fff; margin-bottom: 20px; white-space: pre-wrap; }
 
         .main-content {
             max-width: 1200px;
             margin: 0 auto;
             padding: 40px 20px;
             opacity: 0;
-            transition: 1.5s;
             display: none;
         }
-        .is-ready { opacity: 1; display: block; }
+        .is-ready { opacity: 1; display: block; transition: 1.5s; }
 
         .handwritten-glow {
             font-family: 'Caveat', cursive;
@@ -90,52 +71,24 @@
             text-align: center;
         }
 
-        header { margin-bottom: 60px; text-align: center; }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid #111;
-            padding: 30px;
-            transition: 0.4s;
-        }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
+        .card { background: rgba(255, 255, 255, 0.02); border: 1px solid #111; padding: 30px; transition: 0.4s; }
         .card:hover { border-color: #fff; background: #080808; }
-
+        
         .price { font-size: 1.3rem; margin: 15px 0; color: #fff; font-weight: bold; }
         ul { list-style: none; margin-bottom: 25px; }
         li { margin-bottom: 10px; color: #666; font-size: 0.85rem; }
         li::before { content: "> "; color: #fff; }
 
         .buy-button {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            margin-top: 10px;
-            border: 1px solid #fff;
-            color: #fff;
-            text-decoration: none;
-            text-align: center;
-            font-size: 0.75rem;
-            font-weight: bold;
-            transition: 0.3s;
+            display: block; width: 100%; padding: 15px; margin-top: 10px;
+            border: 1px solid #fff; color: #fff; text-decoration: none;
+            text-align: center; font-size: 0.75rem; font-weight: bold; transition: 0.3s;
         }
         .buy-button:hover { background: #fff; color: #000; }
 
-        .lang-switcher { text-align: right; margin-bottom: 30px; }
-        .lang-btn {
-            background: none;
-            border: none;
-            color: #444;
-            margin-left: 15px;
-            cursor: pointer;
-            font-family: inherit;
-            font-size: 0.8rem;
-        }
+        .lang-switcher { text-align: right; margin-bottom: 20px; }
+        .lang-btn { background: none; border: none; color: #444; margin-left: 15px; cursor: pointer; font-family: inherit; }
         .lang-btn.active { color: #fff; text-decoration: underline; }
     </style>
 </head>
@@ -144,17 +97,14 @@
     <canvas id="canvas-bg"></canvas>
 
     <div id="loader">
-        <div style="font-size: 1.5rem; color: #fff;">YOTAMARU_SYSTEM</div>
-        <div id="load-bar-cont" style="width: 250px; height: 2px; background: #111; margin-top: 20px;">
-            <div id="load-bar" style="width: 0%; height: 100%; background: #fff;"></div>
-        </div>
-        <div class="matrix-text" id="status-text">INITIALIZING...</div>
+        <div class="load-title">YOTAMARU_CORE</div>
+        <div class="bar-container"><div id="load-bar"></div></div>
     </div>
 
     <div id="captcha-gate">
         <div class="terminal-window">
             <div class="typewriter-box" id="term-text"></div>
-            <button id="auth-btn" class="buy-button" style="width: 200px; display: none;" onclick="unlock()">ENTER SYSTEM</button>
+            <button id="auth-btn" class="buy-button" style="width: 200px; display: none;" onclick="unlock()">ACCESS GRANTED</button>
         </div>
     </div>
 
@@ -167,34 +117,21 @@
 
         <header>
             <h1 class="handwritten-glow">Yotamaru</h1>
-            <p style="letter-spacing: 5px; font-size: 0.6rem; opacity: 0.4; margin-top: 10px;" id="sub-title">PREMIUM EMULATION & OPTIMIZATION</p>
+            <p style="letter-spacing: 5px; font-size: 0.6rem; opacity: 0.4; text-align: center;" id="sub-title">PREMIUM EMULATION & OPTIMIZATION</p>
         </header>
 
         <div class="grid">
             <div class="card">
                 <h2 id="p1-title" style="font-family: 'Caveat'; font-size: 2rem;">Yotamaru Emulator</h2>
                 <div class="price">3000₸ | 550₽ | 1250G</div>
-                <ul id="p1-list">
-                    <li>Custom Visual Interface</li>
-                    <li>Zero Ads Policy</li>
-                    <li>FPS Stabilization</li>
-                    <li>HWID Security Lock</li>
-                    <li>Advanced Sensi Fix</li>
-                </ul>
+                <ul id="p1-list"></ul>
                 <a href="https://t.me/YotamaruShopBot" class="buy-button">TELEGRAM STARS</a>
                 <a href="https://t.me/YotamaruShopBot" class="buy-button">OTHER METHODS</a>
             </div>
-
             <div class="card">
                 <h2 id="p2-title" style="font-family: 'Caveat'; font-size: 2rem;">PC Optimization</h2>
                 <div class="price">4500₸ | 750₽ | 1750G</div>
-                <ul id="p2-list">
-                    <li>Universal Game Support</li>
-                    <li>CS 2 / Valorant / Dota 2</li>
-                    <li>Input Lag Reduction</li>
-                    <li>Latency Stabilization</li>
-                    <li>Elite Tech Support</li>
-                </ul>
+                <ul id="p2-list"></ul>
                 <a href="https://t.me/YotamaruShopBot" class="buy-button">TELEGRAM STARS</a>
                 <a href="https://t.me/YotamaruShopBot" class="buy-button">OTHER METHODS</a>
             </div>
@@ -203,88 +140,102 @@
 
     <script>
         const translations = {
-            ru: {
-                sub: "ПРЕМИАЛЬНАЯ ЭМУЛЯЦИЯ И ОПТИМИЗАЦИЯ",
-                p1t: "Yotamaru Эмулятор",
-                p2t: "Оптимизация ПК",
-                p1l: ["Кастомный интерфейс", "Без рекламы", "Стабилизация FPS", "Привязка к железу (HWID)", "Фикс сенсы"],
-                p2l: ["Поддержка всех игр", "CS 2 / Valorant / Dota 2", "Снижение задержки", "Стабильный пинг", "Техподдержка 24/7"],
-                term: ">> ПОДКЛЮЧЕНИЕ К СЕТИ...\n>> ПРОВЕРКА ЛИЦЕНЗИИ: OK\n>> ДОБРО ПОЖАЛОВАТЬ В ELITE СЕКТОР.",
-                btn: "ВОЙТИ В СИСТЕМУ"
-            },
-            en: {
-                sub: "PREMIUM EMULATION & OPTIMIZATION",
-                p1t: "Yotamaru Emulator",
-                p2t: "PC Optimization",
-                p1l: ["Custom Visual Interface", "Zero Ads Policy", "FPS Stabilization", "HWID Security Lock", "Advanced Sensi Fix"],
-                p2l: ["Universal Game Support", "CS 2 / Valorant / Dota 2", "Input Lag Reduction", "Latency Stabilization", "Elite Tech Support"],
-                term: ">> CONNECTING TO NETWORK...\n>> LICENSE CHECK: OK\n>> WELCOME TO ELITE SECTOR.",
-                btn: "ENTER SYSTEM"
-            },
-            kz: {
-                sub: "ПРЕМИУМ ЭМУЛЯЦИЯ ЖӘНЕ ОПТИМИЗАЦИЯ",
-                p1t: "Yotamaru Эмуляторы",
-                p2t: "ДК Оптимизациясы",
-                p1l: ["Жеке интерфейс", "Жарнамасыз", "FPS тұрақтандыру", "HWID қорғанысы", "Сенсаны түзету"],
-                p2l: ["Барлық ойынды қолдау", "CS 2 / Valorant / Dota 2", "Кешігуді азайту", "Тұрақты пинг", "Техникалық қолдау"],
-                term: ">> ЖЕЛІГЕ ҚОСЫЛУ...\n>> ЛИЦЕНЗИЯНЫ ТЕКСЕРУ: OK\n>> ELITE СЕКТОРЫНА ҚОШ КЕЛДІҢІЗ.",
-                btn: "ЖҮЙЕГЕ КІРУ"
-            }
+            ru: { sub: "ПРЕМИАЛЬНАЯ ЭМУЛЯЦИЯ И ОПТИМИЗАЦИЯ", p1t: "Yotamaru Эмулятор", p2t: "Оптимизация ПК", p1l: ["Кастомный интерфейс", "Без рекламы", "Стабилизация FPS", "HWID привязка", "Фикс сенсы"], p2l: ["Все игры", "CS 2 / Valorant", "Снижение задержки", "Стабильный пинг", "Техподдержка"], term: ">> SYSTEM: ИНИЦИАЛИЗАЦИЯ...\n>> STATUS: ВСЕ СИСТЕМЫ В НОРМЕ\n>> ДОСТУП РАЗРЕШЕН." },
+            en: { sub: "PREMIUM EMULATION & OPTIMIZATION", p1t: "Yotamaru Emulator", p2t: "PC Optimization", p1l: ["Custom UI", "No Ads", "FPS Stabilization", "HWID Lock", "Sensi Fix"], p2l: ["All Games", "CS 2 / Valorant", "Lag Reduction", "Stable Latency", "Elite Support"], term: ">> SYSTEM: INITIALIZING...\n>> STATUS: ALL SYSTEMS GO\n>> ACCESS GRANTED." },
+            kz: { sub: "ПРЕМИУМ ЭМУЛЯЦИЯ ЖӘНЕ ОПТИМИЗАЦИЯ", p1t: "Yotamaru Эмуляторы", p2t: "ДК Оптимизациясы", p1l: ["Жеке интерфейс", "Жарнамасыз", "FPS тұрақтандыру", "HWID қорғанысы", "Сенса түзету"], p2l: ["Барлық ойындар", "CS 2 / Valorant", "Кешігуді азайту", "Тұрақты пинг", "Техникалық қолдау"], term: ">> ЖҮЙЕ: ІСКЕ ҚОСУ...\n>> СТАТУС: БАРЛЫҚ ЖҮЙЕ ДАЙЫН\n>> РҰҚСАТ БЕРІЛДІ." }
         };
 
         function changeLang(lang, btn) {
-            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+            if(btn) { document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
             const t = translations[lang];
             document.getElementById('sub-title').innerText = t.sub;
             document.getElementById('p1-title').innerText = t.p1t;
             document.getElementById('p2-title').innerText = t.p2t;
-            document.getElementById('auth-btn').innerText = t.btn;
-            
-            const renderList = (id, items) => {
+            const updateList = (id, items) => {
                 const el = document.getElementById(id);
                 el.innerHTML = '';
                 items.forEach(i => { const li = document.createElement('li'); li.innerText = i; el.appendChild(li); });
             };
-            renderList('p1-list', t.p1l);
-            renderList('p2-list', t.p2l);
+            updateList('p1-list', t.p1l);
+            updateList('p2-list', t.p2l);
         }
+        changeLang('ru');
 
-        let width = 0;
-        const loaderBar = document.getElementById('load-bar');
-        const statusText = document.getElementById('status-text');
-        const statuses = ["CLEANING CACHE...", "BYPASSING LOCKS...", "LOADING ASSETS...", "READY"];
-
-        const loading = setInterval(() => {
-            if (width >= 100) {
-                clearInterval(loading);
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('captcha-gate').style.display = 'flex';
-                type();
-            } else {
-                width += Math.random() * 5;
-                loaderBar.style.width = width + '%';
-                statusText.innerText = statuses[Math.floor(width/30)] || "READY";
+        // ЗАГРУЗКА
+        let w = 0;
+        const loadInt = setInterval(() => {
+            w += Math.random() * 15;
+            document.getElementById('load-bar').style.width = Math.min(w, 100) + '%';
+            if(w >= 100) {
+                clearInterval(loadInt);
+                setTimeout(() => {
+                    document.getElementById('loader').style.display = 'none';
+                    document.getElementById('captcha-gate').style.display = 'flex';
+                    typeText();
+                }, 500);
             }
         }, 100);
 
-        let charIndex = 0;
-        function type() {
-            const text = translations.ru.term;
-            if (charIndex < text.length) {
-                document.getElementById('term-text').innerHTML += text.charAt(charIndex);
-                charIndex++;
-                setTimeout(type, 20);
-            } else {
-                document.getElementById('auth-btn').style.display = 'block';
+        function typeText() {
+            let i = 0; const txt = translations.ru.term;
+            function run() {
+                if(i < txt.length) { document.getElementById('term-text').innerHTML += txt.charAt(i); i++; setTimeout(run, 30); }
+                else { document.getElementById('auth-btn').style.display = 'block'; }
             }
+            run();
         }
 
         function unlock() {
             document.getElementById('captcha-gate').style.display = 'none';
-            document.body.style.overflow = 'auto';
             document.getElementById('ui').classList.add('is-ready');
+            document.body.style.overflow = 'auto';
         }
+
+        // ЖИВЫЕ ОБОИ
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let pts = [];
+        const mouse = { x: null, y: null };
+
+        window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+        class Pt {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 1;
+                this.vy = (Math.random() - 0.5) * 1;
+            }
+            draw() {
+                this.x += this.vx; this.y += this.vy;
+                if(this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                if(this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                ctx.fillStyle = 'rgba(255,255,255,0.3)';
+                ctx.beginPath(); ctx.arc(this.x, this.y, 1, 0, Math.PI*2); ctx.fill();
+            }
+        }
+
+        function init() {
+            canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+            for(let i=0; i<80; i++) pts.push(new Pt());
+        }
+
+        function anim() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            pts.forEach(p => {
+                p.draw();
+                let dx = mouse.x - p.x; let dy = mouse.y - p.y;
+                let d = Math.sqrt(dx*dx + dy*dy);
+                if(d < 150) {
+                    ctx.strokeStyle = `rgba(255,255,255,${1 - d/150})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
+                }
+            });
+            requestAnimationFrame(anim);
+        }
+        init(); anim();
     </script>
 </body>
 </html>
