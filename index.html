@@ -10,7 +10,6 @@
             --primary: #e0e0e0;
             --glow-color: rgba(255, 255, 255, 0.6);
             --bg-dark: #020202;
-            --accent-gray: #2a2a2e;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; cursor: crosshair; }
@@ -19,16 +18,17 @@
             font-family: 'JetBrains Mono', monospace;
             background-color: var(--bg-dark);
             color: var(--primary);
-            overflow-x: hidden;
+            overflow: hidden;
         }
 
         #canvas-bg {
             position: fixed;
             inset: 0;
             z-index: -1;
-            background: radial-gradient(circle at center, #0a0a0c 0%, #000 100%);
+            background: #000;
         }
 
+        /* НОВАЯ ЗАГРУЗКА */
         #loader {
             position: fixed;
             inset: 0;
@@ -38,140 +38,105 @@
             justify-content: center;
             align-items: center;
             z-index: 5000;
+            text-transform: uppercase;
+            letter-spacing: 5px;
         }
-        .loading-text {
-            font-family: 'Caveat', cursive;
-            font-size: 2.5rem;
+        .matrix-text {
+            font-size: 0.8rem;
             color: #fff;
-            text-shadow: 0 0 20px var(--glow-color);
-            margin-bottom: 20px;
+            margin-top: 15px;
+            height: 20px;
         }
 
         #captcha-gate {
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.9);
+            background: #000;
             z-index: 4000;
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
-            backdrop-filter: blur(10px);
         }
         .terminal-window {
             width: 90%;
-            max-width: 700px;
-            padding: 40px;
-            border: 1px solid rgba(255,255,255,0.1);
-            background: rgba(10, 10, 12, 0.8);
-            box-shadow: 0 0 50px rgba(0,0,0,1);
+            max-width: 600px;
+            padding: 30px;
+            border-left: 2px solid #fff;
+            background: #050505;
         }
         .typewriter-box {
-            min-height: 150px;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 30px;
-            color: #888;
+            min-height: 100px;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #fff;
         }
 
         .main-content {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 40px 20px;
             opacity: 0;
-            transition: 2.5s cubic-bezier(0.19, 1, 0.22, 1);
+            transition: 1.5s;
+            display: none;
         }
-        .is-ready { opacity: 1; }
+        .is-ready { opacity: 1; display: block; }
 
         .handwritten-glow {
             font-family: 'Caveat', cursive;
-            font-size: 5rem;
+            font-size: 4.5rem;
             color: #fff;
-            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 40px var(--glow-color);
-            margin-bottom: 10px;
+            text-shadow: 0 0 20px #fff;
+            text-align: center;
         }
 
-        header { text-align: center; margin-bottom: 100px; }
+        header { margin-bottom: 60px; text-align: center; }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
         }
 
         .card {
             background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 40px;
-            transition: 0.6s ease;
-            position: relative;
-            overflow: hidden;
+            border: 1px solid #111;
+            padding: 30px;
+            transition: 0.4s;
         }
-        .card:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: #fff;
-            box-shadow: 0 0 30px rgba(255,255,255,0.1);
-        }
+        .card:hover { border-color: #fff; background: #080808; }
 
-        .card h2 {
-            font-family: 'Caveat', cursive;
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            color: #fff;
-        }
-
-        .price {
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin: 20px 0;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
-        }
-
-        ul { list-style: none; margin-bottom: 30px; }
-        li { margin-bottom: 12px; color: #999; font-size: 0.9rem; }
-        li::before { content: "— "; color: #fff; }
+        .price { font-size: 1.3rem; margin: 15px 0; color: #fff; font-weight: bold; }
+        ul { list-style: none; margin-bottom: 25px; }
+        li { margin-bottom: 10px; color: #666; font-size: 0.85rem; }
+        li::before { content: "> "; color: #fff; }
 
         .buy-button {
             display: block;
             width: 100%;
-            padding: 20px;
+            padding: 15px;
             margin-top: 10px;
             border: 1px solid #fff;
-            background: transparent;
             color: #fff;
             text-decoration: none;
             text-align: center;
+            font-size: 0.75rem;
             font-weight: bold;
-            letter-spacing: 2px;
-            font-size: 0.8rem;
-            transition: 0.4s;
+            transition: 0.3s;
         }
-        .buy-button:hover {
-            background: #fff;
-            color: #000;
-            box-shadow: 0 0 20px #fff;
-        }
+        .buy-button:hover { background: #fff; color: #000; }
 
+        .lang-switcher { text-align: right; margin-bottom: 30px; }
         .lang-btn {
             background: none;
-            border: 1px solid #333;
-            color: #666;
-            padding: 5px 15px;
-            margin: 0 5px;
+            border: none;
+            color: #444;
+            margin-left: 15px;
             cursor: pointer;
             font-family: inherit;
+            font-size: 0.8rem;
         }
-        .lang-btn:hover { border-color: #fff; color: #fff; }
-
-        footer {
-            text-align: center;
-            margin-top: 100px;
-            padding: 40px;
-            font-size: 0.7rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            opacity: 0.3;
-        }
+        .lang-btn.active { color: #fff; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -179,36 +144,37 @@
     <canvas id="canvas-bg"></canvas>
 
     <div id="loader">
-        <div class="loading-text">Yotamaru elite...</div>
-        <div style="width: 200px; height: 1px; background: #222;">
-            <div id="load-bar" style="width: 0%; height: 100%; background: #fff; box-shadow: 0 0 10px #fff;"></div>
+        <div style="font-size: 1.5rem; color: #fff;">YOTAMARU_SYSTEM</div>
+        <div id="load-bar-cont" style="width: 250px; height: 2px; background: #111; margin-top: 20px;">
+            <div id="load-bar" style="width: 0%; height: 100%; background: #fff;"></div>
         </div>
+        <div class="matrix-text" id="status-text">INITIALIZING...</div>
     </div>
 
-    <div id="captcha-gate" style="display: none;">
+    <div id="captcha-gate">
         <div class="terminal-window">
             <div class="typewriter-box" id="term-text"></div>
-            <button id="auth-btn" class="buy-button" style="width: auto; display: none;" onclick="unlock()">ПОДТВЕРДИТЬ ЛИЧНОСТЬ</button>
+            <button id="auth-btn" class="buy-button" style="width: 200px; display: none;" onclick="unlock()">ENTER SYSTEM</button>
         </div>
     </div>
 
     <div class="main-content" id="ui">
-        <div style="text-align: right; margin-bottom: 20px;">
-            <button class="lang-btn">RU</button>
-            <button class="lang-btn">EN</button>
-            <button class="lang-btn">KZ</button>
+        <div class="lang-switcher">
+            <button class="lang-btn active" onclick="changeLang('ru', this)">RU</button>
+            <button class="lang-btn" onclick="changeLang('en', this)">EN</button>
+            <button class="lang-btn" onclick="changeLang('kz', this)">KZ</button>
         </div>
 
         <header>
-            <h1 class="handwritten-glow" id="title">Yotamaru</h1>
-            <p style="letter-spacing: 10px; font-size: 0.7rem; opacity: 0.5;">PREMIUM EMULATION & OPTIMIZATION</p>
+            <h1 class="handwritten-glow">Yotamaru</h1>
+            <p style="letter-spacing: 5px; font-size: 0.6rem; opacity: 0.4; margin-top: 10px;" id="sub-title">PREMIUM EMULATION & OPTIMIZATION</p>
         </header>
 
         <div class="grid">
             <div class="card">
-                <h2 id="p1-name">Yotamaru Emulator</h2>
+                <h2 id="p1-title" style="font-family: 'Caveat'; font-size: 2rem;">Yotamaru Emulator</h2>
                 <div class="price">3000₸ | 550₽ | 1250G</div>
-                <ul>
+                <ul id="p1-list">
                     <li>Custom Visual Interface</li>
                     <li>Zero Ads Policy</li>
                     <li>FPS Stabilization</li>
@@ -220,9 +186,9 @@
             </div>
 
             <div class="card">
-                <h2 id="p2-name">PC Optimization</h2>
+                <h2 id="p2-title" style="font-family: 'Caveat'; font-size: 2rem;">PC Optimization</h2>
                 <div class="price">4500₸ | 750₽ | 1750G</div>
-                <ul>
+                <ul id="p2-list">
                     <li>Universal Game Support</li>
                     <li>CS 2 / Valorant / Dota 2</li>
                     <li>Input Lag Reduction</li>
@@ -233,15 +199,62 @@
                 <a href="https://t.me/YotamaruShopBot" class="buy-button">OTHER METHODS</a>
             </div>
         </div>
-
-        <footer>
-            TRANS-CODE: YTMR-88 // BUYER PAYS ALL COMMISSIONS // 2026
-        </footer>
     </div>
 
     <script>
-        const loadBar = document.getElementById('load-bar');
+        const translations = {
+            ru: {
+                sub: "ПРЕМИАЛЬНАЯ ЭМУЛЯЦИЯ И ОПТИМИЗАЦИЯ",
+                p1t: "Yotamaru Эмулятор",
+                p2t: "Оптимизация ПК",
+                p1l: ["Кастомный интерфейс", "Без рекламы", "Стабилизация FPS", "Привязка к железу (HWID)", "Фикс сенсы"],
+                p2l: ["Поддержка всех игр", "CS 2 / Valorant / Dota 2", "Снижение задержки", "Стабильный пинг", "Техподдержка 24/7"],
+                term: ">> ПОДКЛЮЧЕНИЕ К СЕТИ...\n>> ПРОВЕРКА ЛИЦЕНЗИИ: OK\n>> ДОБРО ПОЖАЛОВАТЬ В ELITE СЕКТОР.",
+                btn: "ВОЙТИ В СИСТЕМУ"
+            },
+            en: {
+                sub: "PREMIUM EMULATION & OPTIMIZATION",
+                p1t: "Yotamaru Emulator",
+                p2t: "PC Optimization",
+                p1l: ["Custom Visual Interface", "Zero Ads Policy", "FPS Stabilization", "HWID Security Lock", "Advanced Sensi Fix"],
+                p2l: ["Universal Game Support", "CS 2 / Valorant / Dota 2", "Input Lag Reduction", "Latency Stabilization", "Elite Tech Support"],
+                term: ">> CONNECTING TO NETWORK...\n>> LICENSE CHECK: OK\n>> WELCOME TO ELITE SECTOR.",
+                btn: "ENTER SYSTEM"
+            },
+            kz: {
+                sub: "ПРЕМИУМ ЭМУЛЯЦИЯ ЖӘНЕ ОПТИМИЗАЦИЯ",
+                p1t: "Yotamaru Эмуляторы",
+                p2t: "ДК Оптимизациясы",
+                p1l: ["Жеке интерфейс", "Жарнамасыз", "FPS тұрақтандыру", "HWID қорғанысы", "Сенсаны түзету"],
+                p2l: ["Барлық ойынды қолдау", "CS 2 / Valorant / Dota 2", "Кешігуді азайту", "Тұрақты пинг", "Техникалық қолдау"],
+                term: ">> ЖЕЛІГЕ ҚОСЫЛУ...\n>> ЛИЦЕНЗИЯНЫ ТЕКСЕРУ: OK\n>> ELITE СЕКТОРЫНА ҚОШ КЕЛДІҢІЗ.",
+                btn: "ЖҮЙЕГЕ КІРУ"
+            }
+        };
+
+        function changeLang(lang, btn) {
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const t = translations[lang];
+            document.getElementById('sub-title').innerText = t.sub;
+            document.getElementById('p1-title').innerText = t.p1t;
+            document.getElementById('p2-title').innerText = t.p2t;
+            document.getElementById('auth-btn').innerText = t.btn;
+            
+            const renderList = (id, items) => {
+                const el = document.getElementById(id);
+                el.innerHTML = '';
+                items.forEach(i => { const li = document.createElement('li'); li.innerText = i; el.appendChild(li); });
+            };
+            renderList('p1-list', t.p1l);
+            renderList('p2-list', t.p2l);
+        }
+
         let width = 0;
+        const loaderBar = document.getElementById('load-bar');
+        const statusText = document.getElementById('status-text');
+        const statuses = ["CLEANING CACHE...", "BYPASSING LOCKS...", "LOADING ASSETS...", "READY"];
+
         const loading = setInterval(() => {
             if (width >= 100) {
                 clearInterval(loading);
@@ -249,18 +262,19 @@
                 document.getElementById('captcha-gate').style.display = 'flex';
                 type();
             } else {
-                width += Math.random() * 10;
-                loadBar.style.width = width + '%';
+                width += Math.random() * 5;
+                loaderBar.style.width = width + '%';
+                statusText.innerText = statuses[Math.floor(width/30)] || "READY";
             }
-        }, 150);
+        }, 100);
 
-        const termText = ">> ИНИЦИАЛИЗАЦИЯ ПРОТОКОЛА...\n>> ПРОВЕРКА ОБОРУДОВАНИЯ: OK\n>> ДОСТУП К МАГАЗИНУ ОТКРЫТ.";
         let charIndex = 0;
         function type() {
-            if (charIndex < termText.length) {
-                document.getElementById('term-text').innerHTML += termText.charAt(charIndex);
+            const text = translations.ru.term;
+            if (charIndex < text.length) {
+                document.getElementById('term-text').innerHTML += text.charAt(charIndex);
                 charIndex++;
-                setTimeout(type, 30);
+                setTimeout(type, 20);
             } else {
                 document.getElementById('auth-btn').style.display = 'block';
             }
@@ -268,19 +282,9 @@
 
         function unlock() {
             document.getElementById('captcha-gate').style.display = 'none';
+            document.body.style.overflow = 'auto';
             document.getElementById('ui').classList.add('is-ready');
         }
-
-        const canvas = document.getElementById('canvas-bg');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            requestAnimationFrame(animate);
-        }
-        animate();
     </script>
 </body>
 </html>
