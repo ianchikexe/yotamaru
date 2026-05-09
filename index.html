@@ -8,8 +8,8 @@
     <style>
         :root {
             --primary: #e0e0e0;
-            --glow-color: rgba(255, 255, 255, 0.6);
-            --bg-dark: #020202;
+            --glow: 0 0 15px rgba(255, 255, 255, 0.8);
+            --bg-dark: #000;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; cursor: crosshair; }
@@ -21,74 +21,61 @@
             overflow: hidden;
         }
 
-        #canvas-bg {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background: #000;
-        }
+        #canvas-bg { position: fixed; inset: 0; z-index: -1; }
 
+        /* НОВАЯ ЗАГРУЗКА */
         #loader {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 5000;
+            position: fixed; inset: 0; background: #000;
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: center; z-index: 5000;
         }
-        .load-title { font-size: 1.5rem; letter-spacing: 5px; color: #fff; margin-bottom: 20px; }
-        .bar-container { width: 200px; height: 2px; background: #111; }
-        #load-bar { width: 0%; height: 100%; background: #fff; box-shadow: 0 0 10px #fff; transition: 0.1s; }
+        .scanline {
+            width: 300px; height: 2px; background: #fff;
+            box-shadow: var(--glow); position: relative; overflow: hidden;
+        }
+        .scanline::after {
+            content: ''; position: absolute; top: 0; left: -100%;
+            width: 100%; height: 100%; background: #000; animation: scan 1.5s infinite;
+        }
+        @keyframes scan { 100% { left: 100%; } }
+
+        /* МЕРЦАЮЩИЙ ТЕКСТ */
+        .blink { animation: blinker 1.5s linear infinite; }
+        @keyframes blinker { 50% { opacity: 0.2; } }
 
         #captcha-gate {
-            position: fixed;
-            inset: 0;
-            background: #000;
-            z-index: 4000;
-            display: none;
-            justify-content: center;
-            align-items: center;
+            position: fixed; inset: 0; background: #000; z-index: 4000;
+            display: none; justify-content: center; align-items: center;
         }
-        .terminal-window { width: 90%; max-width: 600px; padding: 30px; border-left: 2px solid #fff; background: #050505; }
-        .typewriter-box { min-height: 80px; font-size: 0.9rem; color: #fff; margin-bottom: 20px; white-space: pre-wrap; }
 
         .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            opacity: 0;
-            display: none;
+            max-width: 1200px; margin: 0 auto; padding: 40px 20px;
+            opacity: 0; display: none;
         }
-        .is-ready { opacity: 1; display: block; transition: 1.5s; }
+        .is-ready { opacity: 1; display: block; transition: 2s; }
 
         .handwritten-glow {
-            font-family: 'Caveat', cursive;
-            font-size: 4.5rem;
-            color: #fff;
-            text-shadow: 0 0 20px #fff;
-            text-align: center;
+            font-family: 'Caveat', cursive; font-size: 5rem;
+            color: #fff; text-shadow: var(--glow); text-align: center;
         }
 
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-top: 50px; }
-        .card { background: rgba(255, 255, 255, 0.02); border: 1px solid #111; padding: 30px; transition: 0.4s; }
-        .card:hover { border-color: #fff; background: #080808; }
-        
-        .price { font-size: 1.3rem; margin: 15px 0; color: #fff; font-weight: bold; }
-        ul { list-style: none; margin-bottom: 25px; }
-        li { margin-bottom: 10px; color: #666; font-size: 0.85rem; }
-        li::before { content: "> "; color: #fff; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; margin-top: 50px; }
+        .card { background: rgba(0, 0, 0, 0.8); border: 1px solid #222; padding: 40px; transition: 0.4s; }
+        .card:hover { border-color: #fff; transform: translateY(-5px); box-shadow: var(--glow); }
+
+        .price { font-size: 1.5rem; margin: 20px 0; color: #fff; font-weight: bold; }
+        ul { list-style: none; margin-bottom: 30px; }
+        li { margin-bottom: 12px; color: #777; font-size: 0.9rem; }
+        li::before { content: "» "; color: #fff; }
 
         .buy-button {
-            display: block; width: 100%; padding: 15px; margin-top: 10px;
+            display: block; width: 100%; padding: 20px; margin-top: 10px;
             border: 1px solid #fff; color: #fff; text-decoration: none;
-            text-align: center; font-size: 0.75rem; font-weight: bold; transition: 0.3s;
+            text-align: center; font-size: 0.8rem; font-weight: bold; transition: 0.3s;
         }
-        .buy-button:hover { background: #fff; color: #000; }
+        .buy-button:hover { background: #fff; color: #000; box-shadow: var(--glow); }
 
-        .lang-switcher { text-align: right; margin-bottom: 20px; }
-        .lang-btn { background: none; border: none; color: #444; margin-left: 15px; cursor: pointer; font-family: inherit; }
+        .lang-btn { background: none; border: none; color: #444; margin-left: 20px; cursor: pointer; font-size: 0.8rem; }
         .lang-btn.active { color: #fff; text-decoration: underline; }
     </style>
 </head>
@@ -97,63 +84,65 @@
     <canvas id="canvas-bg"></canvas>
 
     <div id="loader">
-        <div class="load-title">YOTAMARU_CORE</div>
-        <div class="bar-container"><div id="load-bar"></div></div>
+        <div class="blink" style="letter-spacing: 10px; margin-bottom: 20px;">YOTAMARU_SECURE_BOOT</div>
+        <div class="scanline"></div>
     </div>
 
     <div id="captcha-gate">
-        <div class="terminal-window">
-            <div class="typewriter-box" id="term-text"></div>
-            <button id="auth-btn" class="buy-button" style="width: 200px; display: none;" onclick="unlock()">ACCESS GRANTED</button>
+        <div style="border-left: 2px solid #fff; padding: 20px; background: #050505;">
+            <div id="term-text" style="color: #fff; font-size: 0.9rem; min-height: 60px;"></div>
+            <button id="auth-btn" class="buy-button" style="display: none; width: 200px;" onclick="unlock()">INITIATE</button>
         </div>
     </div>
 
     <div class="main-content" id="ui">
-        <div class="lang-switcher">
+        <div style="text-align: right;">
             <button class="lang-btn active" onclick="changeLang('ru', this)">RU</button>
             <button class="lang-btn" onclick="changeLang('en', this)">EN</button>
             <button class="lang-btn" onclick="changeLang('kz', this)">KZ</button>
         </div>
 
         <header>
-            <h1 class="handwritten-glow">Yotamaru</h1>
-            <p style="letter-spacing: 5px; font-size: 0.6rem; opacity: 0.4; text-align: center;" id="sub-title">PREMIUM EMULATION & OPTIMIZATION</p>
+            <h1 class="handwritten-glow blink">Yotamaru</h1>
+            <p id="sub-title" style="letter-spacing: 5px; font-size: 0.7rem; opacity: 0.5; text-align: center; margin-top: 15px;"></p>
         </header>
 
         <div class="grid">
             <div class="card">
-                <h2 id="p1-title" style="font-family: 'Caveat'; font-size: 2rem;">Yotamaru Emulator</h2>
+                <h2 id="p1-title" style="font-family: 'Caveat'; font-size: 2.5rem;"></h2>
                 <div class="price">3000₸ | 550₽ | 1250G</div>
                 <ul id="p1-list"></ul>
-                <a href="https://t.me/YotamaruShopBot" class="buy-button">TELEGRAM STARS</a>
-                <a href="https://t.me/YotamaruShopBot" class="buy-button">OTHER METHODS</a>
+                <a href="#" class="buy-button" onclick="confirmBuy(event)">TELEGRAM STARS</a>
+                <a href="#" class="buy-button" onclick="confirmBuy(event)">OTHER METHODS</a>
             </div>
             <div class="card">
-                <h2 id="p2-title" style="font-family: 'Caveat'; font-size: 2rem;">PC Optimization</h2>
+                <h2 id="p2-title" style="font-family: 'Caveat'; font-size: 2.5rem;"></h2>
                 <div class="price">4500₸ | 750₽ | 1750G</div>
                 <ul id="p2-list"></ul>
-                <a href="https://t.me/YotamaruShopBot" class="buy-button">TELEGRAM STARS</a>
-                <a href="https://t.me/YotamaruShopBot" class="buy-button">OTHER METHODS</a>
+                <a href="#" class="buy-button" onclick="confirmBuy(event)">TELEGRAM STARS</a>
+                <a href="#" class="buy-button" onclick="confirmBuy(event)">OTHER METHODS</a>
             </div>
         </div>
     </div>
 
     <script>
         const translations = {
-            ru: { sub: "ПРЕМИАЛЬНАЯ ЭМУЛЯЦИЯ И ОПТИМИЗАЦИЯ", p1t: "Yotamaru Эмулятор", p2t: "Оптимизация ПК", p1l: ["Кастомный интерфейс", "Без рекламы", "Стабилизация FPS", "HWID привязка", "Фикс сенсы"], p2l: ["Все игры", "CS 2 / Valorant", "Снижение задержки", "Стабильный пинг", "Техподдержка"], term: ">> SYSTEM: ИНИЦИАЛИЗАЦИЯ...\n>> STATUS: ВСЕ СИСТЕМЫ В НОРМЕ\n>> ДОСТУП РАЗРЕШЕН." },
-            en: { sub: "PREMIUM EMULATION & OPTIMIZATION", p1t: "Yotamaru Emulator", p2t: "PC Optimization", p1l: ["Custom UI", "No Ads", "FPS Stabilization", "HWID Lock", "Sensi Fix"], p2l: ["All Games", "CS 2 / Valorant", "Lag Reduction", "Stable Latency", "Elite Support"], term: ">> SYSTEM: INITIALIZING...\n>> STATUS: ALL SYSTEMS GO\n>> ACCESS GRANTED." },
-            kz: { sub: "ПРЕМИУМ ЭМУЛЯЦИЯ ЖӘНЕ ОПТИМИЗАЦИЯ", p1t: "Yotamaru Эмуляторы", p2t: "ДК Оптимизациясы", p1l: ["Жеке интерфейс", "Жарнамасыз", "FPS тұрақтандыру", "HWID қорғанысы", "Сенса түзету"], p2l: ["Барлық ойындар", "CS 2 / Valorant", "Кешігуді азайту", "Тұрақты пинг", "Техникалық қолдау"], term: ">> ЖҮЙЕ: ІСКЕ ҚОСУ...\n>> СТАТУС: БАРЛЫҚ ЖҮЙЕ ДАЙЫН\n>> РҰҚСАТ БЕРІЛДІ." }
+            ru: { sub: "ПРЕМИАЛЬНАЯ ЭМУЛЯЦИЯ И ОПТИМИЗАЦИЯ", p1t: "Yotamaru Эмулятор", p2t: "Оптимизация ПК", p1l: ["Кастомный интерфейс", "Без рекламы", "Стабилизация FPS", "HWID привязка", "Фикс сенсы"], p2l: ["Все игры", "CS 2 / Valorant", "Снижение задержки", "Стабильный пинг", "Elite поддержка"], term: ">> ЗАГРУЗКА ПРОТОКОЛОВ...\n>> ПРОВЕРКА ОКРУЖЕНИЯ: БЕЗОПАСНО\n>> ДОСТУП РАЗРЕШЕН.", confirm: "Вы точно хотите купить этот товар?" },
+            en: { sub: "PREMIUM EMULATION & OPTIMIZATION", p1t: "Yotamaru Emulator", p2t: "PC Optimization", p1l: ["Custom UI", "No Ads", "FPS Stabilization", "HWID Lock", "Sensi Fix"], p2l: ["All Games", "CS 2 / Valorant", "Lag Reduction", "Stable Latency", "Elite Support"], term: ">> LOADING PROTOCOLS...\n>> CHECKING ENVIRONMENT: SAFE\n>> ACCESS GRANTED.", confirm: "Are you sure you want to buy this product?" },
+            kz: { sub: "ПРЕМИУМ ЭМУЛЯЦИЯ ЖӘНЕ ОПТИМИЗАЦИЯ", p1t: "Yotamaru Эмуляторы", p2t: "ДК Оптимизациясы", p1l: ["Жеке интерфейс", "Жарнамасыз", "FPS тұрақтандыру", "HWID қорғанысы", "Сенса түзету"], p2l: ["Барлық ойындар", "CS 2 / Valorant", "Кешігуді азайту", "Тұрақты пинг", "Техникалық қолдау"], term: ">> ЖҮЙЕ ЖҮКТЕЛУДЕ...\n>> ТЕКСЕРУ: ҚАУІПСІЗ\n>> РҰҚСАТ БЕРІЛДІ.", confirm: "Бұл тауарды сатып алғыңыз келетініне сенімдісіз бе?" }
         };
 
+        let currentLang = 'ru';
+
         function changeLang(lang, btn) {
+            currentLang = lang;
             if(btn) { document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
             const t = translations[lang];
             document.getElementById('sub-title').innerText = t.sub;
             document.getElementById('p1-title').innerText = t.p1t;
             document.getElementById('p2-title').innerText = t.p2t;
             const updateList = (id, items) => {
-                const el = document.getElementById(id);
-                el.innerHTML = '';
+                const el = document.getElementById(id); el.innerHTML = '';
                 items.forEach(i => { const li = document.createElement('li'); li.innerText = i; el.appendChild(li); });
             };
             updateList('p1-list', t.p1l);
@@ -161,29 +150,24 @@
         }
         changeLang('ru');
 
-        // ЗАГРУЗКА
-        let w = 0;
-        const loadInt = setInterval(() => {
-            w += Math.random() * 15;
-            document.getElementById('load-bar').style.width = Math.min(w, 100) + '%';
-            if(w >= 100) {
-                clearInterval(loadInt);
-                setTimeout(() => {
-                    document.getElementById('loader').style.display = 'none';
-                    document.getElementById('captcha-gate').style.display = 'flex';
-                    typeText();
-                }, 500);
+        function confirmBuy(e) {
+            e.preventDefault();
+            if (confirm(translations[currentLang].confirm)) {
+                window.location.href = "https://t.me/YotamaruShopBot";
             }
-        }, 100);
+        }
 
-        function typeText() {
+        // ЗАГРУЗКА
+        setTimeout(() => {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('captcha-gate').style.display = 'flex';
             let i = 0; const txt = translations.ru.term;
             function run() {
-                if(i < txt.length) { document.getElementById('term-text').innerHTML += txt.charAt(i); i++; setTimeout(run, 30); }
+                if(i < txt.length) { document.getElementById('term-text').innerText += txt.charAt(i); i++; setTimeout(run, 40); }
                 else { document.getElementById('auth-btn').style.display = 'block'; }
             }
             run();
-        }
+        }, 2500);
 
         function unlock() {
             document.getElementById('captcha-gate').style.display = 'none';
@@ -191,51 +175,26 @@
             document.body.style.overflow = 'auto';
         }
 
-        // ЖИВЫЕ ОБОИ
+        // НОВЫЕ ЖИВЫЕ ОБОИ (ПЛЫВУЩИЕ ЛИНИИ)
         const canvas = document.getElementById('canvas-bg');
         const ctx = canvas.getContext('2d');
-        let pts = [];
-        const mouse = { x: null, y: null };
-
-        window.addEventListener('mousemove', (e) => { mouse.x = e.x; mouse.y = e.y; });
-        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
-
-        class Pt {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 1;
-                this.vy = (Math.random() - 0.5) * 1;
-            }
-            draw() {
-                this.x += this.vx; this.y += this.vy;
-                if(this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if(this.y < 0 || this.y > canvas.height) this.vy *= -1;
-                ctx.fillStyle = 'rgba(255,255,255,0.3)';
-                ctx.beginPath(); ctx.arc(this.x, this.y, 1, 0, Math.PI*2); ctx.fill();
-            }
-        }
+        let lines = [];
 
         function init() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            for(let i=0; i<80; i++) pts.push(new Pt());
+            for(let i=0; i<25; i++) lines.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, v: Math.random()*2+1, l: Math.random()*100+50 });
         }
 
         function anim() {
-            ctx.clearRect(0,0,canvas.width, canvas.height);
-            pts.forEach(p => {
-                p.draw();
-                let dx = mouse.x - p.x; let dy = mouse.y - p.y;
-                let d = Math.sqrt(dx*dx + dy*dy);
-                if(d < 150) {
-                    ctx.strokeStyle = `rgba(255,255,255,${1 - d/150})`;
-                    ctx.lineWidth = 0.5;
-                    ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(mouse.x, mouse.y); ctx.stroke();
-                }
+            ctx.fillStyle = 'rgba(0,0,0,0.1)'; ctx.fillRect(0,0,canvas.width, canvas.height);
+            ctx.strokeStyle = '#fff'; ctx.lineWidth = 1;
+            lines.forEach(line => {
+                ctx.beginPath(); ctx.moveTo(line.x, line.y); ctx.lineTo(line.x, line.y + line.l); ctx.stroke();
+                line.y += line.v; if(line.y > canvas.height) { line.y = -line.l; line.x = Math.random()*canvas.width; }
             });
             requestAnimationFrame(anim);
         }
-        init(); anim();
+        init(); anim(); window.addEventListener('resize', init);
     </script>
 </body>
 </html>
