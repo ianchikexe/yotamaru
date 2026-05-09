@@ -1,522 +1,514 @@
-Вот обновлённый сайт с новым киберпанк-дизайном, живыми обоями (волны + частицы), автоматическим вводом пароля при загрузке (пароль "сососичлен" появляется сам и через секунду разблокирует контент). Добавлены вкладки, все платёжные методы сохранены.
-```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>YOTAMARU | CYBER ELITE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,500;14..32,700;14..32,800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <title>YOTAMARU | DARK ELITE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
         }
 
         body {
-            font-family: 'Inter', 'JetBrains Mono', monospace;
-            background: #000;
-            color: #0f0;
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #0a0a0f;
+            color: #eef5ff;
             overflow-x: hidden;
             min-height: 100vh;
         }
 
-        /* ========== НОВЫЙ ЖИВОЙ ФОН (ВОЛНЫ + ШУМ + ЧАСТИЦЫ) ========== */
-        #cyber-canvas {
+        /* ========== ЖИВОЙ ФОН (ТЁМНЫЙ НЕОН) ========== */
+        #dynamic-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -3;
-            background: radial-gradient(circle at 30% 40%, #010105, #000000);
-        }
-
-        .noise-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-radial-gradient(circle at 20% 30%, rgba(0,255,0,0.02) 0px, rgba(0,255,0,0.02) 2px, transparent 2px, transparent 4px);
-            pointer-events: none;
             z-index: -2;
-            opacity: 0.4;
-            mix-blend-mode: overlay;
+            background: radial-gradient(circle at 30% 40%, #0c0c14, #020205);
         }
 
-        .glow-scanline {
+        .particle-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(0deg, rgba(0,0,0,0.8) 0%, rgba(0,255,0,0.02) 50%, rgba(0,0,0,0.8) 100%);
-            pointer-events: none;
             z-index: -1;
+            pointer-events: none;
         }
 
-        /* ПРЕЛОАДЕР */
+        /* ========== ПРЕЛОАДЕР ========== */
         #preloader {
             position: fixed;
             inset: 0;
-            background: #000000;
+            background: #05050a;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transition: opacity 0.8s ease;
         }
-        .cyber-loader {
-            width: 120px;
-            height: 120px;
-            border: 3px solid #0f0;
-            border-top: 3px solid transparent;
+        .preloader-ring {
+            width: 80px;
+            height: 80px;
+            border: 2px solid rgba(100, 150, 255, 0.2);
+            border-top: 2px solid #6c8eff;
             border-radius: 50%;
-            animation: spin 1s linear infinite;
-            box-shadow: 0 0 20px #0f0, inset 0 0 10px #0f0;
+            animation: spin 0.9s linear infinite;
             margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(108, 142, 255, 0.3);
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .loader-text {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.4rem;
+        .preloader-text {
+            font-size: 1.6rem;
+            font-weight: 500;
             letter-spacing: 6px;
-            color: #0f0;
-            text-shadow: 0 0 12px #0f0;
+            background: linear-gradient(135deg, #ffffff, #8a9cff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
         }
-        .loader-progress {
-            width: 260px;
+        .preloader-bar {
+            width: 220px;
             height: 2px;
-            background: #111;
-            margin-top: 30px;
+            background: #1e1e2a;
+            border-radius: 4px;
+            overflow: hidden;
         }
-        .loader-progress-fill {
+        .preloader-fill {
             width: 0%;
             height: 100%;
-            background: #0f0;
-            box-shadow: 0 0 8px #0f0;
+            background: linear-gradient(90deg, #6c8eff, #b0c0ff);
+            transition: width 0.1s linear;
         }
 
-        /* ЭКРАН ВВОДА ПАРОЛЯ (АВТОМАТИЧЕСКИ ЗАПОЛНЕН) */
-        #password-gate {
+        /* ========== ЭКРАН ПАРОЛЯ (АВТОМАТИЧЕСКИ 0000) ========== */
+        #password-screen {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.96);
-            backdrop-filter: blur(10px);
+            background: rgba(5, 5, 12, 0.96);
+            backdrop-filter: blur(16px);
             z-index: 1500;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.6s;
+            transition: opacity 0.5s ease;
         }
-        .terminal-box {
-            background: rgba(0, 20, 0, 0.7);
-            border: 2px solid #0f0;
-            border-radius: 28px;
+        .password-card {
+            background: rgba(15, 15, 25, 0.7);
+            border: 1px solid rgba(108, 142, 255, 0.4);
+            border-radius: 48px;
+            padding: 48px 36px;
             width: 90%;
-            max-width: 500px;
-            padding: 40px 30px;
+            max-width: 480px;
             text-align: center;
-            box-shadow: 0 0 40px rgba(0,255,0,0.2);
             backdrop-filter: blur(8px);
+            box-shadow: 0 20px 35px -10px rgba(0,0,0,0.8);
         }
-        .terminal-header {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.3rem;
+        .password-icon {
+            font-size: 56px;
             margin-bottom: 20px;
-            color: #0f0;
         }
-        .pass-field {
-            background: #001000;
-            border: 1px solid #0f0;
-            padding: 15px;
-            width: 100%;
+        .password-title {
+            font-size: 1.7rem;
+            font-weight: 600;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, #fff, #8a9cff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+        .password-field {
+            background: #0e0e16;
+            border: 1px solid #2c2c3a;
+            border-radius: 60px;
+            padding: 16px 24px;
+            font-size: 1.8rem;
             font-family: monospace;
-            font-size: 1.2rem;
+            letter-spacing: 6px;
             text-align: center;
-            color: #0f0;
-            margin: 20px 0;
-            letter-spacing: 2px;
+            color: #9bb4ff;
+            margin: 25px 0;
+            width: 100%;
         }
-        .auto-note {
-            font-size: 0.7rem;
-            opacity: 0.7;
-            margin-bottom: 20px;
-            color: #8f8;
+        .auto-hint {
+            font-size: 0.75rem;
+            color: #8a8faa;
+            margin-bottom: 28px;
         }
-        .unlock-button {
-            background: transparent;
-            border: 1px solid #0f0;
-            color: #0f0;
-            padding: 14px 24px;
-            font-weight: bold;
+        .unlock-password-btn {
+            background: linear-gradient(135deg, #5a73cc, #2c3e8c);
+            border: none;
+            padding: 14px 28px;
+            width: 100%;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
             cursor: pointer;
             transition: 0.2s;
-            width: 100%;
-            font-size: 1rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
-        .unlock-button:hover {
-            background: #0f0;
-            color: black;
-            box-shadow: 0 0 20px #0f0;
+        .unlock-password-btn:hover {
+            transform: scale(0.98);
+            background: linear-gradient(135deg, #6d86e6, #3f55b0);
+            box-shadow: 0 0 12px rgba(108, 142, 255, 0.5);
         }
 
-        /* ОСНОВНОЙ КОНТЕНТ (КИБЕРПАНК) */
-        .main-content {
+        /* ========== ОСНОВНОЙ КОНТЕНТ (ТЁМНАЯ ТЕМА) ========== */
+        .main-container {
             max-width: 1300px;
             margin: 0 auto;
             padding: 50px 24px 80px;
             opacity: 0;
-            transform: scale(0.98);
-            transition: opacity 0.8s ease, transform 0.6s ease;
+            transform: translateY(20px);
+            transition: opacity 0.9s ease, transform 0.7s ease;
         }
-        .content-visible {
+        .main-container.visible {
             opacity: 1;
-            transform: scale(1);
-        }
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        .glitch-text {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 4rem;
-            font-weight: 800;
-            color: #0f0;
-            text-shadow: 3px 3px 0px #00ff00, -3px -3px 0px #00aa00;
-            animation: glitch 1.5s infinite;
-        }
-        @keyframes glitch {
-            0%, 100% { text-shadow: 3px 3px 0 #0f0, -3px -3px 0 #0a0; }
-            25% { text-shadow: -3px -2px 0 #0f0, 2px 3px 0 #0a0; }
-            50% { text-shadow: 2px -2px 0 #0f0, -1px 2px 0 #0a0; }
-        }
-        .sub-glow {
-            font-size: 0.7rem;
-            letter-spacing: 5px;
-            border-top: 1px solid #0f0;
-            display: inline-block;
-            padding-top: 12px;
-            color: #8f8;
+            transform: translateY(0);
         }
 
-        /* ТАБЫ */
+        /* Хедер */
+        .hero {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+        .glow-title {
+            font-size: 5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #9bb4ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(108, 142, 255, 0.3);
+            letter-spacing: -1px;
+        }
+        .sub-badge {
+            font-size: 0.7rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            border-top: 1px solid rgba(108, 142, 255, 0.4);
+            display: inline-block;
+            padding-top: 12px;
+            margin-top: 12px;
+            color: #aab4d4;
+        }
+
+        /* Табы */
         .tabs {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-bottom: 50px;
+            gap: 14px;
+            margin-bottom: 55px;
             flex-wrap: wrap;
         }
-        .tab-btn {
-            background: rgba(0, 30, 0, 0.5);
-            border: 1px solid #0f0;
+        .tab {
+            background: rgba(20, 20, 32, 0.6);
+            backdrop-filter: blur(6px);
+            border: 1px solid #2a2a3c;
             padding: 10px 32px;
-            border-radius: 40px;
-            font-weight: 600;
+            border-radius: 50px;
+            font-weight: 500;
             cursor: pointer;
-            color: #0f0;
-            transition: 0.25s;
-            backdrop-filter: blur(4px);
+            transition: 0.2s;
+            color: #ccd6f6;
         }
-        .tab-btn.active {
-            background: #0f0;
-            color: black;
-            box-shadow: 0 0 15px #0f0;
+        .tab.active {
+            background: #6c8eff;
+            border-color: #6c8eff;
+            color: #0a0a0f;
+            box-shadow: 0 0 12px rgba(108, 142, 255, 0.4);
         }
         .tab-content {
             display: none;
-            animation: fadeSlide 0.4s;
+            animation: fadeUp 0.4s ease;
         }
         .tab-content.active-tab {
             display: block;
         }
-        @keyframes fadeSlide {
+        @keyframes fadeUp {
             from { opacity: 0; transform: translateY(12px);}
             to { opacity: 1; transform: translateY(0);}
         }
 
-        /* КАРТОЧКИ УСЛУГ */
+        /* Карточки услуг */
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
             gap: 40px;
         }
-        .cyber-card {
-            background: rgba(0, 20, 0, 0.6);
-            backdrop-filter: blur(6px);
-            border: 1px solid #0f0;
-            border-radius: 32px;
-            padding: 32px 24px;
+        .service-card {
+            background: rgba(12, 12, 22, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid #2a2a3a;
+            border-radius: 36px;
+            padding: 36px 28px;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
         }
-        .cyber-card:hover {
+        .service-card:hover {
+            border-color: #6c8eff;
             transform: translateY(-6px);
-            box-shadow: 0 0 25px rgba(0,255,0,0.3);
-            background: rgba(0, 25, 0, 0.8);
+            box-shadow: 0 15px 30px -10px rgba(0,0,0,0.5);
+            background: rgba(18, 18, 32, 0.8);
         }
-        .card-title {
+        .service-name {
             font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 16px;
+            font-weight: 600;
         }
         .price {
-            font-size: 1.6rem;
-            font-weight: 800;
+            font-size: 1.9rem;
+            font-weight: 700;
             margin: 20px 0;
-            color: #0f0;
-            text-shadow: 0 0 6px #0f0;
+            color: #9bb4ff;
         }
         .features {
             list-style: none;
-            margin: 20px 0 30px;
+            margin: 25px 0 35px;
         }
         .features li {
-            margin-bottom: 10px;
-            font-size: 0.85rem;
+            margin-bottom: 12px;
             display: flex;
-            gap: 8px;
+            align-items: center;
+            gap: 10px;
         }
         .features li::before {
-            content: "⚡";
-            color: #0f0;
+            content: "✦";
+            color: #6c8eff;
         }
-        .btn-group {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        .cyber-btn {
+        .btn-pay {
             background: transparent;
-            border: 1px solid #0f0;
-            padding: 12px;
-            text-align: center;
-            color: #0f0;
-            font-weight: 600;
-            text-decoration: none;
-            transition: 0.2s;
-            cursor: pointer;
+            border: 1px solid #6c8eff;
+            padding: 14px;
             border-radius: 60px;
+            font-weight: 600;
+            text-align: center;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 8px;
+            display: block;
+            text-decoration: none;
         }
-        .cyber-btn:hover {
-            background: #0f0;
+        .btn-pay:hover {
+            background: #6c8eff;
             color: black;
-            box-shadow: 0 0 12px #0f0;
+            box-shadow: 0 0 14px #6c8eff;
+        }
+        .tg-btn {
+            background: rgba(100, 150, 255, 0.1);
+            border-color: #4f6fc7;
         }
 
-        /* ОТЗЫВЫ */
+        /* Отзывы */
         .reviews-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 30px;
+            gap: 28px;
         }
-        .review {
-            background: rgba(0, 20, 0, 0.5);
-            border-radius: 24px;
-            padding: 24px;
-            border: 1px solid #2a6b2a;
+        .review-card {
+            background: #0c0c16;
+            border-radius: 28px;
+            padding: 26px;
+            border: 1px solid #232336;
         }
 
-        /* ОПЛАТА */
-        .payment-methods {
+        /* Оплата */
+        .payment-options {
             max-width: 600px;
             margin: 0 auto;
         }
-        .payment-block {
-            background: #021002;
-            border: 1px solid #0f0;
-            border-radius: 28px;
-            padding: 24px;
-            margin-bottom: 20px;
+        .pay-box {
+            background: #0c0c16;
+            border: 1px solid #2a2a3a;
+            border-radius: 32px;
+            padding: 28px;
+            margin-bottom: 24px;
         }
         .copy-number {
-            background: #000;
-            padding: 12px;
-            border-radius: 16px;
+            background: #05050a;
             font-family: monospace;
+            padding: 14px;
+            border-radius: 20px;
             margin: 12px 0;
-            border: 1px dashed #0f0;
+            border: 1px dashed #4f6fc7;
         }
         .copy-btn {
-            background: transparent;
-            border: 1px solid #0f0;
-            padding: 6px 18px;
-            border-radius: 30px;
+            background: #1e1e2e;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 40px;
             cursor: pointer;
+            color: #ccd6f6;
         }
 
         footer {
             text-align: center;
-            margin-top: 70px;
-            opacity: 0.5;
+            margin-top: 80px;
+            opacity: 0.4;
             font-size: 0.7rem;
         }
 
         @media (max-width: 700px) {
-            .glitch-text { font-size: 2.5rem; }
+            .glow-title { font-size: 3rem; }
         }
     </style>
 </head>
 <body>
 
-<canvas id="cyber-canvas"></canvas>
-<div class="noise-overlay"></div>
-<div class="glow-scanline"></div>
+<canvas id="particleCanvas" class="particle-canvas"></canvas>
+<div id="dynamic-bg"></div>
 
 <!-- ПРЕЛОАДЕР -->
 <div id="preloader">
-    <div class="cyber-loader"></div>
-    <div class="loader-text">> YOTAMARU_LOAD</div>
-    <div class="loader-progress"><div class="loader-progress-fill" id="loadFill"></div></div>
+    <div class="preloader-ring"></div>
+    <div class="preloader-text">YOTAMARU</div>
+    <div class="preloader-bar"><div class="preloader-fill" id="preloaderFill"></div></div>
+    <div style="margin-top: 20px; font-size: 0.7rem; color:#6c8eff;">загрузка окружения</div>
 </div>
 
-<!-- ГЕЙТ С АВТОМАТИЧЕСКИМ ПАРОЛЕМ -->
-<div id="password-gate">
-    <div class="terminal-box">
-        <div class="terminal-header">🔒 ACCESS VERIFICATION</div>
-        <div class="pass-field" id="passwordInput">сососичлен</div>
-        <div class="auto-note">⚡ система автоматической верификации</div>
-        <button id="unlockFinalBtn" class="unlock-button">РАЗБЛОКИРОВАТЬ ДОСТУП</button>
+<!-- ЭКРАН ПАРОЛЯ (АВТОМАТИЧЕСКИ 0000) -->
+<div id="password-screen">
+    <div class="password-card">
+        <div class="password-icon">🔒</div>
+        <div class="password-title">АВТОРИЗАЦИЯ</div>
+        <input type="text" class="password-field" id="passwordInput" value="0000" readonly>
+        <div class="auto-hint">🔑 система автоматического ввода</div>
+        <button id="confirmPasswordBtn" class="unlock-password-btn">ВОЙТИ В СИСТЕМУ</button>
     </div>
 </div>
 
-<!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
-<div class="main-content" id="mainUI">
-    <header>
-        <h1 class="glitch-text">YOTAMARU</h1>
-        <div class="sub-glow">CYBER ELITE // EMULATION & OPTIMIZATION</div>
-    </header>
+<!-- ОСНОВНОЙ КОНТЕНТ -->
+<div class="main-container" id="mainContent">
+    <div class="hero">
+        <h1 class="glow-title">YOTAMARU</h1>
+        <div class="sub-badge">PREMIUM EMULATION & TWEAKS</div>
+    </div>
 
     <div class="tabs">
-        <button class="tab-btn active" data-tab="services">🚀 УСЛУГИ</button>
-        <button class="tab-btn" data-tab="reviews">⭐ ОТЗЫВЫ</button>
-        <button class="tab-btn" data-tab="payment">💳 ОПЛАТА</button>
+        <div class="tab active" data-tab="services">🚀 УСЛУГИ</div>
+        <div class="tab" data-tab="reviews">⭐ ОТЗЫВЫ</div>
+        <div class="tab" data-tab="payment">💳 ОПЛАТА</div>
     </div>
 
-    <!-- УСЛУГИ -->
+    <!-- Услуги -->
     <div id="servicesTab" class="tab-content active-tab">
         <div class="services-grid">
-            <div class="cyber-card">
-                <div class="card-title">Yotamaru Emulator</div>
+            <div class="service-card">
+                <div class="service-name">Yotamaru Emulator</div>
                 <div class="price">2 000 ₽</div>
                 <ul class="features">
-                    <li>ZeroLag интерфейс</li>
+                    <li>Эксклюзивный интерфейс ZeroLag</li>
                     <li>Блокировка рекламы</li>
-                    <li>FPS стабилизация + HWID</li>
+                    <li>Стабилизация FPS + HWID защита</li>
                     <li>Премиум сенсорика</li>
                 </ul>
-                <div class="btn-group">
-                    <button class="cyber-btn openPayModal">💳 Kaspi / ЮMoney</button>
-                    <a href="https://t.me/YotamaruShopBot" target="_blank" class="cyber-btn">🤖 Telegram Bot</a>
-                </div>
+                <button class="btn-pay openPayModal">💳 Kaspi / ЮMoney</button>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-pay tg-btn">🤖 Telegram Bot</a>
             </div>
-            <div class="cyber-card">
-                <div class="card-title">PC Optimization</div>
+            <div class="service-card">
+                <div class="service-name">PC Optimization</div>
                 <div class="price">2 000 ₽</div>
                 <ul class="features">
                     <li>Твикинг CS2 / Valorant / Dota 2</li>
-                    <li>Снижение инпута + пинг</li>
+                    <li>Снижение инпута и пинга</li>
                     <li>Latency стабилизация</li>
                     <li>VIP поддержка 24/7</li>
                 </ul>
-                <div class="btn-group">
-                    <button class="cyber-btn openPayModal">💳 Kaspi / ЮMoney</button>
-                    <a href="https://t.me/YotamaruShopBot" target="_blank" class="cyber-btn">🤖 Telegram Bot</a>
-                </div>
+                <button class="btn-pay openPayModal">💳 Kaspi / ЮMoney</button>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-pay tg-btn">🤖 Telegram Bot</a>
             </div>
         </div>
     </div>
 
-    <!-- ОТЗЫВЫ -->
+    <!-- Отзывы -->
     <div id="reviewsTab" class="tab-content">
         <div class="reviews-grid">
-            <div class="review">“Эмулятор просто бомба, сенса настроена идеально. Пинга нет!”<br>— Никита</div>
-            <div class="review">“После оптимизации ПК Valorant летает 300+ fps. Респект!”<br>— Алина</div>
-            <div class="review">“Быстрая выдача через бота, поддержка на высоте.”<br>— Данияр</div>
+            <div class="review-card">“Лучший эмулятор! После настройки играть одно удовольствие. Рекомендую.”<br>— Артём</div>
+            <div class="review-card">“Оптимизация ПК реально выжала максимум из моего ноутбука. Спасибо!”<br>— Екатерина</div>
+            <div class="review-card">“Быстрая выдача, отличная поддержка. 10/10”<br>— Дамир</div>
         </div>
-        <div style="text-align: center; margin-top: 40px;">⭐ 4.98 ★ на основе 470+ отзывов</div>
+        <div style="text-align: center; margin-top: 40px;">⭐ 4.97 на основе 500+ отзывов</div>
     </div>
 
-    <!-- ОПЛАТА / КОНТАКТЫ -->
+    <!-- Оплата / Контакты -->
     <div id="paymentTab" class="tab-content">
-        <div class="payment-methods">
-            <div class="payment-block">
+        <div class="payment-options">
+            <div class="pay-box">
                 <h3>💰 Kaspi.kz</h3>
                 <div class="copy-number">4400 4303 4792 1634</div>
                 <div>Мираса А.</div>
                 <button class="copy-btn" data-clip="4400 4303 4792 1634">📋 Скопировать Kaspi</button>
             </div>
-            <div class="payment-block">
+            <div class="pay-box">
                 <h3>💳 ЮMoney</h3>
                 <div class="copy-number">5599 0020 9639 5761</div>
                 <button class="copy-btn" data-clip="5599 0020 9639 5761">📋 Скопировать ЮMoney</button>
             </div>
-            <div class="payment-block">
-                <h3>🤖 Telegram Bot (мгновенно)</h3>
-                <a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#0f0;">@YotamaruShopBot</a>
-                <div style="margin-top: 10px;">Автоматическая выдача после оплаты</div>
+            <div class="pay-box">
+                <h3>🤖 Telegram Bot</h3>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#9bb4ff;">@YotamaruShopBot</a>
+                <div style="margin-top: 8px; font-size:0.8rem;">Автоматическая выдача доступа</div>
             </div>
-            <div class="payment-block">
+            <div class="pay-box">
                 <h3>🎧 Поддержка</h3>
-                <a href="https://t.me/yotamaru_support" style="color:#0f0;">@yotamaru_support</a>
+                <a href="https://t.me/yotamaru_support" style="color:#9bb4ff;">@yotamaru_support</a>
             </div>
         </div>
     </div>
-
-    <footer>YOTAMARU ELITE // ВСЕ ЦЕНЫ УКАЗАНЫ // 2026</footer>
+    <footer>YOTAMARU ELITE • 2026 • ВСЕ ЦЕНЫ УКАЗАНЫ</footer>
 </div>
 
-<!-- Модалка оплаты (быстрая) -->
-<div id="quickPaymentModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); backdrop-filter: blur(12px); z-index: 2500; align-items: center; justify-content: center;">
-    <div style="background: #021002; max-width: 460px; width: 90%; border-radius: 32px; padding: 32px; border: 1px solid #0f0;">
-        <div style="text-align: right; cursor: pointer; font-size: 28px;" id="closeQuickModal">&times;</div>
+<!-- Быстрая модалка оплаты -->
+<div id="quickModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(20px); z-index: 2500; align-items: center; justify-content: center;">
+    <div style="background: #0f0f1a; max-width: 460px; width: 90%; border-radius: 44px; padding: 32px; border: 1px solid #6c8eff;">
+        <div style="text-align: right; font-size: 28px; cursor: pointer;" id="closeQuickModal">&times;</div>
         <h3>💸 Оплата 2000 ₽</h3>
-        <div style="margin: 15px 0;"><strong>Kaspi:</strong> 4400 4303 4792 1634 (Мираса А.)</div>
-        <div style="margin: 15px 0;"><strong>ЮMoney:</strong> 5599 0020 9639 5761</div>
-        <a href="https://t.me/YotamaruShopBot" target="_blank" style="display: block; background: #0f0; color: black; text-align: center; padding: 14px; border-radius: 40px; text-decoration: none; font-weight: bold;">🤖 Оплатить через Telegram бота</a>
+        <div style="margin: 20px 0;"><strong>Kaspi:</strong> 4400 4303 4792 1634 (Мираса А.)</div>
+        <div><strong>ЮMoney:</strong> 5599 0020 9639 5761</div>
+        <a href="https://t.me/YotamaruShopBot" target="_blank" style="display: block; margin-top: 25px; background: #6c8eff; text-align: center; padding: 14px; border-radius: 50px; color: black; text-decoration: none; font-weight: bold;">🤖 Оплатить через Telegram бота</a>
     </div>
 </div>
 
 <script>
     (function() {
-        // ========== 1. НОВЫЕ ЖИВЫЕ ОБОИ (ВОЛНЫ + ЧАСТИЦЫ + ИНТЕРАКТИВ) ==========
-        const canvas = document.getElementById('cyber-canvas');
+        // ========== 1. ЖИВЫЕ ОБОИ (частицы + неоновое свечение) ==========
+        const canvas = document.getElementById('particleCanvas');
         const ctx = canvas.getContext('2d');
-        let width = window.innerWidth, height = window.innerHeight;
-        let time = 0;
-        let particles = [];
-        const mouse = { x: width/2, y: height/2, radius: 150 };
+        let w = window.innerWidth, h = window.innerHeight;
+        let particlesArray = [];
+        const mouse = { x: w/2, y: h/2, radius: 140 };
 
-        function resize() {
-            width = window.innerWidth;
-            height = window.innerHeight;
-            canvas.width = width;
-            canvas.height = height;
+        function resizeCanvas() {
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w;
+            canvas.height = h;
             initParticles();
         }
 
-        class FlowParticle {
+        class Particle {
             constructor() {
-                this.x = Math.random() * width;
-                this.y = Math.random() * height;
-                this.vx = (Math.random() - 0.5) * 0.4;
-                this.vy = (Math.random() - 0.5) * 0.4;
-                this.size = Math.random() * 2.5;
-                this.alpha = Math.random() * 0.6;
+                this.x = Math.random() * w;
+                this.y = Math.random() * h;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2.5 + 1;
+                this.alpha = Math.random() * 0.5 + 0.2;
             }
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
-                if (this.x < 0) this.x = width;
-                if (this.x > width) this.x = 0;
-                if (this.y < 0) this.y = height;
-                if (this.y > height) this.y = 0;
+                if (this.x < 0) this.x = w;
+                if (this.x > w) this.x = 0;
+                if (this.y < 0) this.y = h;
+                if (this.y > h) this.y = 0;
                 const dx = mouse.x - this.x;
                 const dy = mouse.y - this.y;
                 const dist = Math.hypot(dx, dy);
@@ -530,148 +522,126 @@
             draw() {
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(0, 255, 100, ${this.alpha * 0.6})`;
+                ctx.fillStyle = `rgba(108, 142, 255, ${this.alpha * 0.7})`;
                 ctx.fill();
             }
         }
 
         function initParticles() {
-            particles = [];
-            const count = Math.min(130, Math.floor(width * height / 9000));
-            for (let i = 0; i < count; i++) particles.push(new FlowParticle());
+            particlesArray = [];
+            const count = Math.min(100, Math.floor(w * h / 11000));
+            for (let i = 0; i < count; i++) particlesArray.push(new Particle());
         }
 
-        function drawWaves() {
-            ctx.save();
-            for (let i = 0; i < 3; i++) {
-                ctx.beginPath();
-                for (let x = 0; x < width; x += 30) {
-                    const y = height * 0.2 + Math.sin(x * 0.008 + time * 0.002 + i) * 60 + Math.sin(time * 0.003 + i) * 20;
-                    if (x === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
+        function drawLines() {
+            for (let i = 0; i < particlesArray.length; i++) {
+                for (let j = i+1; j < particlesArray.length; j++) {
+                    const d = Math.hypot(particlesArray[i].x - particlesArray[j].x, particlesArray[i].y - particlesArray[j].y);
+                    if (d < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.strokeStyle = `rgba(108, 142, 255, ${0.12 * (1 - d/120)})`;
+                        ctx.lineWidth = 0.8;
+                        ctx.stroke();
+                    }
                 }
-                ctx.strokeStyle = `rgba(0, 255, 100, ${0.12 - i * 0.03})`;
-                ctx.lineWidth = 1.2;
-                ctx.stroke();
-            }
-            for (let i = 0; i < 2; i++) {
-                ctx.beginPath();
-                for (let x = 0; x < width; x += 35) {
-                    const y = height * 0.7 + Math.cos(x * 0.005 + time * 0.0015 + i) * 40;
-                    if (x === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
-                }
-                ctx.strokeStyle = `rgba(0, 200, 80, 0.1)`;
-                ctx.stroke();
             }
         }
 
         function animateBg() {
             if (!ctx) return;
-            ctx.clearRect(0, 0, width, height);
-            ctx.fillStyle = 'rgba(0,0,0,0.15)';
-            ctx.fillRect(0,0,width,height);
-            drawWaves();
-            particles.forEach(p => { p.update(); p.draw(); });
-            // соединительные линии
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i+1; j < particles.length; j++) {
-                    const d = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
-                    if (d < 100) {
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(0, 255, 100, ${0.08 * (1 - d/100)})`;
-                        ctx.stroke();
-                    }
-                }
-            }
-            time++;
+            ctx.clearRect(0, 0, w, h);
+            particlesArray.forEach(p => { p.update(); p.draw(); });
+            drawLines();
             requestAnimationFrame(animateBg);
         }
 
-        window.addEventListener('resize', () => { resize(); });
+        window.addEventListener('resize', () => resizeCanvas());
         window.addEventListener('mousemove', (e) => {
             mouse.x = e.clientX;
             mouse.y = e.clientY;
         });
-        resize();
+        resizeCanvas();
         initParticles();
         animateBg();
 
-        // ========== 2. ЗАГРУЗКА ==========
-        let progress = 0;
-        const fillBar = document.getElementById('loadFill');
+        // ========== 2. ПРЕЛОАДЕР ==========
+        let loadPercent = 0;
+        const fillElement = document.getElementById('preloaderFill');
         const preloaderDiv = document.getElementById('preloader');
-        const intervalLoad = setInterval(() => {
-            progress += Math.floor(Math.random() * 5) + 2;
-            if (progress >= 100) {
-                progress = 100;
-                clearInterval(intervalLoad);
+        const loadInterval = setInterval(() => {
+            loadPercent += Math.floor(Math.random() * 6) + 2;
+            if (loadPercent >= 100) {
+                loadPercent = 100;
+                clearInterval(loadInterval);
                 setTimeout(() => {
                     preloaderDiv.style.opacity = '0';
                     setTimeout(() => {
                         preloaderDiv.style.display = 'none';
-                    }, 700);
-                }, 200);
+                    }, 600);
+                }, 300);
             }
-            fillBar.style.width = progress + '%';
-        }, 35);
+            fillElement.style.width = loadPercent + '%';
+        }, 40);
 
-        // ========== 3. АВТОМАТИЧЕСКИЙ ПАРОЛЬ (сососичлен) уже в поле ==========
-        const passwordGate = document.getElementById('password-gate');
-        const unlockPasswordBtn = document.getElementById('unlockFinalBtn');
-        const mainUI = document.getElementById('mainUI');
-        // поле автоматически заполнено текстом "сососичлен" в HTML, ничего вводить не нужно.
-        unlockPasswordBtn.addEventListener('click', () => {
-            passwordGate.style.opacity = '0';
-            setTimeout(() => {
-                passwordGate.style.display = 'none';
-                mainUI.classList.add('content-visible');
-            }, 500);
+        // ========== 3. ПАРОЛЬ 0000 (автоматически) ==========
+        const passwordScreen = document.getElementById('password-screen');
+        const confirmBtn = document.getElementById('confirmPasswordBtn');
+        const mainContainer = document.getElementById('mainContent');
+        const passwordField = document.getElementById('passwordInput');
+        // пароль уже 0000
+        confirmBtn.addEventListener('click', () => {
+            if (passwordField.value === '0000') {
+                passwordScreen.style.opacity = '0';
+                setTimeout(() => {
+                    passwordScreen.style.display = 'none';
+                    mainContainer.classList.add('visible');
+                }, 500);
+            } else {
+                alert('Неверный пароль. Введите 0000');
+            }
         });
-        // Дополнительно: можно сделать авто-разблокировку через 1 секунду после загрузки, но оставим кнопку.
-        // Но для удобства: кнопка "РАЗБЛОКИРОВАТЬ ДОСТУП"
 
         // ========== 4. ТАБЫ ==========
-        const tabs = document.querySelectorAll('.tab-btn');
+        const tabs = document.querySelectorAll('.tab');
         const contents = {
             services: document.getElementById('servicesTab'),
             reviews: document.getElementById('reviewsTab'),
             payment: document.getElementById('paymentTab')
         };
-        tabs.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabName = btn.getAttribute('data-tab');
-                tabs.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.getAttribute('data-tab');
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
                 Object.values(contents).forEach(c => c.classList.remove('active-tab'));
-                if (tabName === 'services') contents.services.classList.add('active-tab');
-                if (tabName === 'reviews') contents.reviews.classList.add('active-tab');
-                if (tabName === 'payment') contents.payment.classList.add('active-tab');
+                if (target === 'services') contents.services.classList.add('active-tab');
+                if (target === 'reviews') contents.reviews.classList.add('active-tab');
+                if (target === 'payment') contents.payment.classList.add('active-tab');
             });
         });
 
         // ========== 5. МОДАЛКА ОПЛАТЫ ==========
-        const quickModal = document.getElementById('quickPaymentModal');
+        const modal = document.getElementById('quickModal');
         const openModalBtns = document.querySelectorAll('.openPayModal');
-        const closeModalX = document.getElementById('closeQuickModal');
-        function openModal() { quickModal.style.display = 'flex'; }
-        function closeModal() { quickModal.style.display = 'none'; }
+        const closeModalBtn = document.getElementById('closeQuickModal');
+        function openModal() { modal.style.display = 'flex'; }
+        function closeModal() { modal.style.display = 'none'; }
         openModalBtns.forEach(btn => btn.addEventListener('click', openModal));
-        if (closeModalX) closeModalX.addEventListener('click', closeModal);
-        window.addEventListener('click', (e) => { if (e.target === quickModal) closeModal(); });
+        if (closeModalBtn) closeModalBtn.addEventListener('click', closeModal);
+        window.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-        // копирование
-        const copyBtns = document.querySelectorAll('.copy-btn');
-        copyBtns.forEach(btn => {
+        // копирование номеров
+        const copyButtons = document.querySelectorAll('.copy-btn');
+        copyButtons.forEach(btn => {
             btn.addEventListener('click', () => {
                 const text = btn.getAttribute('data-clip');
                 if (text) {
                     navigator.clipboard.writeText(text).then(() => {
-                        const orig = btn.innerText;
+                        const original = btn.innerText;
                         btn.innerText = '✅ Скопировано';
-                        setTimeout(() => btn.innerText = orig, 1500);
+                        setTimeout(() => btn.innerText = original, 1500);
                     });
                 }
             });
@@ -680,4 +650,3 @@
 </script>
 </body>
 </html>
-```
