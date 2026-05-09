@@ -4,41 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#000000">
-    <title>YOTAMARU | BLACK VOID ELITE</title>
+    <title>YOTAMARU | BLACK ELITE — ABSOLUTE VOID</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none; /* total black elite vibes */
+            user-select: none;
         }
 
         body {
             font-family: 'Space Grotesk', sans-serif;
             background-color: #000000;
-            color: #eef5ff;
+            color: #f0f0f0;
             overflow-x: hidden;
             min-height: 100vh;
-            scroll-behavior: smooth;
         }
 
-        /* custom black scrollbar */
+        /* чёрный кастомный скролл */
         ::-webkit-scrollbar {
-            width: 4px;
+            width: 3px;
         }
         ::-webkit-scrollbar-track {
             background: #000000;
         }
         ::-webkit-scrollbar-thumb {
-            background: #2a2a3c;
-            border-radius: 4px;
+            background: #2a2a2a;
+            border-radius: 2px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #6c8eff;
+            background: #555;
         }
 
-        /* Чёрный оверлей — усилитель тьмы */
+        /* затемняющий оверлей */
         .black-overlay {
             position: fixed;
             top: 0;
@@ -47,11 +46,11 @@
             height: 100%;
             background: radial-gradient(circle at 30% 40%, #000000, #000000);
             z-index: -2;
-            opacity: 0.92;
+            opacity: 0.96;
             pointer-events: none;
         }
 
-        /* Canvas Three.js — абсолютный чёрный 3D void (оптимизирован) */
+        /* Canvas Three.js — живые чёрные 3D обои (никакого синего) */
         #three-canvas {
             position: fixed;
             top: 0;
@@ -63,7 +62,7 @@
             pointer-events: none;
         }
 
-        /* ========== ПРЕЛОАДЕР (ЧЁРНЫЙ, БЫСТРАЯ ЗАГРУЗКА) ========== */
+        /* ========== ПРЕЛОАДЕР (чёрный, элитный) ========== */
         #preloader {
             position: fixed;
             inset: 0;
@@ -73,49 +72,45 @@
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
         .preloader-ring {
             width: 70px;
             height: 70px;
-            border: 2px solid rgba(100, 100, 150, 0.2);
-            border-top: 2px solid #7a8eff;
+            border: 2px solid rgba(80, 80, 80, 0.2);
+            border-top: 2px solid #aaaaaa;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 0.7s linear infinite;
             margin-bottom: 24px;
-            box-shadow: 0 0 12px rgba(108, 142, 255, 0.2);
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .preloader-text {
             font-size: 1.4rem;
             font-weight: 500;
             letter-spacing: 5px;
-            background: linear-gradient(135deg, #ffffff, #7a8eff);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
+            color: #dddddd;
             margin-bottom: 16px;
         }
         .preloader-bar {
             width: 180px;
             height: 2px;
-            background: #111116;
+            background: #151515;
             border-radius: 4px;
             overflow: hidden;
         }
         .preloader-fill {
             width: 0%;
             height: 100%;
-            background: linear-gradient(90deg, #6c8eff, #3c4faa);
-            transition: width 0.08s linear;
+            background: #aaaaaa;
+            transition: width 0.06s linear;
         }
 
-        /* ========== ЭКРАН ПАРОЛЯ (ЧЁРНЫЙ ПРЕМИУМ) ========== */
+        /* ========== ЭКРАН ПАРОЛЯ (pure black) ========== */
         #password-screen {
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.98);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(10px);
             z-index: 1500;
             display: flex;
             align-items: center;
@@ -123,46 +118,44 @@
             transition: opacity 0.5s ease;
         }
         .password-card {
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid #2a2a3a;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #2a2a2a;
             border-radius: 48px;
             padding: 40px 32px;
             width: 90%;
             max-width: 440px;
             text-align: center;
             backdrop-filter: blur(12px);
-            box-shadow: 0 20px 40px -12px rgba(0,0,0,1), 0 0 0 1px rgba(100,120,200,0.2);
+            box-shadow: 0 20px 40px -12px rgba(0,0,0,1), 0 0 0 1px rgba(60,60,60,0.3);
         }
         .password-icon {
             font-size: 52px;
             margin-bottom: 18px;
-            filter: drop-shadow(0 0 6px #5f7eff);
+            filter: drop-shadow(0 0 4px #888);
         }
         .password-title {
             font-size: 1.6rem;
             font-weight: 600;
             margin-bottom: 20px;
-            background: linear-gradient(135deg, #ffffff, #8a9cff);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
+            color: #ffffff;
+            letter-spacing: -0.5px;
         }
         .password-field {
-            background: #030308;
-            border: 1px solid #2c2c3a;
+            background: #050505;
+            border: 1px solid #2a2a2a;
             border-radius: 60px;
             padding: 14px 20px;
             font-size: 1.6rem;
             font-family: monospace;
             letter-spacing: 5px;
             text-align: center;
-            color: #9bb4ff;
+            color: #cccccc;
             margin: 20px 0;
             width: 100%;
         }
         .unlock-password-btn {
-            background: #0f0f1a;
-            border: 1px solid #6c8eff;
+            background: #111111;
+            border: 1px solid #444;
             padding: 12px 24px;
             width: 100%;
             border-radius: 60px;
@@ -171,16 +164,15 @@
             color: white;
             cursor: pointer;
             transition: 0.2s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
         .unlock-password-btn:hover {
-            background: #6c8eff;
-            border-color: #6c8eff;
-            color: #000;
-            box-shadow: 0 0 18px rgba(108, 142, 255, 0.7);
+            background: #2a2a2a;
+            border-color: #888;
+            color: #fff;
+            box-shadow: 0 0 12px rgba(255,255,255,0.1);
         }
 
-        /* ========== ОСНОВНОЙ КОНТЕНТ (АБСОЛЮТНЫЙ ЧЁРНЫЙ) ========== */
+        /* ========== ОСНОВНОЙ КОНТЕНТ (pure black minimal) ========== */
         .main-container {
             max-width: 1300px;
             margin: 0 auto;
@@ -203,22 +195,19 @@
         .glow-title {
             font-size: 5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #ffffff, #7a8eff);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 20px rgba(108, 142, 255, 0.2);
+            color: #ffffff;
             letter-spacing: -2px;
+            text-shadow: 0 0 8px rgba(255,255,255,0.1);
         }
         .sub-badge {
             font-size: 0.7rem;
             letter-spacing: 6px;
             text-transform: uppercase;
-            border-top: 1px solid rgba(108, 142, 255, 0.3);
+            border-top: 1px solid #333;
             display: inline-block;
             padding-top: 10px;
             margin-top: 10px;
-            color: #aab4d4;
+            color: #aaa;
         }
 
         .tabs {
@@ -229,22 +218,21 @@
             flex-wrap: wrap;
         }
         .tab {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            border: 1px solid #22222e;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(6px);
+            border: 1px solid #222;
             padding: 9px 28px;
             border-radius: 50px;
             font-weight: 500;
             cursor: pointer;
             transition: all 0.25s ease;
-            color: #ccd6f6;
+            color: #ccc;
         }
         .tab.active {
-            background: #0a0a14;
-            border-color: #6c8eff;
+            background: #111;
+            border-color: #888;
             color: #ffffff;
-            box-shadow: 0 0 12px rgba(108, 142, 255, 0.3);
-            text-shadow: 0 0 3px #6c8eff;
+            box-shadow: 0 0 6px rgba(255,255,255,0.1);
         }
         .tab-content {
             display: none;
@@ -258,36 +246,37 @@
             to { opacity: 1; transform: translateY(0);}
         }
 
-        /* карточки услуг - чёрный карбон */
+        /* карточки — абсолютно чёрные, с едва заметной границей */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
             gap: 40px;
         }
         .service-card {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
-            border: 1px solid #23232e;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(6px);
+            border: 1px solid #222;
             border-radius: 36px;
             padding: 32px 26px;
             transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
         .service-card:hover {
-            border-color: #6c8eff;
+            border-color: #5a5a5a;
             transform: translateY(-6px);
             box-shadow: 0 20px 32px -12px rgba(0,0,0,0.9);
-            background: rgba(8, 8, 16, 0.92);
+            background: rgba(8, 8, 8, 0.95);
         }
         .service-name {
             font-size: 1.8rem;
             font-weight: 600;
             letter-spacing: -0.5px;
+            color: #fff;
         }
         .price {
             font-size: 1.9rem;
             font-weight: 700;
             margin: 18px 0;
-            color: #9bb4ff;
+            color: #cccccc;
         }
         .features {
             list-style: none;
@@ -299,15 +288,16 @@
             align-items: center;
             gap: 10px;
             font-size: 0.95rem;
+            color: #ddd;
         }
         .features li::before {
-            content: "✧";
-            color: #6c8eff;
-            font-weight: 600;
+            content: "✦";
+            color: #aaa;
+            font-weight: 400;
         }
         .btn-pay {
             background: transparent;
-            border: 1px solid #6c8eff;
+            border: 1px solid #444;
             padding: 12px;
             border-radius: 60px;
             font-weight: 600;
@@ -321,13 +311,14 @@
             font-size: 0.9rem;
         }
         .btn-pay:hover {
-            background: #6c8eff;
-            color: black;
-            box-shadow: 0 0 14px #6c8eff;
+            background: #1f1f1f;
+            border-color: #aaa;
+            color: #fff;
+            box-shadow: 0 0 8px rgba(255,255,255,0.05);
         }
         .tg-btn {
-            background: rgba(100, 150, 255, 0.03);
-            border-color: #4f6fc7;
+            background: rgba(30,30,30,0.3);
+            border-color: #3a3a3a;
         }
 
         /* отзывы */
@@ -337,13 +328,14 @@
             gap: 28px;
         }
         .review-card {
-            background: #010108;
+            background: #040404;
             border-radius: 28px;
             padding: 24px;
-            border: 1px solid #1c1c28;
+            border: 1px solid #1c1c1c;
             backdrop-filter: blur(4px);
             font-size: 0.9rem;
             line-height: 1.4;
+            color: #ccc;
         }
 
         /* оплата / контакты */
@@ -352,8 +344,8 @@
             margin: 0 auto;
         }
         .pay-box {
-            background: #010108;
-            border: 1px solid #22222e;
+            background: #030303;
+            border: 1px solid #222;
             border-radius: 32px;
             padding: 24px;
             margin-bottom: 24px;
@@ -361,7 +353,7 @@
             transition: 0.2s;
         }
         .pay-box:hover {
-            border-color: #4f6fc7;
+            border-color: #555;
         }
         .copy-number {
             background: #000000;
@@ -369,21 +361,22 @@
             padding: 12px;
             border-radius: 20px;
             margin: 12px 0;
-            border: 1px dashed #4f6fc7;
+            border: 1px dashed #3a3a3a;
             font-size: 0.9rem;
+            color: #bbb;
         }
         .copy-btn {
-            background: #12121c;
+            background: #111;
             border: none;
             padding: 6px 18px;
             border-radius: 40px;
             cursor: pointer;
-            color: #ccd6f6;
+            color: #ddd;
             transition: 0.2s;
             font-size: 0.8rem;
         }
         .copy-btn:hover {
-            background: #25253a;
+            background: #2a2a2a;
         }
 
         footer {
@@ -391,17 +384,13 @@
             margin-top: 80px;
             opacity: 0.4;
             font-size: 0.7rem;
+            color: #aaa;
         }
 
         @media (max-width: 700px) {
             .glow-title { font-size: 2.8rem; }
             .service-name { font-size: 1.5rem; }
             .price { font-size: 1.6rem; }
-        }
-
-        /* микроанимации для ссылок */
-        a, button {
-            cursor: pointer;
         }
     </style>
 </head>
@@ -410,36 +399,36 @@
 <div class="black-overlay"></div>
 <canvas id="three-canvas"></canvas>
 
-<!-- ПРЕЛОАДЕР (быстрый и стильный) -->
+<!-- быстрый прелоадер -->
 <div id="preloader">
     <div class="preloader-ring"></div>
     <div class="preloader-text">YOTAMARU</div>
     <div class="preloader-bar"><div class="preloader-fill" id="preloaderFill"></div></div>
-    <div style="margin-top: 16px; font-size: 0.65rem; color:#6c8eff; letter-spacing: 2px;">BLACK VOID</div>
+    <div style="margin-top: 14px; font-size: 0.6rem; color:#888; letter-spacing: 2px;">BLACK VOID</div>
 </div>
 
-<!-- ЭКРАН ПАРОЛЯ (0000) -->
+<!-- экран пароля (0000) -->
 <div id="password-screen">
     <div class="password-card">
         <div class="password-icon">⛓️</div>
-        <div class="password-title">АВТОРИЗАЦИЯ ELITE</div>
+        <div class="password-title">АВТОРИЗАЦИЯ</div>
         <input type="text" class="password-field" id="passwordInput" value="0000" readonly>
-        <div class="auto-hint" style="color:#7e86a5; font-size:0.7rem;">🔑 система автоматического доступа</div>
-        <button id="confirmPasswordBtn" class="unlock-password-btn">ПРОНИКНУТЬ ВО ТЬМУ</button>
+        <div class="auto-hint" style="color:#777; font-size:0.7rem; margin-bottom:8px;">🔑 система автоматического доступа</div>
+        <button id="confirmPasswordBtn" class="unlock-password-btn">ВОЙТИ В СИСТЕМУ</button>
     </div>
 </div>
 
-<!-- ОСНОВНОЙ КОНТЕНТ -->
+<!-- основной контент -->
 <div class="main-container" id="mainContent">
     <div class="hero">
         <h1 class="glow-title">YOTAMARU</h1>
-        <div class="sub-badge">BLACK VOID • PREMIUM</div>
+        <div class="sub-badge">BLACK VOID • ELITE</div>
     </div>
 
     <div class="tabs">
-        <div class="tab active" data-tab="services">🚀 УСЛУГИ</div>
-        <div class="tab" data-tab="reviews">⭐ ОТЗЫВЫ</div>
-        <div class="tab" data-tab="payment">💳 ОПЛАТА</div>
+        <div class="tab active" data-tab="services">УСЛУГИ</div>
+        <div class="tab" data-tab="reviews">ОТЗЫВЫ</div>
+        <div class="tab" data-tab="payment">ОПЛАТА</div>
     </div>
 
     <div id="servicesTab" class="tab-content active-tab">
@@ -453,8 +442,8 @@
                     <li>FPS Boost + премиум сенсорика</li>
                     <li>Полная анонимность</li>
                 </ul>
-                <button class="btn-pay openPayModal">💳 Kaspi / ЮMoney</button>
-                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-pay tg-btn">🤖 Telegram Bot</a>
+                <button class="btn-pay openPayModal">ОПЛАТИТЬ</button>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-pay tg-btn">TELEGRAM BOT</a>
             </div>
             <div class="service-card">
                 <div class="service-name">PC Optimization</div>
@@ -463,63 +452,63 @@
                     <li>Твикинг CS2 / Valorant</li>
                     <li>Минимизация инпута</li>
                     <li>Latency Killer</li>
-                    <li>VIP 24/7 тёмная поддержка</li>
+                    <li>VIP 24/7 поддержка</li>
                 </ul>
-                <button class="btn-pay openPayModal">💳 Kaspi / ЮMoney</button>
-                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-pay tg-btn">🤖 Telegram Bot</a>
+                <button class="btn-pay openPayModal">ОПЛАТИТЬ</button>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-pay tg-btn">TELEGRAM BOT</a>
             </div>
         </div>
     </div>
 
     <div id="reviewsTab" class="tab-content">
         <div class="reviews-grid">
-            <div class="review-card">“Черный эмулятор — просто машина! Атмосфера брутальная. Работает без лагов.”<br>— Никита</div>
-            <div class="review-card">“Оптимизация выжала железо, как никогда. Стало темно и мощно. Спасибо создателям!”<br>— Алиса</div>
-            <div class="review-card">“Лучшее вложение в киберспорт. Стиль и производительность на высоте.”<br>— Руслан</div>
+            <div class="review-card">“Абсолютный black опыт. Эмулятор летает, интерфейс минималистичный и мощный.”<br>— Артём</div>
+            <div class="review-card">“Оптимизация превратила мой ПК в зверя. Стиль и производительность на высоте.”<br>— Екатерина</div>
+            <div class="review-card">“Лучший сервис в своей нише. Всё чётко, без лишнего света.”<br>— Дамир</div>
         </div>
-        <div style="text-align: center; margin-top: 40px; color:#7f8cbf; font-size:0.85rem;">⚙️ Рейтинг 4.98 / 500+ отзывов</div>
+        <div style="text-align: center; margin-top: 40px; color:#888; font-size:0.85rem;">★ 4.99 на основе 500+ отзывов</div>
     </div>
 
     <div id="paymentTab" class="tab-content">
         <div class="payment-options">
             <div class="pay-box">
-                <h3>💰 Kaspi.kz</h3>
+                <h3 style="color:#ddd;">Kaspi.kz</h3>
                 <div class="copy-number">4400 4303 4792 1634</div>
-                <div>Мираса А.</div>
-                <button class="copy-btn" data-clip="4400 4303 4792 1634">📋 Скопировать Kaspi</button>
+                <div style="color:#aaa;">Мираса А.</div>
+                <button class="copy-btn" data-clip="4400 4303 4792 1634">📋 Скопировать</button>
             </div>
             <div class="pay-box">
-                <h3>💳 ЮMoney</h3>
+                <h3 style="color:#ddd;">ЮMoney</h3>
                 <div class="copy-number">5599 0020 9639 5761</div>
-                <button class="copy-btn" data-clip="5599 0020 9639 5761">📋 Скопировать ЮMoney</button>
+                <button class="copy-btn" data-clip="5599 0020 9639 5761">📋 Скопировать</button>
             </div>
             <div class="pay-box">
-                <h3>🤖 Telegram Bot</h3>
-                <a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#9bb4ff; text-decoration: none;">@YotamaruShopBot</a>
-                <div style="margin-top: 6px; font-size:0.75rem; opacity:0.7;">Автоматическая выдача ключей</div>
+                <h3 style="color:#ddd;">Telegram Bot</h3>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#aaa; text-decoration: none;">@YotamaruShopBot</a>
+                <div style="margin-top: 6px; font-size:0.75rem; opacity:0.7;">Автоматическая выдача</div>
             </div>
             <div class="pay-box">
-                <h3>🎧 ПОДДЕРЖКА 24/7</h3>
-                <a href="https://t.me/ianchikexe" target="_blank" style="color:#9bb4ff; text-decoration: none; font-weight:500;">@ianchikexe</a>
-                <div style="margin-top: 5px; font-size:0.75rem;">Прямой контакт — быстрый ответ</div>
+                <h3 style="color:#ddd;">ПОДДЕРЖКА 24/7</h3>
+                <a href="https://t.me/ianchikexe" target="_blank" style="color:#bbb; text-decoration: none; font-weight:500;">@ianchikexe</a>
+                <div style="margin-top: 5px; font-size:0.75rem; color:#888;">прямой контакт</div>
             </div>
         </div>
     </div>
-    <footer>YOTAMARU • BLACK PREMIUM 2026 • ABSOLUTE VOID</footer>
+    <footer>YOTAMARU • ABSOLUTE BLACK ELITE 2026</footer>
 </div>
 
-<!-- Модалка оплаты (быстрая) -->
-<div id="quickModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.97); backdrop-filter: blur(24px); z-index: 2500; align-items: center; justify-content: center;">
-    <div style="background: #05050c; max-width: 440px; width: 90%; border-radius: 44px; padding: 32px; border: 1px solid #3a4a8a;">
+<!-- модалка оплаты (быстрая) -->
+<div id="quickModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.98); backdrop-filter: blur(20px); z-index: 2500; align-items: center; justify-content: center;">
+    <div style="background: #050505; max-width: 440px; width: 90%; border-radius: 44px; padding: 32px; border: 1px solid #333;">
         <div style="text-align: right; font-size: 28px; cursor: pointer; color:#fff;" id="closeQuickModal">&times;</div>
-        <h3 style="color:#ccd6ff;">💸 ОПЛАТА 2000 ₽</h3>
-        <div style="margin: 20px 0; border-left: 2px solid #6c8eff; padding-left: 16px;"><strong>Kaspi:</strong> 4400 4303 4792 1634</div>
-        <div style="margin-bottom: 20px; border-left: 2px solid #6c8eff; padding-left: 16px;"><strong>ЮMoney:</strong> 5599 0020 9639 5761</div>
-        <a href="https://t.me/YotamaruShopBot" target="_blank" style="display: block; background: #1b1b2a; text-align: center; padding: 12px; border-radius: 50px; color: #bbccff; text-decoration: none; font-weight: bold; border:1px solid #6c8eff;">🤖 Telegram Bot</a>
+        <h3 style="color:#fff;">ОПЛАТА 2000 ₽</h3>
+        <div style="margin: 20px 0; border-left: 2px solid #666; padding-left: 16px; color:#ccc;"><strong>Kaspi:</strong> 4400 4303 4792 1634</div>
+        <div style="margin-bottom: 20px; border-left: 2px solid #666; padding-left: 16px; color:#ccc;"><strong>ЮMoney:</strong> 5599 0020 9639 5761</div>
+        <a href="https://t.me/YotamaruShopBot" target="_blank" style="display: block; background: #111; text-align: center; padding: 12px; border-radius: 50px; color: #fff; text-decoration: none; font-weight: bold; border:1px solid #555;">🤖 Telegram Bot</a>
     </div>
 </div>
 
-<!-- ТРЁХМЕРНЫЕ ЧЁРНЫЕ ОБОИ (VOID STYLE — максимальная оптимизация) -->
+<!-- ТРЁХМЕРНЫЕ ЖИВЫЕ ЧЁРНЫЕ ОБОИ (никакого синего, только charcoal / black) -->
 <script type="importmap">
     {
         "imports": {
@@ -538,95 +527,95 @@
     
     const scene = new THREE.Scene();
     scene.background = null;
-    scene.fog = new THREE.FogExp2(0x000000, 0.012); // лёгкий мрак
+    scene.fog = new THREE.FogExp2(0x000000, 0.014); // лёгкая дымка
     
     const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 0.6, 8.5);
+    camera.position.set(0, 0.6, 8.8);
     camera.lookAt(0, 0, 0);
     
-    // освещение — минимальное, только для объёма
-    const ambient = new THREE.AmbientLight(0x0a0a12);
+    // освещение — только тёмно-серое, минимальное
+    const ambient = new THREE.AmbientLight(0x0a0a0a);
     scene.add(ambient);
-    const backLight = new THREE.PointLight(0x2244aa, 0.45);
-    backLight.position.set(-1, 1.5, -3);
+    const backLight = new THREE.PointLight(0x222222, 0.4);
+    backLight.position.set(-1, 1.2, -3);
     scene.add(backLight);
-    const rimLight = new THREE.PointLight(0x5577cc, 0.35);
-    rimLight.position.set(1.8, 1, 2.2);
-    scene.add(rimLight);
+    const fillLight = new THREE.PointLight(0x333333, 0.3);
+    fillLight.position.set(1.5, 0.8, 2);
+    scene.add(fillLight);
     
-    // Главный объект — торус-узел (глубокий чёрный металл)
-    const geoCore = new THREE.TorusKnotGeometry(1.0, 0.26, 180, 28, 3, 4);
-    const blackMetalMat = new THREE.MeshStandardMaterial({
-        color: 0x040408,
-        emissive: 0x111133,
-        emissiveIntensity: 0.28,
-        metalness: 0.95,
-        roughness: 0.38,
+    // центральный объект — чёрный торус-узел (без синевы)
+    const geoCore = new THREE.TorusKnotGeometry(1.0, 0.27, 200, 32, 3, 4);
+    const blackMetal = new THREE.MeshStandardMaterial({
+        color: 0x050505,
+        emissive: 0x111111,
+        emissiveIntensity: 0.12,
+        metalness: 0.96,
+        roughness: 0.42,
     });
-    const coreKnot = new THREE.Mesh(geoCore, blackMetalMat);
+    const coreKnot = new THREE.Mesh(geoCore, blackMetal);
     scene.add(coreKnot);
     
-    // Тонкий светящийся каркас (почти невидимый)
-    const wireMat = new THREE.MeshBasicMaterial({ color: 0x4466cc, wireframe: true, transparent: true, opacity: 0.1 });
+    // тонкая прозрачная оболочка (серый каркас)
+    const wireMat = new THREE.MeshBasicMaterial({ color: 0x444444, wireframe: true, transparent: true, opacity: 0.08 });
     const wireKnot = new THREE.Mesh(geoCore, wireMat);
     wireKnot.scale.set(1.04, 1.04, 1.04);
     scene.add(wireKnot);
     
-    // Кольца тьмы
-    const ringGeo = new THREE.TorusGeometry(1.6, 0.04, 128, 360);
-    const darkMat = new THREE.MeshStandardMaterial({ color: 0x000000, emissive: 0x111133, emissiveIntensity: 0.12, metalness: 0.85 });
-    const ringA = new THREE.Mesh(ringGeo, darkMat);
+    // кольца — чёрный графит
+    const ringGeo = new THREE.TorusGeometry(1.65, 0.04, 128, 360);
+    const darkRingMat = new THREE.MeshStandardMaterial({ color: 0x020202, emissive: 0x111111, emissiveIntensity: 0.08, metalness: 0.88 });
+    const ringA = new THREE.Mesh(ringGeo, darkRingMat);
     ringA.rotation.x = Math.PI / 2;
     scene.add(ringA);
     
-    const ringBGeo = new THREE.TorusGeometry(2.0, 0.03, 128, 360);
-    const ringB = new THREE.Mesh(ringBGeo, darkMat);
+    const ringBGeo = new THREE.TorusGeometry(2.05, 0.032, 128, 360);
+    const ringB = new THREE.Mesh(ringBGeo, darkRingMat);
     ringB.rotation.z = 0.7;
     ringB.rotation.x = 0.85;
     scene.add(ringB);
     
-    // ОПТИМИЗИРОВАННЫЕ частицы (меньше, но стильно)
-    const dustCount = 1600;
+    // частицы — только серые / чёрные (пыль)
+    const dustCount = 1800;
     const dustGeo = new THREE.BufferGeometry();
     const dustPositions = new Float32Array(dustCount * 3);
     for (let i = 0; i < dustCount; i++) {
-        const r = 2.2 + Math.random() * 1.3;
+        const r = 2.3 + Math.random() * 1.4;
         const ang = Math.random() * Math.PI * 2;
-        const tilt = (Math.random() - 0.5) * 1.0;
+        const tilt = (Math.random() - 0.5) * 1.1;
         dustPositions[i*3] = Math.cos(ang) * r;
-        dustPositions[i*3+1] = tilt * 0.7;
+        dustPositions[i*3+1] = tilt * 0.75;
         dustPositions[i*3+2] = Math.sin(ang) * r;
     }
     dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-    const dustMat = new THREE.PointsMaterial({ color: 0x111133, size: 0.035, transparent: true, opacity: 0.45, blending: THREE.AdditiveBlending });
+    const dustMat = new THREE.PointsMaterial({ color: 0x222222, size: 0.035, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending });
     const dustRing = new THREE.Points(dustGeo, dustMat);
     scene.add(dustRing);
     
-    // Звёздный фон (умеренный)
-    const starCount = 1500;
+    // фоновые звёзды — очень тёмные
+    const starCount = 1600;
     const starGeo = new THREE.BufferGeometry();
     const starPositions = new Float32Array(starCount * 3);
     for (let i = 0; i < starCount; i++) {
-        starPositions[i*3] = (Math.random() - 0.5) * 160;
-        starPositions[i*3+1] = (Math.random() - 0.5) * 90;
-        starPositions[i*3+2] = (Math.random() - 0.5) * 70 - 30;
+        starPositions[i*3] = (Math.random() - 0.5) * 180;
+        starPositions[i*3+1] = (Math.random() - 0.5) * 100;
+        starPositions[i*3+2] = (Math.random() - 0.5) * 80 - 30;
     }
     starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-    const starMat = new THREE.PointsMaterial({ color: 0x2a3f7a, size: 0.055, transparent: true, opacity: 0.3 });
+    const starMat = new THREE.PointsMaterial({ color: 0x2a2a2a, size: 0.055, transparent: true, opacity: 0.3 });
     const stars = new THREE.Points(starGeo, starMat);
     scene.add(stars);
     
-    // Дымка (очень лёгкая)
-    const hazeCount = 500;
+    // дымка (прозрачные тёмные частицы)
+    const hazeCount = 700;
     const hazeGeo = new THREE.BufferGeometry();
     const hazePos = new Float32Array(hazeCount * 3);
     for (let i = 0; i < hazeCount; i++) {
-        hazePos[i*3] = (Math.random() - 0.5) * 8;
+        hazePos[i*3] = (Math.random() - 0.5) * 9;
         hazePos[i*3+1] = (Math.random() - 0.5) * 5;
-        hazePos[i*3+2] = (Math.random() - 0.5) * 7 - 2;
+        hazePos[i*3+2] = (Math.random() - 0.5) * 8 - 2;
     }
     hazeGeo.setAttribute('position', new THREE.BufferAttribute(hazePos, 3));
-    const hazeMat = new THREE.PointsMaterial({ color: 0x000412, size: 0.045, transparent: true, opacity: 0.2 });
+    const hazeMat = new THREE.PointsMaterial({ color: 0x080808, size: 0.045, transparent: true, opacity: 0.2 });
     const hazePoints = new THREE.Points(hazeGeo, hazeMat);
     scene.add(hazePoints);
     
@@ -634,25 +623,25 @@
     
     function animateVoid() {
         requestAnimationFrame(animateVoid);
-        time += 0.0065;
+        time += 0.006;
         
-        coreKnot.rotation.y = time * 0.6;
-        coreKnot.rotation.x = Math.sin(time * 0.22) * 0.16;
-        coreKnot.rotation.z = Math.sin(time * 0.35) * 0.1;
+        coreKnot.rotation.y = time * 0.62;
+        coreKnot.rotation.x = Math.sin(time * 0.2) * 0.14;
+        coreKnot.rotation.z = Math.sin(time * 0.34) * 0.09;
         wireKnot.rotation.copy(coreKnot.rotation);
         
-        ringA.rotation.z += 0.0038;
-        ringA.rotation.x = Math.PI / 2 + Math.sin(time * 0.18) * 0.05;
-        ringB.rotation.y += 0.003;
-        ringB.rotation.x = 0.85 + Math.sin(time * 0.3) * 0.06;
+        ringA.rotation.z += 0.0035;
+        ringA.rotation.x = Math.PI / 2 + Math.sin(time * 0.17) * 0.045;
+        ringB.rotation.y += 0.0028;
+        ringB.rotation.x = 0.85 + Math.sin(time * 0.28) * 0.05;
         
-        dustRing.rotation.y = time * 0.1;
-        dustRing.rotation.x = Math.sin(time * 0.15) * 0.08;
-        hazePoints.rotation.y = time * 0.015;
-        stars.rotation.y = time * 0.006;
+        dustRing.rotation.y = time * 0.11;
+        dustRing.rotation.x = Math.sin(time * 0.13) * 0.07;
+        hazePoints.rotation.y = time * 0.012;
+        stars.rotation.y = time * 0.005;
         
         camera.position.x += (0 - camera.position.x) * 0.04;
-        camera.lookAt(0, 0.1, 0);
+        camera.lookAt(0, 0.05, 0);
         
         renderer.render(scene, camera);
     }
@@ -668,24 +657,24 @@
 
 <script>
     (function() {
-        // быстрый прелоадер
+        // прелоадер быстрый
         let percent = 0;
         const fill = document.getElementById('preloaderFill');
         const preloader = document.getElementById('preloader');
         const interval = setInterval(() => {
-            percent += Math.floor(Math.random() * 9) + 3;
+            percent += Math.floor(Math.random() * 10) + 3;
             if (percent >= 100) {
                 percent = 100;
                 clearInterval(interval);
                 setTimeout(() => {
                     preloader.style.opacity = '0';
-                    setTimeout(() => preloader.style.display = 'none', 550);
-                }, 180);
+                    setTimeout(() => preloader.style.display = 'none', 500);
+                }, 200);
             }
             fill.style.width = percent + '%';
         }, 28);
         
-        // пароль 0000 (авто вход)
+        // пароль 0000
         const pwdScreen = document.getElementById('password-screen');
         const confirmBtn = document.getElementById('confirmPasswordBtn');
         const mainCont = document.getElementById('mainContent');
@@ -696,8 +685,10 @@
                 setTimeout(() => {
                     pwdScreen.style.display = 'none';
                     mainCont.classList.add('visible');
-                }, 480);
-            } else alert('❌ НЕВЕРНЫЙ КОД ДОСТУПА');
+                }, 450);
+            } else {
+                alert('НЕВЕРНЫЙ ПАРОЛЬ');
+            }
         });
         
         // табы
@@ -725,7 +716,7 @@
         if(closeModal) closeModal.addEventListener('click', () => modal.style.display = 'none');
         window.addEventListener('click', e => { if(e.target === modal) modal.style.display = 'none'; });
         
-        // копирование номеров
+        // копирование
         const copyBtns = document.querySelectorAll('.copy-btn');
         copyBtns.forEach(btn => {
             btn.addEventListener('click', () => {
@@ -733,7 +724,7 @@
                 if(txt) {
                     navigator.clipboard.writeText(txt).then(() => {
                         const old = btn.innerText;
-                        btn.innerText = '✅ Скопировано';
+                        btn.innerText = '✓ Скопировано';
                         setTimeout(() => btn.innerText = old, 1300);
                     }).catch(() => {});
                 }
