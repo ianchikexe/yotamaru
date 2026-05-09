@@ -1,847 +1,643 @@
+Создал максимально стильный сайт по оптимизации ПК с полностью бесплатными услугами и эффектным кастомным курсором.
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>YOTAMARU | ELITE | ПРЕМИУМ ЭМУЛЯЦИЯ</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700;800&family=Caveat:wght@400;700&family=Syncopate:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>IANCHIK.EXE | Бесплатный разгон системы 🔥</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none;
+            cursor: none; /* скрываем стандартный курсор, чтобы показать свой ультра-стильный */
         }
 
         body {
             background: #000000;
-            color: #e0e0e0;
-            font-family: 'JetBrains Mono', monospace;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
             overflow-x: hidden;
-            min-height: 100vh;
+            scroll-behavior: smooth;
         }
 
-        /* ==============================================
-           КАСТОМНЫЙ КУРСОР С ТРЕЙЛОМ
-        ================================================= */
-        .cursor-dot {
+        /* ========= КАСТОМНЫЙ КУРСОР ========= */
+        .cursor {
+            position: fixed;
+            width: 32px;
+            height: 32px;
+            border: 2px solid rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            pointer-events: none;
+            transform: translate(-50%, -50%);
+            transition: width 0.2s, height 0.2s, background 0.2s, border 0.2s, transform 0.1s;
+            z-index: 9999;
+            backdrop-filter: invert(1);
+            mix-blend-mode: difference;
+            box-shadow: 0 0 12px rgba(255,255,255,0.8);
+        }
+        .cursor::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
             width: 6px;
             height: 6px;
-            background: #fff;
+            background: white;
             border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 10001;
-            transition: 0.02s linear;
-            box-shadow: 0 0 20px cyan, 0 0 40px magenta;
+            transform: translate(-50%, -50%);
+            transition: all 0.2s;
         }
-        .cursor-ring {
-            width: 45px;
-            height: 45px;
-            border: 1.5px solid rgba(255,255,255,0.8);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 10000;
-            transition: 0.12s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+        .cursor.hover {
+            width: 56px;
+            height: 56px;
+            background: rgba(255,255,255,0.15);
+            border: 2px solid #ffffff;
+            mix-blend-mode: normal;
             backdrop-filter: blur(4px);
-            box-shadow: 0 0 15px rgba(255,255,255,0.5);
-            animation: ringPulse 0.8s infinite alternate;
         }
-        @keyframes ringPulse {
-            0% { transform: scale(1); opacity: 0.6; }
-            100% { transform: scale(1.2); opacity: 1; }
-        }
-
-        /* ==============================================
-           ВЗРЫВНОЙ ЛОАДЕР
-        ================================================= */
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, #000000, #0a0a0a);
-            z-index: 20000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: 1.5s cubic-bezier(0.16, 1, 0.3, 1);
-            backdrop-filter: blur(20px);
-        }
-        .loader-text {
-            font-family: 'Syncopate', monospace;
-            font-size: 2.5rem;
-            font-weight: 900;
-            letter-spacing: 15px;
-            background: linear-gradient(45deg, #fff, #888, #fff);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation: shimmerText 1.5s infinite;
-            margin-bottom: 40px;
-        }
-        @keyframes shimmerText {
-            0% { background-position: 0% center; letter-spacing: 15px; }
-            100% { background-position: 200% center; letter-spacing: 20px; }
-        }
-        .loader-bar {
-            width: 300px;
-            height: 2px;
-            background: #222;
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        .loader-progress {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #fff, #888);
-            animation: loadProgress 2.5s forwards;
-        }
-        @keyframes loadProgress {
-            0% { width: 0%; }
-            100% { width: 100%; }
-        }
-        #explosion-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
+        .cursor.hover::after {
+            width: 10px;
+            height: 10px;
+            background: #ffffff;
+            box-shadow: 0 0 12px white;
         }
 
-        /* ==============================================
-           3D CANVAS - ЖИВЫЕ ОБОИ
-        ================================================= */
-        #webgl-canvas {
+        /* ========= ЖИВОЙ ФОН С ЧАСТИЦАМИ ========= */
+        #bg-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -2;
-            opacity: 0.7;
+            display: block;
+            opacity: 0.9;
         }
 
-        /* МАТРИЧНЫЙ ДОЖДЬ ПОВЕРХ */
-        #matrix-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-            opacity: 0.12;
+        /* ========= АНИМАЦИИ ========= */
+        @keyframes shimmer {
+            0% { background-position: -150% 0; }
+            100% { background-position: 150% 0; }
+        }
+        @keyframes pulse-glow {
+            0% { text-shadow: 0 0 5px #fff; opacity: 0.7; }
+            100% { text-shadow: 0 0 25px #fff, 0 0 10px #fff; opacity: 1; }
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-12px); }
+        }
+        @keyframes borderPulse {
+            0% { border-color: rgba(255,255,255,0.3); box-shadow: 0 0 0 0 rgba(255,255,255,0.2);}
+            100% { border-color: rgba(255,255,255,1); box-shadow: 0 0 20px 5px rgba(255,255,255,0.4);}
         }
 
-        /* ==============================================
-           КАПЧА-ГЕЙТ С ЭФФЕКТАМИ
-        ================================================= */
-        #captcha-gate {
+        .shimmer-text {
+            background: linear-gradient(120deg, #aaa, #ffffff, #aaa);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 4s linear infinite;
+        }
+
+        /* левая кнопка-референс */
+        .top-reviews {
             position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(15px);
-            z-index: 4000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-        .gate-box {
-            border-left: 3px solid #fff;
-            padding: 30px 40px;
-            background: rgba(5,5,5,0.9);
-            box-shadow: 0 0 60px rgba(255,255,255,0.1);
-            transform: scale(0.9);
-            animation: gatePop 0.5s forwards;
-        }
-        @keyframes gatePop {
-            to { transform: scale(1); }
-        }
-        #term-text {
-            color: #0f0;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            min-height: 80px;
-            white-space: pre-line;
-            text-shadow: 0 0 5px #0f0;
-        }
-        #auth-btn {
-            background: none;
-            border: 1px solid #fff;
+            top: 28px;
+            left: 28px;
+            z-index: 1000;
+            font-family: 'Syncopate', sans-serif;
+            text-decoration: none;
             color: #fff;
-            padding: 12px 30px;
-            margin-top: 25px;
-            cursor: pointer;
-            font-family: 'JetBrains Mono';
+            font-size: 0.7rem;
             letter-spacing: 4px;
-            transition: 0.3s;
+            padding: 12px 24px;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            backdrop-filter: blur(12px);
+            border-radius: 40px;
+            font-weight: 600;
         }
-        #auth-btn:hover {
+        .top-reviews:hover {
             background: #fff;
             color: #000;
-            box-shadow: 0 0 30px rgba(255,255,255,0.6);
-            letter-spacing: 6px;
-        }
-
-        /* ==============================================
-           ОСНОВНОЙ КОНТЕНТ
-        ================================================= */
-        .main-content {
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 40px 20px;
-            opacity: 0;
-            display: none;
-            position: relative;
-            z-index: 10;
-        }
-        .main-content.is-ready {
-            opacity: 1;
-            display: block;
-            animation: contentFade 1.2s ease-out;
-        }
-        @keyframes contentFade {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-        .handwritten-glow {
-            font-family: 'Caveat', cursive;
-            font-size: 5rem;
-            color: #fff;
-            text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 40px rgba(255,255,255,0.4);
-            animation: titleGlitch 2s infinite;
-        }
-        @keyframes titleGlitch {
-            0%,100% { transform: skew(0deg); text-shadow: 0 0 20px #fff; }
-            95% { transform: skew(2deg); text-shadow: -3px 0 red, 3px 0 blue; }
-            96% { transform: skew(-1deg); }
-        }
-        .sub-title {
-            letter-spacing: 6px;
-            font-size: 0.7rem;
-            opacity: 0.6;
-            margin-top: 15px;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%,100% { opacity: 0.4; }
-            50% { opacity: 0.8; letter-spacing: 8px; }
-        }
-
-        /* КНОПКИ ЯЗЫКА */
-        .lang-bar {
-            text-align: right;
-            margin-bottom: 20px;
-        }
-        .lang-btn {
-            background: none;
-            border: none;
-            color: #444;
-            margin-left: 20px;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-family: 'JetBrains Mono';
-            transition: 0.2s;
-        }
-        .lang-btn.active {
-            color: #fff;
-            text-decoration: underline;
-            text-shadow: 0 0 5px #fff;
-        }
-
-        /* КАРТОЧКИ ТОВАРОВ */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
-            gap: 45px;
-            margin-top: 30px;
-        }
-        .card {
-            background: rgba(0,0,0,0.75);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.15);
-            padding: 45px 35px;
-            transition: all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.2);
-            transform-style: preserve-3d;
-            border-radius: 20px;
-        }
-        .card:hover {
             border-color: #fff;
-            transform: translateY(-10px) scale(1.02);
-            box-shadow: 0 0 50px rgba(255,255,255,0.2);
-        }
-        .card h2 {
-            font-family: 'Caveat', cursive;
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
-        .price {
-            font-size: 1.6rem;
-            margin: 20px 0;
-            color: #fff;
-            font-weight: bold;
-            letter-spacing: 2px;
-            border-bottom: 1px dashed rgba(255,255,255,0.3);
-            display: inline-block;
-            padding-bottom: 5px;
-        }
-        ul {
-            list-style: none;
-            margin: 25px 0;
-        }
-        li {
-            margin-bottom: 12px;
-            color: #aaa;
-            font-size: 0.85rem;
-            transition: 0.2s;
-        }
-        li::before {
-            content: "► ";
-            color: #fff;
-            font-size: 0.7rem;
-        }
-        .card:hover li {
-            color: #ddd;
+            box-shadow: 0 0 25px rgba(255,255,255,0.5);
+            letter-spacing: 6px;
         }
 
-        /* КНОПКИ ПОКУПКИ */
-        .buy-button {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            margin-top: 12px;
-            border: 1px solid rgba(255,255,255,0.4);
+        /* Хедер */
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            z-index: 5;
+        }
+        h1 {
+            font-family: 'Syncopate', sans-serif;
+            font-size: clamp(2.8rem, 11vw, 6.5rem);
+            letter-spacing: 18px;
+            text-transform: uppercase;
+            animation: pulse-glow 1.8s infinite alternate;
+            font-weight: 800;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 18px 42px;
+            border: 1.5px solid #fff;
             color: #fff;
             text-decoration: none;
-            text-align: center;
-            font-size: 0.7rem;
-            font-weight: bold;
-            letter-spacing: 3px;
-            transition: 0.3s;
-            background: rgba(0,0,0,0.5);
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            transition: all 0.35s ease-out;
+            font-size: 0.85rem;
+            background: transparent;
+            cursor: none;
+            margin: 12px;
+            backdrop-filter: blur(5px);
+            border-radius: 60px;
             position: relative;
             overflow: hidden;
+            z-index: 2;
         }
-        .buy-button::before {
-            content: '';
+        .btn::before {
+            content: "";
             position: absolute;
             top: 0;
             left: -100%;
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: 0.5s;
+            transition: left 0.6s;
         }
-        .buy-button:hover::before {
+        .btn:hover::before {
             left: 100%;
         }
-        .buy-button:hover {
+        .btn:hover {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 0 35px rgba(255,255,255,0.8);
+            transform: translateY(-6px);
+            letter-spacing: 7px;
+        }
+
+        .btn-solid {
             background: #fff;
             color: #000;
-            box-shadow: 0 0 30px rgba(255,255,255,0.5);
-            letter-spacing: 5px;
+        }
+        .btn-solid:hover {
+            background: #000;
+            color: #fff;
             border-color: #fff;
         }
 
-        /* ==============================================
-           МОДАЛКА ОПЛАТЫ (КАРТЫ + РЕКВИЗИТЫ)
-        ================================================= */
-        .payment-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.95);
-            backdrop-filter: blur(20px);
-            z-index: 15000;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-        .payment-content {
-            background: #0a0a0a;
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 30px;
-            padding: 40px;
-            max-width: 500px;
-            width: 90%;
+        section {
+            padding: 140px 30px;
+            max-width: 1300px;
+            margin: 0 auto;
             text-align: center;
-            box-shadow: 0 0 80px rgba(255,255,255,0.15);
-            animation: modalPop 0.4s ease-out;
+            position: relative;
+            z-index: 4;
         }
-        @keyframes modalPop {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        .section-title {
+            font-family: 'Syncopate', sans-serif;
+            letter-spacing: 12px;
+            margin-bottom: 70px;
+            text-transform: uppercase;
+            font-size: 2.2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #aaa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
-        .payment-content h3 {
-            font-family: 'Syncopate';
+
+        /* Карточки услуг — БЕСПЛАТНО */
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        .price-card {
+            background: rgba(10,10,10,0.65);
+            backdrop-filter: blur(14px);
+            padding: 50px 30px;
+            border: 1px solid rgba(255,255,255,0.15);
+            transition: all 0.5s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border-radius: 32px;
+            position: relative;
+            overflow: hidden;
+        }
+        .price-card:hover {
+            border-color: #fff;
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 40px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.2);
+        }
+        .price-card .price-tag {
+            font-size: 3rem;
+            font-weight: 900;
             letter-spacing: 4px;
-            margin-bottom: 25px;
-            font-size: 1.3rem;
+            background: linear-gradient(45deg, #fff, #bbb);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 20px 0;
         }
-        .payment-card {
-            background: #111;
-            border-left: 3px solid #fff;
-            padding: 18px;
-            margin: 15px 0;
-            text-align: left;
-            font-family: monospace;
-            font-size: 0.8rem;
-            word-break: break-all;
+        .price-card .old-price {
+            display: none;
         }
-        .payment-card strong {
-            color: #fff;
-            display: block;
-            margin-bottom: 8px;
+        .free-badge {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: #0f0;
+            text-shadow: 0 0 8px #0f0;
             letter-spacing: 2px;
         }
-        .copy-btn {
-            background: none;
-            border: 1px solid #444;
-            color: #aaa;
-            padding: 5px 12px;
-            margin-top: 10px;
-            cursor: pointer;
-            font-size: 0.65rem;
+        .card-desc {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.5;
+            margin: 20px 0;
             transition: 0.2s;
         }
-        .copy-btn:hover {
-            border-color: #fff;
-            color: #fff;
+
+        /* Отзывы — эпичный блок */
+        .review-item {
+            background: rgba(20,20,20,0.6);
+            backdrop-filter: blur(12px);
+            padding: 35px 45px;
+            text-align: left;
+            border-left: 4px solid rgba(255,255,255,0.2);
+            margin-bottom: 35px;
+            border-radius: 24px;
+            opacity: 0;
+            transform: translateY(45px);
+            transition: all 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.2);
         }
-        .close-modal {
-            margin-top: 25px;
-            background: none;
+        .review-item.show {
+            opacity: 1;
+            transform: translateY(0);
+            border-left-color: #fff;
+        }
+        .rev-nick {
+            margin-top: 18px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            font-size: 1rem;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+        .review-text {
+            font-style: italic;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Кнопка наверх */
+        .go-top {
+            position: fixed;
+            bottom: 35px;
+            right: 35px;
+            width: 55px;
+            height: 55px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
             border: 1px solid #fff;
-            color: #fff;
-            padding: 10px 25px;
-            cursor: pointer;
-            transition: 0.2s;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: none;
+            transition: 0.3s;
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
         }
-        .close-modal:hover {
+        .go-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .go-top:hover {
             background: #fff;
+            transform: scale(1.1);
+        }
+        .go-top:hover span {
             color: #000;
         }
-
-        /* ТРЕЙЛ ЗА МЫШЬЮ */
-        #trail-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-            z-index: 9999;
+        .go-top span {
+            font-size: 28px;
+            color: white;
+            transition: 0.2s;
         }
 
-        /* ВСПЫШКА */
-        .flash {
+        /* вспышка на клик */
+        .click-flash {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: white;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 80%);
             pointer-events: none;
             z-index: 9998;
-            animation: flashAnim 0.15s ease-out;
+            opacity: 0;
+            transition: opacity 0.2s;
         }
-        @keyframes flashAnim {
-            0% { opacity: 0; }
-            10% { opacity: 0.4; }
-            100% { opacity: 0; }
+
+        @media (max-width: 750px) {
+            .btn { padding: 12px 28px; letter-spacing: 3px; }
+            .section-title { letter-spacing: 6px; font-size: 1.6rem; }
+            .price-card { padding: 35px 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="cursor-dot"></div>
-    <div class="cursor-ring"></div>
+    <canvas id="bg-canvas"></canvas>
+    <div class="cursor"></div>
+    <div class="click-flash" id="clickFlash"></div>
 
-    <canvas id="webgl-canvas"></canvas>
-    <canvas id="matrix-canvas"></canvas>
-    <canvas id="trail-canvas"></canvas>
+    <!-- Кнопка отзывов слева -->
+    <a href="https://t.me/ianchikreviews" target="_blank" class="top-reviews">⚡ REVIEWS ⚡</a>
 
-    <div id="loader">
-        <div class="loader-text">YOTAMARU</div>
-        <div class="loader-bar"><div class="loader-progress"></div></div>
-        <p style="margin-top: 25px; font-size:0.65rem; letter-spacing:3px;">⚡ ЗАГРУЗКА ПРЕМИУМ МОДУЛЕЙ ⚡</p>
-        <canvas id="explosion-canvas"></canvas>
+    <!-- Кнопка наверх -->
+    <div class="go-top" id="goTopBtn">
+        <span>↑</span>
     </div>
 
-    <div id="captcha-gate">
-        <div class="gate-box">
-            <div id="term-text"></div>
-            <button id="auth-btn">>> ВОЙТИ <<</button>
+    <header>
+        <p class="shimmer-text" style="letter-spacing: 8px; opacity: 0.7; margin-bottom: 18px; font-size: 0.8rem; font-family: 'Syncopate';">⚡ РАЗГОНИ СИСТЕМУ ДО МАКСИМУМА ⚡</p>
+        <h1 class="shimmer-text">IANCHIK.EXE</h1>
+        <div style="margin-top: 45px;">
+            <a href="#services" class="btn">🔥 ВЗЯТЬ БЕСПЛАТНО 🔥</a>
+            <a href="https://t.me/ianchikexe" target="_blank" class="btn btn-solid">🚀 TELEGRAM 🚀</a>
         </div>
-    </div>
+    </header>
 
-    <div class="main-content" id="ui">
-        <div class="lang-bar">
-            <button class="lang-btn active" data-lang="ru">RU</button>
-            <button class="lang-btn" data-lang="en">EN</button>
-            <button class="lang-btn" data-lang="kz">KZ</button>
-        </div>
-
-        <header>
-            <h1 class="handwritten-glow">Yotamaru</h1>
-            <p class="sub-title" id="sub-title">ПРЕМИАЛЬНАЯ ЭМУЛЯЦИЯ И ОПТИМИЗАЦИЯ</p>
-        </header>
-
-        <div class="grid">
-            <div class="card">
-                <h2 id="p1-title">Yotamaru Эмулятор</h2>
-                <div class="price">3000₸ | 550₽ | 1250G</div>
-                <ul id="p1-list">
-                    <li>Кастомный интерфейс</li>
-                    <li>Без рекламы</li>
-                    <li>Стабилизация FPS</li>
-                    <li>HWID привязка</li>
-                    <li>Фикс сенсы</li>
-                </ul>
-                <button class="buy-button" onclick="showPaymentModal('YOTAMARU ЭМУЛЯТОР', '3000₸ | 550₽ | 1250G')">⭐ TELEGRAM STARS</button>
-                <button class="buy-button" onclick="showPaymentModal('YOTAMARU ЭМУЛЯТОР', '3000₸ | 550₽ | 1250G')">💰 ДРУГИЕ СПОСОБЫ</button>
+    <section id="services">
+        <h2 class="section-title">🎯 POWER SERVICES</h2>
+        <div class="price-grid">
+            <div class="price-card">
+                <h3 style="font-family: 'Syncopate'; letter-spacing: 3px;">WINDOWS PRO</h3>
+                <div class="free-badge">⚡ ABSOLUTELY FREE ⚡</div>
+                <div class="card-desc">Полная оптимизация ОС: настройка реестра, отключение телеметрии, удаление мусора, максимальный FPS в играх, снижение DPC-латенси. Твой ПК станет зверем!</div>
+                <a href="https://t.me/ianchikexe" target="_blank" class="btn" style="padding: 10px 35px; font-size: 0.75rem; margin-top: 15px;">💎 ЗАБРАТЬ БЕСПЛАТНО 💎</a>
             </div>
-            <div class="card">
-                <h2 id="p2-title">Оптимизация ПК</h2>
-                <div class="price">4500₸ | 750₽ | 1750G</div>
-                <ul id="p2-list">
-                    <li>Все игры</li>
-                    <li>CS 2 / Valorant</li>
-                    <li>Снижение задержки</li>
-                    <li>Стабильный пинг</li>
-                    <li>Elite поддержка</li>
-                </ul>
-                <button class="buy-button" onclick="showPaymentModal('ОПТИМИЗАЦИЯ ПК', '4500₸ | 750₽ | 1750G')">⭐ TELEGRAM STARS</button>
-                <button class="buy-button" onclick="showPaymentModal('ОПТИМИЗАЦИЯ ПК', '4500₸ | 750₽ | 1750G')">💰 ДРУГИЕ СПОСОБЫ</button>
+            <div class="price-card">
+                <h3 style="font-family: 'Syncopate'; letter-spacing: 3px;">DEEP CLEAN</h3>
+                <div class="free-badge">⚡ ABSOLUTELY FREE ⚡</div>
+                <div class="card-desc">Глубокое сканирование + удаление майнеров, троянов, криптоджекеров, системного хлама. Очистка temp, реестра, скрытых угроз — твой ПК дышит заново.</div>
+                <a href="https://t.me/ianchikexe" target="_blank" class="btn" style="padding: 10px 35px; font-size: 0.75rem; margin-top: 15px;">🧹 ЗАБРАТЬ БЕСПЛАТНО 🧹</a>
+            </div>
+            <div class="price-card">
+                <h3 style="font-family: 'Syncopate'; letter-spacing: 3px;">EMULATOR BOOST</h3>
+                <div class="free-badge">⚡ ABSOLUTELY FREE ⚡</div>
+                <div class="card-desc">Настройка BlueStacks, LDPlayer, MSI: 250-300 стабильных FPS в Standoff 2, плавная сенса, отклик как на дорогом ПК. Никаких лагов!</div>
+                <a href="https://t.me/ianchikexe" target="_blank" class="btn" style="padding: 10px 35px; font-size: 0.75rem; margin-top: 15px;">🎮 ЗАБРАТЬ БЕСПЛАТНО 🎮</a>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- МОДАЛКА ОПЛАТЫ -->
-    <div id="paymentModal" class="payment-modal">
-        <div class="payment-content">
-            <h3>💎 ОПЛАТА 💎</h3>
-            <div id="modal-product" style="margin-bottom:15px; font-size:0.9rem;"></div>
-            <div class="payment-card">
-                <strong>💰 Kaspi (Казахстан)</strong>
-                4400 4303 4792 1634<br>
-                Мираса А.<br>
-                <button class="copy-btn" onclick="copyText('4400 4303 4792 1634')">📋 КОПИРОВАТЬ НОМЕР</button>
-            </div>
-            <div class="payment-card">
-                <strong>💳 ЮMoney (Россия)</strong>
-                5599 0020 9639 5761<br>
-                <button class="copy-btn" onclick="copyText('5599 0020 9639 5761')">📋 КОПИРОВАТЬ НОМЕР</button>
-            </div>
-            <div class="payment-card">
-                <strong>📸 После оплаты отправь скриншот чека сюда:</strong>
-                <button class="copy-btn" onclick="copyText('https://t.me/YotamaruShopBot')">📋 КОПИРОВАТЬ ССЫЛКУ</button>
-                <a href="https://t.me/YotamaruShopBot" target="_blank" style="display:inline-block; margin-top:10px; color:cyan;">➡️ @YotamaruShopBot</a>
-            </div>
-            <button class="close-modal" onclick="closePaymentModal()">ЗАКРЫТЬ</button>
-        </div>
-    </div>
+    <section id="reviews">
+        <h2 class="section-title">🔥 REAL REVIEWS 🔥</h2>
+        <div id="rev-list"></div>
+    </section>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // ==============================================
-        // ВЗРЫВ ПРИ ЗАГРУЗКЕ
-        // ==============================================
-        const explosionCanvas = document.getElementById('explosion-canvas');
-        const expCtx = explosionCanvas?.getContext('2d');
-        if(explosionCanvas) {
-            explosionCanvas.width = window.innerWidth;
-            explosionCanvas.height = window.innerHeight;
-            let explosionParticles = [];
-            setTimeout(() => {
-                for(let i=0;i<300;i++) {
-                    explosionParticles.push({
-                        x: window.innerWidth/2,
-                        y: window.innerHeight/2,
-                        vx: (Math.random()-0.5)*20,
-                        vy: (Math.random()-0.5)*20,
-                        life: 1,
-                        size: Math.random()*5+2,
-                        color: `hsl(${Math.random()*360}, 100%, 60%)`
-                    });
-                }
-                function animateExplosion() {
-                    if(!expCtx) return;
-                    expCtx.clearRect(0,0,explosionCanvas.width,explosionCanvas.height);
-                    let alive = false;
-                    explosionParticles.forEach(p => {
-                        p.x += p.vx;
-                        p.y += p.vy;
-                        p.life -= 0.015;
-                        if(p.life>0) {
-                            alive = true;
-                            expCtx.fillStyle = p.color;
-                            expCtx.beginPath();
-                            expCtx.arc(p.x, p.y, p.size * p.life, 0, Math.PI*2);
-                            expCtx.fill();
-                        }
-                    });
-                    if(alive) requestAnimationFrame(animateExplosion);
-                }
-                animateExplosion();
-            }, 500);
-        }
+        // --------------------------------------------------------------
+        // 1. КАСТОМНЫЙ КУРСОР — АХУЕННЫЙ, С ЭФФЕКТАМИ И РЕАКЦИЕЙ
+        // --------------------------------------------------------------
+        const cursor = document.querySelector('.cursor');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
 
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const loader = document.getElementById('loader');
-                if(loader) {
-                    loader.style.opacity = '0';
-                    loader.style.pointerEvents = 'none';
-                    setTimeout(() => loader.remove(), 1200);
-                }
-            }, 2800);
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            // добавляем эффект на интерактив — увеличение
+            const target = e.target.closest('a, .btn, .price-card, .top-reviews, .go-top');
+            if (target) {
+                cursor.classList.add('hover');
+            } else {
+                cursor.classList.remove('hover');
+            }
         });
 
-        // ==============================================
-        // 3D СЦЕНА
-        // ==============================================
-        const canvas3d = document.getElementById('webgl-canvas');
-        if(canvas3d) {
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(60, window.innerWidth/innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({canvas: canvas3d, alpha: true});
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            
-            const torusKnot = new THREE.Mesh(
-                new THREE.TorusKnotGeometry(1.2, 0.28, 180, 24, 3, 4),
-                new THREE.MeshStandardMaterial({ color: 0xffffff, wireframe: true, emissive: 0x222222 })
-            );
-            const innerSphere = new THREE.Mesh(
-                new THREE.SphereGeometry(0.8, 32, 32),
-                new THREE.MeshStandardMaterial({ color: 0x333333, emissive: 0x111111, metalness: 0.8 })
-            );
-            const group = new THREE.Group();
-            group.add(torusKnot);
-            group.add(innerSphere);
-            scene.add(group);
-            
-            const starsGeo = new THREE.BufferGeometry();
-            const starsPos = [];
-            for(let i=0;i<2000;i++) {
-                starsPos.push((Math.random()-0.5)*600);
-                starsPos.push((Math.random()-0.5)*600);
-                starsPos.push((Math.random()-0.5)*200 - 80);
-            }
-            starsGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starsPos), 3));
-            const starsMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.2 });
-            const stars = new THREE.Points(starsGeo, starsMat);
-            scene.add(stars);
-            
-            const light = new THREE.PointLight(0xffffff, 1);
-            light.position.set(3,4,5);
-            scene.add(light);
-            camera.position.z = 5;
-            
-            let time = 0;
-            function animate3d() {
-                requestAnimationFrame(animate3d);
-                time += 0.01;
-                group.rotation.x = Math.sin(time*0.4)*0.3;
-                group.rotation.y = time*0.6;
-                stars.rotation.y += 0.0005;
-                renderer.render(scene, camera);
-            }
-            animate3d();
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth/innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
+        function animateCursor() {
+            // плавное следование с легким лагом - стильно
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
+            cursor.style.left = cursorX + 'px';
+            cursor.style.top = cursorY + 'px';
+            requestAnimationFrame(animateCursor);
         }
+        animateCursor();
 
-        // ==============================================
-        // МАТРИЧНЫЙ ДОЖДЬ
-        // ==============================================
-        const matrixCanvas = document.getElementById('matrix-canvas');
-        if(matrixCanvas) {
-            const matrixCtx = matrixCanvas.getContext('2d');
-            matrixCanvas.width = window.innerWidth;
-            matrixCanvas.height = window.innerHeight;
-            const cols = Math.floor(matrixCanvas.width / 25);
-            const drops = Array(cols).fill(1);
-            function drawMatrix() {
-                matrixCtx.fillStyle = 'rgba(0,0,0,0.04)';
-                matrixCtx.fillRect(0,0,matrixCanvas.width,matrixCanvas.height);
-                matrixCtx.fillStyle = '#0f0';
-                matrixCtx.font = '14px monospace';
-                for(let i=0;i<drops.length;i++) {
-                    const text = String.fromCharCode(0x30A0 + Math.random()*96);
-                    matrixCtx.fillText(text, i*25, drops[i]*20);
-                    if(drops[i]*20 > matrixCanvas.height && Math.random()>0.975) drops[i]=0;
-                    drops[i]++;
-                }
-                requestAnimationFrame(drawMatrix);
+        // эффект вспышки при клике (для кайфа)
+        const flashDiv = document.getElementById('clickFlash');
+        document.body.addEventListener('click', (e) => {
+            if (flashDiv) {
+                flashDiv.style.opacity = '1';
+                setTimeout(() => { flashDiv.style.opacity = '0'; }, 120);
             }
-            drawMatrix();
-        }
+            // лёгкая вибрация курсора при клике (визуально)
+            cursor.style.transform = 'translate(-50%, -50%) scale(0.85)';
+            setTimeout(() => { cursor.style.transform = 'translate(-50%, -50%) scale(1)'; }, 120);
+        });
 
-        // ==============================================
-        // ТРЕЙЛ ЗА МЫШЬЮ
-        // ==============================================
-        const trailCanvas = document.getElementById('trail-canvas');
-        const trailCtx = trailCanvas.getContext('2d');
-        trailCanvas.width = window.innerWidth;
-        trailCanvas.height = window.innerHeight;
-        let trailParticles = [];
-        let mouse = {x:0,y:0};
-        document.addEventListener('mousemove', (e) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-            for(let i=0;i<8;i++) {
-                trailParticles.push({
-                    x: mouse.x, y: mouse.y,
-                    vx: (Math.random()-0.5)*2.5,
-                    vy: (Math.random()-0.5)*2.5-1,
-                    life: 1,
-                    size: Math.random()*4+1,
-                    color: `hsl(${Math.random()*360}, 100%, 60%)`
+        // --------------------------------------------------------------
+        // 2. КОСМИЧЕСКИЙ ФОН С ЧАСТИЦАМИ + ИНТЕРАКТИВ (реакция на мышь)
+        // --------------------------------------------------------------
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let mouseVec = { x: null, y: null, radius: 180 };
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const count = 120;
+            particles = [];
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.8,
+                    vy: (Math.random() - 0.5) * 0.8,
+                    radius: Math.random() * 2.2 + 1.5,
+                    baseRadius: 0,
                 });
             }
+        }
+
+        window.addEventListener('mousemove', (e) => {
+            mouseVec.x = e.clientX;
+            mouseVec.y = e.clientY;
         });
-        function drawTrail() {
-            trailCtx.clearRect(0,0,trailCanvas.width,trailCanvas.height);
-            for(let i=0;i<trailParticles.length;i++) {
-                let p = trailParticles[i];
+        window.addEventListener('mouseleave', () => { mouseVec.x = null; mouseVec.y = null; });
+
+        function drawBg() {
+            if (!ctx) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(255, 255, 255, 0.75)";
+            
+            // движение и взаимодействие с мышью
+            for (let p of particles) {
+                // притяжение/отталкивание от курсора (чтобы кипело)
+                if (mouseVec.x && mouseVec.y) {
+                    let dx = p.x - mouseVec.x;
+                    let dy = p.y - mouseVec.y;
+                    let dist = Math.hypot(dx, dy);
+                    if (dist < mouseVec.radius) {
+                        let force = (mouseVec.radius - dist) / mouseVec.radius;
+                        let angle = Math.atan2(dy, dx);
+                        let moveX = Math.cos(angle) * force * 1.2;
+                        let moveY = Math.sin(angle) * force * 1.2;
+                        p.x += moveX;
+                        p.y += moveY;
+                    }
+                }
+                // стандартное движение
                 p.x += p.vx;
                 p.y += p.vy;
-                p.life -= 0.02;
-                p.size *= 0.97;
-                if(p.life<=0 || p.size<0.2) {
-                    trailParticles.splice(i,1);
-                    i--;
-                    continue;
-                }
-                trailCtx.fillStyle = p.color;
-                trailCtx.shadowBlur = 8;
-                trailCtx.beginPath();
-                trailCtx.arc(p.x, p.y, p.size * p.life, 0, Math.PI*2);
-                trailCtx.fill();
+                // отскок от границ
+                if (p.x < 0) { p.x = 0; p.vx = -p.vx; }
+                if (p.x > canvas.width) { p.x = canvas.width; p.vx = -p.vx; }
+                if (p.y < 0) { p.y = 0; p.vy = -p.vy; }
+                if (p.y > canvas.height) { p.y = canvas.height; p.vy = -p.vy; }
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${0.5 + Math.sin(Date.now() * 0.001 + p.x * 0.01) * 0.2})`;
+                ctx.fill();
             }
-            requestAnimationFrame(drawTrail);
+            // соединяем линии между частицами (сетка)
+            ctx.beginPath();
+            ctx.strokeStyle = "rgba(255,255,255,0.12)";
+            ctx.lineWidth = 0.8;
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    let dx = particles[i].x - particles[j].x;
+                    let dy = particles[i].y - particles[j].y;
+                    let dist = Math.hypot(dx, dy);
+                    if (dist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(drawBg);
         }
-        drawTrail();
 
-        // ==============================================
-        // КУРСОРЫ
-        // ==============================================
-        const dot = document.querySelector('.cursor-dot');
-        const ring = document.querySelector('.cursor-ring');
-        document.addEventListener('mousemove', (e) => {
-            if(dot) dot.style.cssText = `left:${e.clientX}px; top:${e.clientY}px;`;
-            if(ring) ring.style.cssText = `left:${e.clientX}px; top:${e.clientY}px;`;
+        window.addEventListener('resize', () => {
+            initCanvas();
         });
+        initCanvas();
+        drawBg();
+
+        // --------------------------------------------------------------
+        // 3. ОТЗЫВЫ И АНИМАЦИИ С ПОЯВЛЕНИЕМ
+        // --------------------------------------------------------------
+        const reviewsData = [
+            { nick: "Noobik", text: "Лучшая бесплатная оптимизация в мире! +50 фпс, микрофризы пропали, система шепчет. Янчик красавчик 🔥" },
+            { nick: "хз че за тип", text: "Взял оптику совершенно бесплатно, результат ахуенный: +50 фпс в Standoff, +70 в кс, пк летает. Советую всем!" },
+            { nick: "༒スペクトル༒", text: "Сделал всё чётко, оптимизация и блюстакс превосходны. Очистил от вирусов, пинг упал. 8 часов возился с моей проблемной виндой, но результат — улёт. Респект @ianchikek" },
+            { nick: "𝐋𝐮𝐬𝐭𝐞𝐫", text: "Всё заебательски, с кайфом. Оптимка на уровне топ, доверие на 100%!" },
+            { nick: "hanasiro", text: "Винда летает как реактивная, 0 лагов, 0 фризов. Спасибо за работу, лучшее что пробовал." },
+            { nick: "styfern", text: "ФПС подскочил на 60+, пропал инпут лаг. Очень круто, и без копейки!" },
+            { nick: "hate you", text: "Наконец-то не смотрю слайд-шоу, сенса четкая, играть одно удовольствие. Одер помог лично 🔥" },
+            { nick: "д@nтез", text: "Взял оптимку у Янчика, он реально шарит. Всё сделано красиво и грамотно. Огромное спасибо @ianchikexe" },
+            { nick: "Trevor", text: "ФПС просто улетел в космос! Оптимизация от Янчика 🔥 рекомендую всем геймерам" },
+            { nick: "R1pper", text: "Никогда не думал, что мой хлам-ПК запустит киберпанк на ультрах +50 фпс. Бесплатно? Да вы гоните! ianchik.exe — гений." }
+        ];
         
-        // ==============================================
-        // КАПЧА-ГЕЙТ
-        // ==============================================
-        setTimeout(() => {
-            const loader = document.getElementById('loader');
-            if(loader) loader.style.display = 'none';
-            const gate = document.getElementById('captcha-gate');
-            if(gate) gate.style.display = 'flex';
-            const termText = document.getElementById('term-text');
-            const text = ">> ЗАГРУЗКА ПРОТОКОЛОВ...\n>> ПРОВЕРКА ОКРУЖЕНИЯ: БЕЗОПАСНО\n>> ДОСТУП РАЗРЕШЕН.";
-            let i=0;
-            function typeWriter() {
-                if(i<text.length) {
-                    termText.innerText += text.charAt(i);
-                    i++;
-                    setTimeout(typeWriter, 40);
-                } else {
-                    document.getElementById('auth-btn').style.display = 'block';
+        const revContainer = document.getElementById('rev-list');
+        reviewsData.forEach(r => {
+            const revDiv = document.createElement('div');
+            revDiv.className = 'review-item';
+            revDiv.innerHTML = `<div class="review-text">“${r.text}”</div><div class="rev-nick">✨ ${r.nick} ✨</div>`;
+            revContainer.appendChild(revDiv);
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
                 }
+            });
+        }, { threshold: 0.2 });
+        document.querySelectorAll('.review-item').forEach(item => observer.observe(item));
+
+        // --------------------------------------------------------------
+        // 4. КНОПКА НАВЕРХ + ПЛАВНЫЙ СКРОЛЛ
+        // --------------------------------------------------------------
+        const goTopBtn = document.getElementById('goTopBtn');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 600) {
+                goTopBtn.classList.add('visible');
+            } else {
+                goTopBtn.classList.remove('visible');
             }
-            typeWriter();
-        }, 2500);
-        
-        function unlock() {
-            document.getElementById('captcha-gate').style.display = 'none';
-            document.getElementById('ui').classList.add('is-ready');
-            document.body.style.overflow = 'auto';
-        }
-        document.getElementById('auth-btn')?.addEventListener('click', unlock);
-        
-        // ==============================================
-        // ПЕРЕВОДЫ
-        // ==============================================
-        const translations = {
-            ru: { sub: "ПРЕМИАЛЬНАЯ ЭМУЛЯЦИЯ И ОПТИМИЗАЦИЯ", p1t: "Yotamaru Эмулятор", p2t: "Оптимизация ПК", p1l: ["Кастомный интерфейс","Без рекламы","Стабилизация FPS","HWID привязка","Фикс сенсы"], p2l: ["Все игры","CS 2 / Valorant","Снижение задержки","Стабильный пинг","Elite поддержка"] },
-            en: { sub: "PREMIUM EMULATION & OPTIMIZATION", p1t: "Yotamaru Emulator", p2t: "PC Optimization", p1l: ["Custom UI","No Ads","FPS Stabilization","HWID Lock","Sensi Fix"], p2l: ["All Games","CS 2 / Valorant","Lag Reduction","Stable Latency","Elite Support"] },
-            kz: { sub: "ПРЕМИУМ ЭМУЛЯЦИЯ ЖӘНЕ ОПТИМИЗАЦИЯ", p1t: "Yotamaru Эмуляторы", p2t: "ДК Оптимизациясы", p1l: ["Жеке интерфейс","Жарнамасыз","FPS тұрақтандыру","HWID қорғанысы","Сенса түзету"], p2l: ["Барлық ойындар","CS 2 / Valorant","Кешігуді азайту","Тұрақты пинг","Техникалық қолдау"] }
-        };
-        let currentLang = 'ru';
-        function changeLang(lang) {
-            currentLang = lang;
-            const t = translations[lang];
-            document.getElementById('sub-title').innerText = t.sub;
-            document.getElementById('p1-title').innerText = t.p1t;
-            document.getElementById('p2-title').innerText = t.p2t;
-            const p1List = document.getElementById('p1-list');
-            const p2List = document.getElementById('p2-list');
-            p1List.innerHTML = '';
-            p2List.innerHTML = '';
-            t.p1l.forEach(item => { const li = document.createElement('li'); li.innerText = item; p1List.appendChild(li); });
-            t.p2l.forEach(item => { const li = document.createElement('li'); li.innerText = item; p2List.appendChild(li); });
-            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active');
-        }
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.addEventListener('click', () => changeLang(btn.getAttribute('data-lang')));
         });
-        changeLang('ru');
-        
-        // ==============================================
-        // МОДАЛКА ОПЛАТЫ
-        // ==============================================
-        function showPaymentModal(product, price) {
-            const modal = document.getElementById('paymentModal');
-            const productDiv = document.getElementById('modal-product');
-            productDiv.innerHTML = `<strong>${product}</strong><br>${price}`;
-            modal.style.display = 'flex';
-            const flash = document.createElement('div');
-            flash.className = 'flash';
-            document.body.appendChild(flash);
-            setTimeout(() => flash.remove(), 150);
-        }
-        function closePaymentModal() {
-            document.getElementById('paymentModal').style.display = 'none';
-        }
-        function copyText(text) {
-            navigator.clipboard.writeText(text);
-            const flash = document.createElement('div');
-            flash.className = 'flash';
-            document.body.appendChild(flash);
-            setTimeout(() => flash.remove(), 150);
-            alert('✅ Скопировано: ' + text);
-        }
-        window.onclick = (e) => { if(e.target === document.getElementById('paymentModal')) closePaymentModal(); };
-        
-        // Вспышка на кнопки
-        document.querySelectorAll('.buy-button, .lang-btn, #auth-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const flash = document.createElement('div');
-                flash.className = 'flash';
-                document.body.appendChild(flash);
-                setTimeout(() => flash.remove(), 150);
+        goTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // дополнительный эффект: при наведении на ссылки блики
+        const allBtns = document.querySelectorAll('.btn, .top-reviews');
+        allBtns.forEach(btn => {
+            btn.addEventListener('mouseenter', () => {
+                cursor.classList.add('hover');
+            });
+            btn.addEventListener('mouseleave', () => {
+                cursor.classList.remove('hover');
             });
         });
+        
+        // глитч-эффект на заголовок при движении мыши — экстрим!
+        const mainTitle = document.querySelector('h1');
+        if (mainTitle) {
+            document.addEventListener('mousemove', (e) => {
+                let x = (e.clientX / window.innerWidth) * 2 - 1;
+                let y = (e.clientY / window.innerHeight) * 2 - 1;
+                let shiftX = x * 5;
+                let shiftY = y * 3;
+                mainTitle.style.textShadow = `${shiftX}px ${shiftY}px 12px rgba(255,255,255,0.5), 0 0 20px white`;
+            });
+        }
+
+        // легкий fade-in при загрузке
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.7s';
+            document.body.style.opacity = '1';
+            // убираем возможный лоадер (не было, но сделаем плавный вход)
+        });
+        
+        // добавим счетчик для "бесплатно" эпичное поздравление в консоль
+        console.log("%c🔥 IANCHIK.EXE — БЕСПЛАТНЫЙ РАЗГОН ТВОЕГО ПК🔥", "color: #fff; background: #000; font-size: 18px; font-weight: bold; padding: 6px 12px; border-radius: 12px;");
+        console.log("%cУслуги полностью бесплатны! Забирай оптимизацию и наслаждайся мощью", "color: #0f0; font-size: 14px;");
+
+        // легкое предупреждение для курсора на мобилках (но по умолчанию курсор скрыт красиво)
+        if (window.matchMedia("(max-width: 768px)").matches) {
+            cursor.style.display = "none";
+            document.body.style.cursor = "auto";
+        } else {
+            cursor.style.display = "block";
+        }
     </script>
 </body>
 </html>
+```
