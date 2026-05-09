@@ -3,26 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>YOTAMARU | ELITE PROTECTION</title>
-    <!-- Шрифты: моноширинный и элегантный рукописный -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <title>YOTAMARU | ELITE VAULT</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,500;14..32,700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none; /* для эстетики, но текст можно копировать */
         }
 
         body {
             font-family: 'Inter', monospace;
-            background-color: #000000;
-            color: #ececec;
+            background: #000000;
+            color: #eaeef2;
             overflow-x: hidden;
-            min-height: 100vh;
         }
 
-        /* Фоновый канвас (интерактивные частицы) */
+        /* CANVAS FON (живые узоры) */
         #bg-canvas {
             position: fixed;
             top: 0;
@@ -30,21 +27,18 @@
             width: 100%;
             height: 100%;
             z-index: -2;
-            display: block;
-            background: radial-gradient(circle at 20% 30%, #0a0a0f, #000000);
+            background: radial-gradient(circle at 30% 20%, #030307, #000000);
         }
 
-        /* Эффект свечения поверх фона */
-        .glow-overlay {
+        .glow-layer {
             position: fixed;
             inset: 0;
             pointer-events: none;
-            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.03) 0%, transparent 70%);
+            background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,240,0.02) 0%, transparent 70%);
             z-index: -1;
-            transition: background 0.1s ease;
         }
 
-        /* PRELOADER — ЭПИЧНАЯ ЗАГРУЗКА */
+        /* PRELOADER ЭПИЧНЫЙ */
         #preloader {
             position: fixed;
             inset: 0;
@@ -53,265 +47,264 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 1000;
-            transition: opacity 1s cubic-bezier(0.2, 0.9, 0.4, 1);
+            z-index: 1100;
+            transition: opacity 1s cubic-bezier(0.2,0.9,0.4,1);
         }
-        .loader-ring {
-            width: 100px;
-            height: 100px;
+        .ring-loader {
+            width: 90px;
+            height: 90px;
             border: 2px solid rgba(255,255,255,0.1);
             border-top: 2px solid #fff;
             border-radius: 50%;
-            animation: spin 1.2s linear infinite;
-            margin-bottom: 2rem;
-            box-shadow: 0 0 15px rgba(255,255,255,0.2);
+            animation: spin 1s linear infinite;
+            margin-bottom: 28px;
+            box-shadow: 0 0 25px rgba(255,255,255,0.2);
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loader-text {
+        .loader-caption {
             font-family: 'Caveat', cursive;
             font-size: 2rem;
-            letter-spacing: 4px;
-            text-shadow: 0 0 10px white;
+            letter-spacing: 3px;
             margin-bottom: 20px;
+            text-shadow: 0 0 8px white;
         }
-        .progress-container {
-            width: 220px;
+        .progress-line {
+            width: 240px;
             height: 2px;
-            background: #1f1f1f;
+            background: #1c1c1c;
             margin-top: 10px;
         }
         .progress-fill {
             width: 0%;
             height: 100%;
             background: #ffffff;
-            box-shadow: 0 0 8px #fff;
-            transition: width 0.1s linear;
+            box-shadow: 0 0 10px #fff;
+            transition: width 0.08s linear;
         }
 
-        /* КАПЧА / ТЕСТ НА РОБОТА (КРАСИВЫЙ ИНТЕРАКТИВ) */
-        #captcha-gate {
+        /* CAPTCHA — ТЕСТ НА РОБОТА */
+        #captcha-root {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(12px);
-            z-index: 900;
+            background: rgba(0, 0, 0, 0.94);
+            backdrop-filter: blur(14px);
+            z-index: 1000;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.6s ease;
-            font-family: 'Inter', monospace;
+            transition: opacity 0.5s;
         }
-        .captcha-card {
-            background: rgba(10, 10, 15, 0.85);
-            border: 1px solid rgba(255,255,255,0.15);
-            backdrop-filter: blur(4px);
+        .captcha-container {
+            background: rgba(8, 8, 14, 0.85);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 42px;
             width: 90%;
-            max-width: 460px;
-            padding: 40px 30px;
+            max-width: 440px;
+            padding: 36px 28px;
             text-align: center;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-            transition: all 0.3s;
+            backdrop-filter: blur(4px);
         }
-        .robot-icon {
-            font-size: 48px;
-            margin-bottom: 20px;
-            opacity: 0.8;
+        .robot-badge {
+            font-size: 56px;
+            margin-bottom: 16px;
         }
         .captcha-title {
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             font-weight: 400;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
+            letter-spacing: -0.3px;
         }
-        .robot-check {
+        .fake-check {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
-            background: rgba(20,20,26,0.7);
-            border: 1px solid #333;
-            border-radius: 48px;
+            gap: 16px;
+            background: rgba(20,20,28,0.7);
+            border: 1px solid #2a2a2e;
+            border-radius: 60px;
             padding: 12px 24px;
-            margin: 30px 0;
+            margin: 32px 0;
             cursor: pointer;
             transition: 0.2s;
         }
-        .robot-check:hover {
+        .fake-check:hover {
             border-color: #aaa;
-            background: rgba(40,40,48,0.7);
+            background: #1e1e26;
         }
-        .check-box {
-            width: 24px;
-            height: 24px;
-            border: 2px solid #aaa;
-            border-radius: 6px;
-            background: transparent;
+        .checkbox-ui {
+            width: 26px;
+            height: 26px;
+            border: 2px solid #bcbcbc;
+            border-radius: 8px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: 0.2s;
-            color: black;
-            font-weight: bold;
-        }
-        .check-box.checked {
-            background: #ffffff;
-            border-color: #ffffff;
             color: #000;
+            font-weight: bold;
+            font-size: 18px;
+            background: transparent;
         }
-        .robot-text {
-            font-size: 1rem;
-            font-weight: 500;
+        .checkbox-ui.checked {
+            background: white;
+            border-color: white;
+            color: black;
         }
-        #unlock-btn {
+        .confirm-btn {
             background: transparent;
             border: 1px solid rgba(255,255,255,0.4);
             color: white;
-            padding: 12px 28px;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
+            padding: 14px;
             width: 100%;
-            cursor: pointer;
-            transition: 0.3s;
+            border-radius: 50px;
+            font-size: 0.9rem;
             font-weight: 500;
-            border-radius: 40px;
-            opacity: 0.6;
+            cursor: pointer;
+            opacity: 0.5;
             pointer-events: none;
+            transition: 0.2s;
         }
-        #unlock-btn.active {
+        .confirm-btn.active {
             opacity: 1;
-            pointer-events: all;
-            border-color: white;
-            box-shadow: 0 0 12px rgba(255,255,255,0.3);
+            pointer-events: auto;
+            border-color: #fff;
         }
-        #unlock-btn.active:hover {
-            background: white;
-            color: black;
+        .confirm-btn.active:hover {
+            background: #fff;
+            color: #000;
         }
 
         /* ОСНОВНОЙ КОНТЕНТ */
-        .main-content {
+        .main-dashboard {
             max-width: 1300px;
             margin: 0 auto;
-            padding: 50px 24px 80px;
+            padding: 60px 24px 80px;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(24px);
             transition: opacity 1s ease, transform 1s ease;
         }
-        .main-content.visible {
+        .dashboard-visible {
             opacity: 1;
             transform: translateY(0);
         }
-
-        /* ХЕДЕР */
-        .elite-header {
+        .hero {
             text-align: center;
             margin-bottom: 70px;
         }
-        .handwritten {
+        .glow-name {
             font-family: 'Caveat', cursive;
-            font-size: 5.2rem;
+            font-size: 5rem;
             font-weight: 700;
-            color: #fff;
-            text-shadow: 0 0 15px rgba(255,255,255,0.7), 0 0 30px rgba(255,255,255,0.3);
-            letter-spacing: 2px;
+            text-shadow: 0 0 15px #fff, 0 0 30px rgba(255,255,255,0.4);
         }
-        .sub {
+        .badge {
             font-size: 0.7rem;
             letter-spacing: 6px;
             text-transform: uppercase;
-            color: #aaaaaa;
             border-top: 1px solid rgba(255,255,255,0.2);
             display: inline-block;
-            padding-top: 12px;
+            padding-top: 10px;
             margin-top: 12px;
         }
 
-        /* СЕТКА УСЛУГ */
-        .cards-grid {
+        /* Карточки услуг */
+        .cards-flex {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 40px;
-            margin-bottom: 70px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 42px;
+            margin-bottom: 60px;
         }
-        .service-card {
-            background: rgba(12, 12, 16, 0.6);
+        .premium-card {
+            background: rgba(10, 10, 15, 0.6);
             backdrop-filter: blur(2px);
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 32px;
-            padding: 36px 28px;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
-            position: relative;
-            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 36px;
+            padding: 34px 28px;
+            transition: all 0.35s ease;
         }
-        .service-card:hover {
+        .premium-card:hover {
             border-color: rgba(255,255,255,0.3);
             transform: translateY(-6px);
-            background: rgba(18, 18, 24, 0.8);
-            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.8);
+            background: rgba(20, 20, 28, 0.7);
+            box-shadow: 0 20px 32px -16px black;
         }
-        .card-title {
+        .card-name {
             font-family: 'Caveat', cursive;
-            font-size: 2.2rem;
-            font-weight: 600;
-            margin-bottom: 20px;
+            font-size: 2.1rem;
         }
-        .price-tag {
-            font-size: 1.8rem;
-            font-weight: 600;
+        .price-highlight {
+            font-size: 1.7rem;
+            font-weight: 700;
             margin: 20px 0;
-            background: linear-gradient(135deg, #fff, #aaa);
-            -webkit-background-clip: text;
+            background: linear-gradient(135deg, #fff, #b0b0b0);
             background-clip: text;
+            -webkit-background-clip: text;
             color: transparent;
-            letter-spacing: -0.5px;
         }
         .feature-list {
             list-style: none;
-            margin: 25px 0 30px;
+            margin: 20px 0 28px;
         }
         .feature-list li {
             margin-bottom: 12px;
             font-size: 0.85rem;
-            color: #bcbcbc;
             display: flex;
+            gap: 10px;
             align-items: center;
-            gap: 8px;
         }
         .feature-list li::before {
             content: "✦";
-            color: white;
-            font-size: 12px;
+            color: #fff;
         }
-        .btn-buy {
-            width: 100%;
+
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .btn-dark {
             background: transparent;
             border: 1px solid rgba(255,255,255,0.25);
-            padding: 14px 10px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            color: #fff;
-            cursor: pointer;
-            transition: 0.25s;
+            padding: 14px 0;
             border-radius: 60px;
-            margin-top: 8px;
-            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            transition: 0.2s;
+            cursor: pointer;
+            display: block;
+            width: 100%;
         }
-        .btn-buy:hover {
+        .btn-dark:hover {
             background: #ffffff;
             color: #000;
             border-color: #fff;
-            box-shadow: 0 0 15px rgba(255,255,255,0.3);
+            box-shadow: 0 0 12px rgba(255,255,255,0.3);
+        }
+        .telegram-bot-btn {
+            background: rgba(0, 136, 204, 0.12);
+            border-color: #2a7faa;
+        }
+        .telegram-bot-btn:hover {
+            background: #1f8bcb;
+            color: white;
+            border-color: #1f8bcb;
+        }
+        footer {
+            text-align: center;
+            font-size: 0.65rem;
+            opacity: 0.3;
+            margin-top: 70px;
         }
 
-        /* МОДАЛКА ОПЛАТЫ */
-        .modal-overlay {
+        /* МОДАЛКА ОПЛАТЫ (Kaspi + ЮMoney + бот) */
+        .modal-payment {
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(10px);
             z-index: 2000;
             display: flex;
             align-items: center;
@@ -320,394 +313,361 @@
             opacity: 0;
             transition: 0.2s;
         }
-        .modal-active {
+        .modal-payment.active-modal {
             visibility: visible;
             opacity: 1;
         }
-        .payment-modal {
-            background: #0c0c10;
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 36px;
+        .modal-card {
+            background: #0c0c12;
+            border: 1px solid #2a2a2e;
+            border-radius: 40px;
             width: 90%;
-            max-width: 500px;
-            padding: 30px 28px;
-            text-align: center;
+            max-width: 520px;
+            padding: 28px 24px;
             position: relative;
         }
-        .close-modal {
+        .close-modal-icon {
             position: absolute;
+            right: 24px;
             top: 20px;
-            right: 25px;
             font-size: 28px;
             cursor: pointer;
             opacity: 0.6;
-            transition: 0.2s;
         }
-        .close-modal:hover { opacity: 1; }
-        .payment-method {
-            background: #16161c;
-            margin: 20px 0;
-            padding: 20px;
-            border-radius: 24px;
-            text-align: left;
-            border: 1px solid #2a2a2e;
+        .close-modal-icon:hover { opacity: 1; }
+        .pay-method {
+            background: #14141c;
+            border-radius: 28px;
+            padding: 18px;
+            margin: 18px 0;
+            border: 1px solid #23232a;
         }
-        .method-title {
+        .method-header {
             font-weight: bold;
-            font-size: 1.3rem;
-            margin-bottom: 10px;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
             display: flex;
-            gap: 8px;
+            gap: 12px;
             align-items: center;
         }
-        .details {
+        .copy-number {
+            background: #00000055;
+            padding: 10px;
+            border-radius: 18px;
             font-family: monospace;
-            background: #00000066;
-            padding: 12px;
-            border-radius: 16px;
             word-break: break-all;
-            font-size: 0.9rem;
-            margin: 12px 0;
-            letter-spacing: 1px;
+            margin: 10px 0;
         }
-        .copy-btn {
+        .copy-action {
             background: transparent;
-            border: 1px solid #fff;
-            color: white;
+            border: 1px solid white;
             padding: 6px 16px;
-            border-radius: 30px;
-            cursor: pointer;
+            border-radius: 40px;
             font-size: 0.7rem;
-            transition: 0.2s;
+            cursor: pointer;
         }
-        .copy-btn:hover {
-            background: white;
-            color: black;
-        }
-        .total-amount {
-            margin-top: 15px;
-            font-size: 1.5rem;
-            font-weight: bold;
-            border-top: 1px dashed #2a2a2a;
-            padding-top: 20px;
+        .tg-bot-row {
+            background: #1a2a36;
+            border-color: #2f6f8f;
         }
 
-        footer {
-            text-align: center;
-            margin-top: 60px;
-            font-size: 0.65rem;
-            opacity: 0.3;
-            letter-spacing: 2px;
-        }
-
-        @media (max-width: 720px) {
-            .handwritten { font-size: 3.5rem; }
-            .cards-grid { gap: 25px; }
+        @media (max-width: 700px) {
+            .glow-name { font-size: 3.5rem; }
+            .cards-flex { gap: 24px; }
         }
     </style>
 </head>
 <body>
 
 <canvas id="bg-canvas"></canvas>
-<div class="glow-overlay" id="glowOverlay"></div>
+<div class="glow-layer" id="glowLayer"></div>
 
-<!-- ЭПИЧНАЯ ЗАГРУЗКА -->
+<!-- ЗАГРУЗКА -->
 <div id="preloader">
-    <div class="loader-ring"></div>
-    <div class="loader-text">YOTAMARU</div>
-    <div class="progress-container">
-        <div class="progress-fill" id="loaderProgressFill"></div>
-    </div>
-    <div style="margin-top: 15px; font-size: 0.7rem; letter-spacing: 2px;">LOADING SECURE ENVIRONMENT</div>
+    <div class="ring-loader"></div>
+    <div class="loader-caption">YOTAMARU ELITE</div>
+    <div class="progress-line"><div class="progress-fill" id="loadFill"></div></div>
+    <div style="font-size: 0.7rem; margin-top: 12px;">инициализация нейросетей</div>
 </div>
 
-<!-- КАПЧА / ТЕСТ НА РОБОТА (ЭЛЕГАНТ) -->
-<div id="captcha-gate">
-    <div class="captcha-card">
-        <div class="robot-icon">🤖✨</div>
-        <div class="captcha-title">верификация личности</div>
-        <div class="robot-check" id="robotCheckBtn">
-            <div class="check-box" id="checkBoxIcon"> </div>
-            <span class="robot-text">Я не робот</span>
+<!-- КАПЧА / ТЕСТ НА РОБОТА -->
+<div id="captcha-root">
+    <div class="captcha-container">
+        <div class="robot-badge">⚡🤖⚡</div>
+        <div class="captcha-title">верификация доступа</div>
+        <div id="captchaCheckbox" class="fake-check">
+            <div id="checkIcon" class="checkbox-ui"></div>
+            <span>Я не робот</span>
         </div>
-        <button id="unlock-btn">ПОДТВЕРДИТЬ ДОСТУП</button>
-        <p style="font-size: 0.7rem; margin-top: 20px; opacity: 0.5;">антибот защита • Yotamaru elite</p>
+        <button id="unlockAccessBtn" class="confirm-btn">ПОДТВЕРДИТЬ</button>
+        <p style="font-size: 0.65rem; margin-top: 18px;">защита от автоматических запросов</p>
     </div>
 </div>
 
-<!-- ОСНОВНОЙ КОНТЕНТ -->
-<div class="main-content" id="mainUI">
-    <div class="elite-header">
-        <h1 class="handwritten">Yotamaru</h1>
-        <div class="sub">PREMIUM EMULATION • DEEP OPTIMIZATION</div>
+<!-- ОСНОВНОЙ ИНТЕРФЕЙС -->
+<div class="main-dashboard" id="mainApp">
+    <div class="hero">
+        <h1 class="glow-name">Yotamaru</h1>
+        <div class="badge">PREMIUM PERFORMANCE & EMULATION</div>
     </div>
 
-    <div class="cards-grid">
-        <!-- Карточка 1: Эмулятор -->
-        <div class="service-card">
-            <div class="card-title">Yotamaru Emulator</div>
-            <div class="price-tag">2 000 ₽</div>
+    <div class="cards-flex">
+        <!-- Эмулятор -->
+        <div class="premium-card">
+            <div class="card-name">Yotamaru Emulator</div>
+            <div class="price-highlight">2 000 ₽</div>
             <ul class="feature-list">
-                <li>Эксклюзивный интерфейс ZeroLag</li>
-                <li>Полная блокировка рекламы</li>
-                <li>Стабилизация FPS + ускорение</li>
-                <li>Аппаратная защита HWID</li>
-                <li>Премиум конфигурация сенсорики</li>
+                <li>Интерфейс ZeroLag + NoAds</li>
+                <li>Стабилизация FPS / Ultra Low Input</li>
+                <li>Защита HWID + Антидетект</li>
+                <li>Премиум сенсорика</li>
             </ul>
-            <button class="btn-buy" data-product="Yotamaru Emulator" data-price="2000">💎 ПРИОБРЕСТИ</button>
+            <div class="btn-group">
+                <button class="btn-dark showPayModal" data-product="Эмулятор Yotamaru">💳 КАСПИ / ЮMONEY</button>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-dark telegram-bot-btn">🤖 ОПЛАТА ЧЕРЕЗ ТЕЛЕГРАМ БОТА</a>
+            </div>
         </div>
 
-        <!-- Карточка 2: Оптимизация ПК -->
-        <div class="service-card">
-            <div class="card-title">PC Optimization</div>
-            <div class="price-tag">2 000 ₽</div>
+        <!-- Оптимизация ПК -->
+        <div class="premium-card">
+            <div class="card-name">PC Optimization</div>
+            <div class="price-highlight">2 000 ₽</div>
             <ul class="feature-list">
-                <li>Универсальный твикинг для игр</li>
-                <li>CS2 / Valorant / Dota 2 профили</li>
-                <li>Снижение инпута до минимума</li>
-                <li>Стабилизация пинга и latency</li>
-                <li>VIP поддержка 24/7</li>
+                <li>Твикинг для CS2 / Valorant / Dota 2</li>
+                <li>Снижение пинга и джиттера</li>
+                <li>Элитная поддержка 24/7</li>
+                <li>Скрипты автоматизации</li>
             </ul>
-            <button class="btn-buy" data-product="PC Optimization" data-price="2000">⚡ ПРИОБРЕСТИ</button>
+            <div class="btn-group">
+                <button class="btn-dark showPayModal" data-product="PC Optimization">💳 КАСПИ / ЮMONEY</button>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-dark telegram-bot-btn">🤖 ОПЛАТА ЧЕРЕЗ ТЕЛЕГРАМ БОТА</a>
+            </div>
         </div>
     </div>
+
+    <!-- дополнительный блок "ещё чёт" – контакт поддержки -->
+    <div style="text-align: center; margin-top: 20px;">
+        <a href="https://t.me/YotamaruShopBot" target="_blank" style="color: #ccc; text-decoration: none; border-bottom: 1px dashed #555;">⚡ Официальный бот @YotamaruShopBot</a>
+        <span style="margin: 0 15px; opacity:0.3;">|</span>
+        <a href="https://t.me/yotamaru_support" target="_blank" style="color: #ccc; text-decoration: none; border-bottom: 1px dashed #555;">🎧 Поддержка 24/7</a>
+    </div>
+
     <footer>
-        YOTAMARU ELITE • TRANSPARENT PAYMENT • 2026
+        YOTAMARU ELITE • TRANSPARENCY • 2026
     </footer>
 </div>
 
-<!-- Модал с реквизитами Kaspi и ЮMoney -->
-<div id="paymentModal" class="modal-overlay">
-    <div class="payment-modal">
-        <div class="close-modal" id="closeModalBtn">&times;</div>
-        <h3 style="margin-bottom: 10px;">💸 ОПЛАТА 2000 ₽</h3>
-        <p style="opacity: 0.7; margin-bottom: 20px;">Выберите удобный способ</p>
+<!-- МОДАЛКА С РЕКВИЗИТАМИ KASPI / ЮМОНИ -->
+<div id="paymentModalWin" class="modal-payment">
+    <div class="modal-card">
+        <div class="close-modal-icon" id="closePayModal">&times;</div>
+        <h3 style="margin-bottom: 8px;">💸 Оплата 2000 ₽</h3>
+        <p style="opacity: 0.7; font-size: 0.8rem;">Реквизиты для оплаты</p>
 
-        <!-- Kaspi -->
-        <div class="payment-method">
-            <div class="method-title">💰 Kaspi.kz</div>
-            <div class="details" id="kaspiNumber">4400 4303 4792 1634</div>
-            <div class="details" style="font-size:0.8rem;">Получатель: Мираса А.</div>
-            <button class="copy-btn" data-clipboard="4400 4303 4792 1634">📋 Скопировать номер Kaspi</button>
+        <div class="pay-method">
+            <div class="method-header">💰 Kaspi.kz</div>
+            <div class="copy-number" id="kaspiNumberText">4400 4303 4792 1634</div>
+            <div style="font-size: 0.7rem; margin-bottom: 6px;">Получатель: Мираса А.</div>
+            <button class="copy-action" data-clip="4400 4303 4792 1634">📋 Скопировать Kaspi</button>
         </div>
 
-        <!-- ЮMoney -->
-        <div class="payment-method">
-            <div class="method-title">💳 ЮMoney</div>
-            <div class="details" id="yoomoneyNumber">5599 0020 9639 5761</div>
-            <button class="copy-btn" data-clipboard="5599 0020 9639 5761">📋 Скопировать номер ЮMoney</button>
+        <div class="pay-method">
+            <div class="method-header">💳 ЮMoney</div>
+            <div class="copy-number" id="yooNumberText">5599 0020 9639 5761</div>
+            <button class="copy-action" data-clip="5599 0020 9639 5761">📋 Скопировать ЮMoney</button>
         </div>
-        <div class="total-amount">
-            Сумма: 2 000 ₽
+
+        <div class="pay-method tg-bot-row">
+            <div class="method-header">🤖 Telegram Bot (мгновенная покупка)</div>
+            <a href="https://t.me/YotamaruShopBot" target="_blank" style="display: block; margin: 12px 0; background: #2c6b8f; padding: 12px; border-radius: 40px; text-align: center; color: white; text-decoration: none; font-weight: 600;">Перейти в @YotamaruShopBot</a>
+            <div style="font-size: 0.7rem; opacity: 0.8;">Автоматическая выдача доступа после оплаты</div>
         </div>
-        <p style="font-size: 0.7rem; margin-top: 15px;">После оплаты пришлите чек в Telegram поддержки (контакты в описании)</p>
+        <div style="margin-top: 18px; font-weight: 500;">Сумма: 2 000 ₽</div>
     </div>
 </div>
 
 <script>
-    // ---------- 1. ФОН (СЕТЬ + ЧАСТИЦЫ + ОТСЛЕЖИВАНИЕ МЫШИ) ----------
-    const canvas = document.getElementById('bg-canvas');
-    const ctx = canvas.getContext('2d');
-    let width = window.innerWidth, height = window.innerHeight;
-    let particles = [];
-    const mouse = { x: width/2, y: height/2, influence: 100 };
+    (function(){
+        // ------------------------------------------------------------------
+        // 1. ФОН (частицы + интерактив)
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let w = window.innerWidth, h = window.innerHeight;
+        let particles = [];
+        const mouse = { x: w/2, y: h/2, radius: 110 };
 
-    function resizeCanvas() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-        initParticles();
-    }
-
-    class ParticleFlow {
-        constructor() {
-            this.x = Math.random() * width;
-            this.y = Math.random() * height;
-            this.vx = (Math.random() - 0.5) * 0.6;
-            this.vy = (Math.random() - 0.5) * 0.6;
-            this.size = Math.random() * 2 + 1;
+        function resizeCanvas(){
+            w = window.innerWidth;
+            h = window.innerHeight;
+            canvas.width = w;
+            canvas.height = h;
+            initParticles();
         }
-        update() {
-            this.x += this.vx;
-            this.y += this.vy;
-            if (this.x < 0) this.x = width;
-            if (this.x > width) this.x = 0;
-            if (this.y < 0) this.y = height;
-            if (this.y > height) this.y = 0;
 
-            const dx = mouse.x - this.x;
-            const dy = mouse.y - this.y;
-            const dist = Math.hypot(dx, dy);
-            if (dist < mouse.influence) {
-                const angle = Math.atan2(dy, dx);
-                const force = (mouse.influence - dist) / mouse.influence;
-                this.x -= Math.cos(angle) * force * 1.2;
-                this.y -= Math.sin(angle) * force * 1.2;
+        class Particle {
+            constructor(){
+                this.x = Math.random() * w;
+                this.y = Math.random() * h;
+                this.vx = (Math.random() - 0.5) * 0.7;
+                this.vy = (Math.random() - 0.5) * 0.7;
+                this.size = Math.random() * 2.2 + 0.8;
+            }
+            update(){
+                this.x += this.vx;
+                this.y += this.vy;
+                if(this.x < 0) this.x = w;
+                if(this.x > w) this.x = 0;
+                if(this.y < 0) this.y = h;
+                if(this.y > h) this.y = 0;
+                const dx = mouse.x - this.x;
+                const dy = mouse.y - this.y;
+                const dist = Math.hypot(dx, dy);
+                if(dist < mouse.radius){
+                    const angle = Math.atan2(dy, dx);
+                    const force = (mouse.radius - dist) / mouse.radius;
+                    this.x -= Math.cos(angle) * force * 1.2;
+                    this.y -= Math.sin(angle) * force * 1.2;
+                }
+            }
+            draw(){
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+                ctx.fillStyle = `rgba(255, 250, 240, ${0.45 + Math.sin(Date.now() * 0.002 + this.x) * 0.1})`;
+                ctx.fill();
             }
         }
-        draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${0.3 + Math.sin(Date.now() * 0.001 + this.x) * 0.1})`;
-            ctx.fill();
+
+        function initParticles(){
+            particles = [];
+            const count = Math.min(100, Math.floor(w * h / 11000));
+            for(let i=0; i<count; i++) particles.push(new Particle());
         }
-    }
 
-    function initParticles() {
-        particles = [];
-        const count = Math.min(120, Math.floor(width * height / 10000));
-        for (let i = 0; i < count; i++) particles.push(new ParticleFlow());
-    }
-
-    function drawLines() {
-        for (let i = 0; i < particles.length; i++) {
-            for (let j = i+1; j < particles.length; j++) {
-                const dx = particles[i].x - particles[j].x;
-                const dy = particles[i].y - particles[j].y;
-                const distance = Math.hypot(dx, dy);
-                if (distance < 130) {
-                    ctx.beginPath();
-                    ctx.moveTo(particles[i].x, particles[i].y);
-                    ctx.lineTo(particles[j].x, particles[j].y);
-                    const alpha = 1 - distance / 130;
-                    ctx.strokeStyle = `rgba(255,255,255,${alpha * 0.2})`;
-                    ctx.lineWidth = 0.6;
-                    ctx.stroke();
+        function drawConnections(){
+            for(let i=0; i<particles.length; i++){
+                for(let j=i+1; j<particles.length; j++){
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.hypot(dx, dy);
+                    if(dist < 130){
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(255,255,240,${0.2 * (1 - dist/130)})`;
+                        ctx.lineWidth = 0.6;
+                        ctx.stroke();
+                    }
                 }
             }
         }
-    }
 
-    function animateParticles() {
-        if (!ctx) return;
-        ctx.clearRect(0, 0, width, height);
-        particles.forEach(p => { p.update(); p.draw(); });
-        drawLines();
-        requestAnimationFrame(animateParticles);
-    }
-
-    window.addEventListener('resize', () => {
-        resizeCanvas();
-    });
-    window.addEventListener('mousemove', (e) => {
-        mouse.x = e.clientX;
-        mouse.y = e.clientY;
-        const overlay = document.getElementById('glowOverlay');
-        overlay.style.setProperty('--x', e.clientX + 'px');
-        overlay.style.setProperty('--y', e.clientY + 'px');
-    });
-    resizeCanvas();
-    initParticles();
-    animateParticles();
-
-    // ---------- 2. ЗАГРУЗКА С АНИМАЦИЕЙ ----------
-    let progress = 0;
-    const progressFill = document.getElementById('loaderProgressFill');
-    const preloaderDiv = document.getElementById('preloader');
-    const intervalLoad = setInterval(() => {
-        progress += Math.floor(Math.random() * 6) + 2;
-        if (progress >= 100) {
-            progress = 100;
-            clearInterval(intervalLoad);
-            setTimeout(() => {
-                preloaderDiv.style.opacity = '0';
-                setTimeout(() => {
-                    preloaderDiv.style.display = 'none';
-                }, 900);
-            }, 300);
+        function animateBg(){
+            if(!ctx) return;
+            ctx.clearRect(0, 0, w, h);
+            particles.forEach(p => { p.update(); p.draw(); });
+            drawConnections();
+            requestAnimationFrame(animateBg);
         }
-        progressFill.style.width = progress + '%';
-    }, 70);
 
-    // ---------- 3. ТЕСТ НА РОБОТА (КРАСИВЫЙ ЧЕКБОКС) ----------
-    let captchaPassed = false;
-    const checkBoxDiv = document.getElementById('checkBoxIcon');
-    const robotCheckBtn = document.getElementById('robotCheckBtn');
-    const unlockButton = document.getElementById('unlock-btn');
-    
-    robotCheckBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (!captchaPassed) {
-            captchaPassed = true;
-            checkBoxDiv.innerHTML = '✓';
-            checkBoxDiv.classList.add('checked');
-            unlockButton.classList.add('active');
-        }
-    });
-
-    unlockButton.addEventListener('click', () => {
-        if (captchaPassed) {
-            const gate = document.getElementById('captcha-gate');
-            gate.style.opacity = '0';
-            setTimeout(() => {
-                gate.style.display = 'none';
-                document.getElementById('mainUI').classList.add('visible');
-            }, 500);
-        }
-    });
-
-    // ---------- 4. МОДАЛЬНОЕ ОКНО ОПЛАТЫ С РЕКВИЗИТАМИ ----------
-    const modal = document.getElementById('paymentModal');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    const buyBtns = document.querySelectorAll('.btn-buy');
-
-    function openModal() {
-        modal.classList.add('modal-active');
-    }
-    function closeModal() {
-        modal.classList.remove('modal-active');
-    }
-    closeModalBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) closeModal();
-    });
-
-    buyBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const product = btn.getAttribute('data-product') || 'услуга';
-            const price = btn.getAttribute('data-price');
-            openModal();
+        window.addEventListener('resize', () => { resizeCanvas(); });
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+            const glowLayer = document.getElementById('glowLayer');
+            glowLayer.style.setProperty('--mx', e.clientX + 'px');
+            glowLayer.style.setProperty('--my', e.clientY + 'px');
         });
-    });
+        resizeCanvas();
+        initParticles();
+        animateBg();
 
-    // Копирование реквизитов
-    const copyButtons = document.querySelectorAll('.copy-btn');
-    copyButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const textToCopy = btn.getAttribute('data-clipboard');
-            if (textToCopy) {
-                navigator.clipboard.writeText(textToCopy).then(() => {
-                    const originalText = btn.innerText;
-                    btn.innerText = '✅ СКОПИРОВАНО';
+        // 2. ЗАГРУЗКА
+        let loadVal = 0;
+        const fillBar = document.getElementById('loadFill');
+        const preloaderDiv = document.getElementById('preloader');
+        const interval = setInterval(() => {
+            loadVal += Math.floor(Math.random() * 4) + 2;
+            if(loadVal >= 100){
+                loadVal = 100;
+                clearInterval(interval);
+                setTimeout(() => {
+                    preloaderDiv.style.opacity = '0';
                     setTimeout(() => {
-                        btn.innerText = originalText;
-                    }, 1500);
-                }).catch(() => {
-                    alert('Не удалось скопировать, скопируйте вручную');
-                });
+                        preloaderDiv.style.display = 'none';
+                    }, 800);
+                }, 200);
+            }
+            fillBar.style.width = loadVal + '%';
+        }, 40);
+
+        // 3. ТЕСТ НА РОБОТА (красивый чекбокс)
+        let humanConfirmed = false;
+        const checkDiv = document.getElementById('checkIcon');
+        const captchaBox = document.getElementById('captchaCheckbox');
+        const unlockBtn = document.getElementById('unlockAccessBtn');
+        const captchaRoot = document.getElementById('captcha-root');
+
+        captchaBox.addEventListener('click', () => {
+            if(!humanConfirmed){
+                humanConfirmed = true;
+                checkDiv.innerHTML = '✓';
+                checkDiv.classList.add('checked');
+                unlockBtn.classList.add('active');
             }
         });
-    });
+        unlockBtn.addEventListener('click', () => {
+            if(humanConfirmed){
+                captchaRoot.style.opacity = '0';
+                setTimeout(() => {
+                    captchaRoot.style.display = 'none';
+                    document.getElementById('mainApp').classList.add('dashboard-visible');
+                }, 500);
+            }
+        });
 
-    // Доп стиль: плавность модалки и предотвращение конфликтов
-    // Если пользователь пытается кликнуть до капчи – контент заблокирован. Идеально.
-    // Также для безопасности – убедимся что mainUI не покажется раньше времени
-    // Показываем контент только после капчи.
-    
-    // Скрипт для дополнительного эффекта мерцания
-    const styleEffect = document.createElement('style');
-    styleEffect.textContent = `
-        .btn-buy, .copy-btn { transition: all 0.2s; }
-        .service-card { transition: transform 0.25s ease, border-color 0.2s; }
-    `;
-    document.head.appendChild(styleEffect);
-    
-    // Убираем возможность открыть модалку до капчи? Модалка все равно не откроется, но контент не виден до капчи.
-    // Но на всякий случай: скрипт модалки работает после исчезновения гейта. Всё ок.
-    // Также небольшая корректировка, чтобы в модалке реквизиты были точными.
-    // Дополнительно: кнопки оплаты ссылаются на реквизиты из задания.
-    console.log('Ready | Elite Yotamaru');
+        // 4. МОДАЛКА ОПЛАТЫ с Kaspi / ЮMoney + бот
+        const modalWin = document.getElementById('paymentModalWin');
+        const closeModalBtn = document.getElementById('closePayModal');
+        const showModalBtns = document.querySelectorAll('.showPayModal');
+
+        function openPaymentModal(){
+            modalWin.classList.add('active-modal');
+        }
+        function closePaymentModal(){
+            modalWin.classList.remove('active-modal');
+        }
+        closeModalBtn.addEventListener('click', closePaymentModal);
+        modalWin.addEventListener('click', (e) => {
+            if(e.target === modalWin) closePaymentModal();
+        });
+        showModalBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                openPaymentModal();
+            });
+        });
+
+        // копирование реквизитов
+        const copyActions = document.querySelectorAll('.copy-action');
+        copyActions.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const text = btn.getAttribute('data-clip');
+                if(text){
+                    navigator.clipboard.writeText(text).then(() => {
+                        const original = btn.innerText;
+                        btn.innerText = '✅ Готово!';
+                        setTimeout(() => { btn.innerText = original; }, 1500);
+                    }).catch(() => alert('Копируйте вручную: ' + text));
+                }
+            });
+        });
+
+        // дополнительные ссылки на бота уже есть, также добавим эффект
+        // "еще чет" - ссылка на поддержку и бот основной добавлены
+        
+        // для предотвращения конфликта, если капча еще не пройдена, модалка не должна мешать
+        // все ок
+        console.log('Yotamaru Elite | защита и Kaspi/ЮMoney + бот');
+    })();
 </script>
 </body>
 </html>
