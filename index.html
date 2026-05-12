@@ -4,40 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#000000">
-    <title>YOTAMARU | VOID ELITE — эмулятор & оптимизация</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>YOTAMARU | BLACK ELITE — эмулятор и оптимизация</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none;
         }
 
         body {
-            font-family: 'Space Grotesk', sans-serif;
+            font-family: 'Inter', 'Space Grotesk', sans-serif;
             background-color: #000000;
-            color: #ececec;
+            color: #ededed;
             overflow-x: hidden;
             min-height: 100vh;
         }
 
-        ::-webkit-scrollbar { width: 2px; }
-        ::-webkit-scrollbar-track { background: #000000; }
-        ::-webkit-scrollbar-thumb { background: #7a7a7a; border-radius: 2px; }
+        ::-webkit-scrollbar {
+            width: 3px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050505;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4a4a4a;
+            border-radius: 10px;
+        }
 
-        .black-overlay {
+        /* Градиентный фон */
+        .gradient-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at 40% 45%, #0a0a0a 0%, #000000 95%);
+            background: radial-gradient(circle at 30% 20%, #0a0a0a 0%, #000000 100%);
             z-index: -2;
             pointer-events: none;
         }
+        
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.3;
+        }
 
-        #three-canvas {
+        #canvas-bg {
             position: fixed;
             top: 0;
             left: 0;
@@ -48,6 +68,7 @@
             pointer-events: none;
         }
 
+        /* ПРЕЛОАДЕР — стильный, с прогрессом и glow */
         #preloader {
             position: fixed;
             inset: 0;
@@ -57,525 +78,577 @@
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .preloader-ring {
-            width: 80px;
-            height: 80px;
-            border: 2px solid rgba(150, 150, 150, 0.15);
-            border-top: 2px solid #bbbbbb;
-            border-radius: 50%;
-            animation: spin 0.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-            margin-bottom: 28px;
-            box-shadow: 0 0 12px rgba(180,180,180,0.2);
+        .preloader-content {
+            text-align: center;
+            transform: translateY(-20px);
         }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .preloader-text {
-            font-size: 1.7rem;
-            font-weight: 700;
-            letter-spacing: 8px;
-            background: linear-gradient(135deg, #ddd, #888);
+        .preloader-logo {
+            font-size: 4rem;
+            font-weight: 800;
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #ffffff, #8a8a8a);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            margin-bottom: 25px;
+            animation: softPulse 1.8s infinite;
+        }
+        @keyframes softPulse {
+            0% { opacity: 0.6; letter-spacing: -2px; }
+            50% { opacity: 1; letter-spacing: 3px; text-shadow: 0 0 12px rgba(255,255,255,0.2);}
+            100% { opacity: 0.6; letter-spacing: -2px; }
+        }
+        .preloader-progress {
+            width: 260px;
+            height: 2px;
+            background: #1c1c1c;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px auto;
+        }
+        .preloader-progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #b0b0b0, #efefef);
+            transition: width 0.08s linear;
+        }
+        .preloader-status {
+            font-size: 0.7rem;
+            letter-spacing: 4px;
+            color: #7a7a7a;
+            font-weight: 300;
+            margin-top: 10px;
+        }
+        .glow-pulse {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.02);
+            margin-bottom: 30px;
+            animation: borderPulse 1.5s ease-out infinite;
+            box-shadow: 0 0 15px rgba(255,255,255,0.1);
+        }
+        @keyframes borderPulse {
+            0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.1); transform: scale(0.96);}
+            70% { box-shadow: 0 0 0 15px rgba(255,255,255,0); transform: scale(1);}
+            100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); transform: scale(0.96);}
         }
 
-        #password-screen {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.96);
-            backdrop-filter: blur(20px);
-            z-index: 1500;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 0.5s ease;
-        }
-        .password-card {
-            background: rgba(6, 6, 6, 0.9);
-            border: 1px solid #2c2c2c;
-            border-radius: 56px;
-            padding: 44px 34px;
-            width: 90%;
-            max-width: 440px;
-            text-align: center;
-            box-shadow: 0 30px 50px -20px black, inset 0 1px 0 rgba(255,255,255,0.02);
-        }
-        .password-icon { font-size: 58px; filter: drop-shadow(0 0 6px #666); margin-bottom: 12px; }
-        .password-title { font-size: 1.9rem; font-weight: 600; letter-spacing: -0.5px; margin-bottom: 24px; background: linear-gradient(120deg, #fff, #aaa); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .password-field {
-            background: #0c0c0c;
-            border: 1px solid #2f2f2f;
-            border-radius: 60px;
-            padding: 14px 20px;
-            font-size: 1.7rem;
-            font-family: monospace;
-            letter-spacing: 8px;
-            text-align: center;
-            color: #e0e0e0;
-            margin: 16px 0;
-            width: 100%;
-        }
-        .password-field:focus { border-color: #8a8a8a; outline: none; background: #000; }
-        .unlock-password-btn {
-            background: #101010;
-            border: 1px solid #3c3c3c;
-            padding: 14px 28px;
-            width: 100%;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 1rem;
-            letter-spacing: 1px;
-            color: #f0f0f0;
-            cursor: pointer;
-            transition: all 0.25s;
-        }
-        .unlock-password-btn:hover { background: #1e1e1e; border-color: #b0b0b0; transform: translateY(-2px); }
-
-        /* MAIN */
+        /* ОСНОВНОЙ КОНТЕНТ */
         .main-container {
             max-width: 1300px;
             margin: 0 auto;
-            padding: 50px 28px 90px;
+            padding: 40px 28px 90px;
             opacity: 0;
-            transform: translateY(35px);
-            transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transform: translateY(40px);
+            transition: opacity 1s cubic-bezier(0.2, 0.9, 0.4, 1), transform 1s cubic-bezier(0.2, 0.9, 0.4, 1);
             position: relative;
             z-index: 10;
         }
-        .main-container.visible { opacity: 1; transform: translateY(0); }
+        .main-container.loaded {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-        /* языковой переключатель */
-        .lang-switch {
+        /* Языковой блок стильный */
+        .lang-ribbon {
             display: flex;
             justify-content: flex-end;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 20px;
         }
-        .lang-btn {
-            background: transparent;
-            border: 1px solid #2c2c2c;
-            padding: 4px 14px;
+        .lang-chip {
+            background: rgba(20,20,20,0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid #2a2a2a;
             border-radius: 40px;
-            font-size: 0.75rem;
+            padding: 6px 18px;
+            font-size: 0.7rem;
             font-weight: 500;
             cursor: pointer;
-            color: #aaa;
             transition: 0.2s;
+            color: #aaa;
+            letter-spacing: 0.5px;
         }
-        .lang-btn.active { background: #1a1a1a; border-color: #aaa; color: white; }
-        .lang-btn:hover { border-color: #777; color: #ddd; }
+        .lang-chip.active {
+            background: #1e1e1e;
+            border-color: #b0b0b0;
+            color: white;
+        }
+        .lang-chip:hover {
+            border-color: #7a7a7a;
+            transform: translateY(-2px);
+        }
 
-        .hero { text-align: center; margin-bottom: 70px; }
-        .glow-title {
-            font-size: 6rem;
+        /* Hero */
+        .hero {
+            text-align: center;
+            margin-bottom: 70px;
+            position: relative;
+        }
+        .glitch-title {
+            font-size: 5.8rem;
             font-weight: 800;
-            background: linear-gradient(135deg, #ffffff 0%, #9e9e9e 80%);
+            font-family: 'Space Grotesk', sans-serif;
+            background: linear-gradient(135deg, #ffffff 0%, #b0b0b0 60%, #6e6e6e 100%);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -3px;
-            filter: drop-shadow(0 0 15px rgba(100,100,100,0.3));
+            letter-spacing: -4px;
+            text-shadow: 0 0 8px rgba(255,255,255,0.2);
+            animation: titleFloat 3s ease-in-out infinite;
         }
-        .sub-badge { font-size: 0.7rem; letter-spacing: 8px; text-transform: uppercase; border-top: 1px solid #2a2a2a; display: inline-block; padding-top: 14px; margin-top: 8px; font-weight: 400; color: #aaa; }
+        @keyframes titleFloat {
+            0% { transform: translateY(0px);}
+            50% { transform: translateY(-6px);}
+            100% { transform: translateY(0px);}
+        }
+        .hero-badge {
+            display: inline-block;
+            margin-top: 20px;
+            border-top: 1px solid #333;
+            padding-top: 15px;
+            font-size: 0.7rem;
+            letter-spacing: 6px;
+            font-weight: 300;
+            color: #aaa;
+        }
 
-        .tabs { display: flex; justify-content: center; gap: 16px; margin-bottom: 54px; flex-wrap: wrap; }
-        .tab {
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(12px);
+        /* Табы */
+        .tabs-modern {
+            display: flex;
+            justify-content: center;
+            gap: 18px;
+            margin-bottom: 55px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: rgba(5,5,5,0.7);
+            backdrop-filter: blur(10px);
             border: 1px solid #2a2a2a;
             padding: 10px 32px;
-            border-radius: 50px;
-            font-weight: 500;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: all 0.3s;
-            color: #c0c0c0;
-            font-size: 0.95rem;
-            letter-spacing: 1px;
+            color: #cacaca;
+            letter-spacing: 0.3px;
         }
-        .tab:hover { border-color: #8a8a8a; background: #0f0f0f; transform: translateY(-2px); }
-        .tab.active { background: #0c0c0c; border-color: #c0c0c0; color: #ffffff; box-shadow: 0 0 12px rgba(255,255,255,0.05); }
-        .tab-content { display: none; animation: fadeSlide 0.55s cubic-bezier(0.2, 0.9, 0.4, 1); }
-        .tab-content.active-tab { display: block; }
-        @keyframes fadeSlide { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-btn i {
+            margin-right: 8px;
+        }
+        .tab-btn:hover {
+            border-color: #8a8a8a;
+            background: #111;
+            transform: translateY(-3px);
+        }
+        .tab-btn.active {
+            background: #151515;
+            border-color: #e0e0e0;
+            color: #fff;
+            box-shadow: 0 0 16px rgba(255,255,255,0.06);
+        }
 
-        /* карточки с новым прайсом */
+        .tab-pane {
+            display: none;
+            animation: fadeSlide 0.5s ease;
+        }
+        .tab-pane.active-pane {
+            display: block;
+        }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(15px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+
+        /* Карточки услуг — эффект стекла */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
             gap: 45px;
         }
-        .service-card {
-            background: rgba(8, 8, 8, 0.9);
-            backdrop-filter: blur(6px);
-            border: 1px solid #242424;
-            border-radius: 48px;
+        .service-item {
+            background: rgba(8, 8, 8, 0.75);
+            backdrop-filter: blur(12px);
+            border: 1px solid #262626;
+            border-radius: 56px;
             padding: 38px 32px;
-            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transition: all 0.4s cubic-bezier(0.2, 0.95, 0.4, 1);
             transform: translateY(30px);
             opacity: 0;
-            animation: riseCard 0.6s forwards;
-            box-shadow: 0 20px 30px -20px rgba(0,0,0,0.8);
+            animation: cardRise 0.7s forwards;
+            box-shadow: 0 20px 35px -20px black;
         }
-        @keyframes riseCard { to { opacity: 1; transform: translateY(0); } }
-        .service-card:nth-child(1) { animation-delay: 0.08s; }
-        .service-card:nth-child(2) { animation-delay: 0.18s; }
-        .service-card:hover { border-color: #616161; transform: translateY(-8px); background: #0e0e0e; box-shadow: 0 30px 40px -18px black; }
-
+        @keyframes cardRise {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .service-item:hover {
+            border-color: #6a6a6a;
+            transform: translateY(-8px) scale(1.01);
+            background: rgba(12,12,12,0.9);
+            box-shadow: 0 30px 45px -18px #000000;
+        }
         .service-name {
-            font-size: 1.9rem;
+            font-size: 2rem;
             font-weight: 700;
-            margin-bottom: 10px;
-            background: linear-gradient(130deg, #fff, #d0d0d0);
+            font-family: 'Space Grotesk', sans-serif;
+            margin-bottom: 12px;
+            background: linear-gradient(120deg, #fff, #bfbfbf);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-        .price-tag {
-            font-size: 1.4rem;
-            font-weight: 500;
-            background: rgba(20,20,20,0.7);
+        .price-chip {
+            background: #0c0c0c;
             display: inline-block;
-            padding: 8px 22px;
+            padding: 8px 24px;
             border-radius: 60px;
-            margin: 15px 0;
-            border-left: 2px solid #8a8a8a;
-            letter-spacing: 0.5px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin: 15px 0 8px;
+            border-left: 2px solid #9e9e9e;
+            letter-spacing: 0;
         }
-        .currency-list {
+        .price-multicurrency {
             display: flex;
-            gap: 18px;
-            margin: 10px 0 20px;
-            color: #b4b4b4;
-            font-weight: 500;
+            gap: 15px;
+            margin: 8px 0 18px;
+            font-size: 0.85rem;
+            color: #b9b9b9;
+        }
+        .feature-list {
+            list-style: none;
+            margin: 25px 0 30px;
+        }
+        .feature-list li {
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+        .feature-list li i {
+            width: 22px;
+            color: #bbbbbb;
             font-size: 0.9rem;
         }
-        .currency-list span { background: #111; padding: 4px 12px; border-radius: 30px; }
-        .features { list-style: none; margin: 22px 0 32px; }
-        .features li { margin-bottom: 14px; display: flex; align-items: center; gap: 12px; font-size: 0.95rem; color: #ccc; font-weight: 400; }
-        .features li::before { content: "⟡"; color: #aaa; font-size: 0.8rem; }
-        .btn-pay {
-            background: #0a0a0a;
+        .btn-order {
+            background: #101010;
             border: 1px solid #3a3a3a;
-            padding: 12px 10px;
-            border-radius: 44px;
-            font-weight: 600;
+            padding: 14px 12px;
+            border-radius: 50px;
+            font-weight: 700;
+            width: 100%;
             text-align: center;
-            color: #f5f5f5;
             cursor: pointer;
             transition: 0.25s;
+            color: #f0f0f0;
             margin-top: 10px;
             display: block;
-            width: 100%;
             font-size: 0.9rem;
-            letter-spacing: 0.5px;
         }
-        .btn-pay:hover { background: #1a1a1a; border-color: #9a9a9a; transform: translateY(-2px); }
-        .tg-btn { background: #040404; border-color: #2e2e2e; }
+        .btn-order i { margin-right: 8px; }
+        .btn-order:hover {
+            background: #1f1f1f;
+            border-color: #b0b0b0;
+            transform: translateY(-2px);
+        }
+        .tg-order {
+            background: #0a0a0a;
+            border-color: #2c2c2c;
+            margin-top: 12px;
+            text-decoration: none;
+            text-align: center;
+        }
 
-        .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px; }
-        .review-card {
-            background: #050505e0;
-            backdrop-filter: blur(5px);
-            border-radius: 32px;
-            padding: 28px;
-            border: 1px solid #252525;
-            transition: 0.25s;
-            opacity: 0;
-            transform: translateY(15px);
-            animation: revReveal 0.5s forwards;
+        /* Отзывы */
+        .reviews-scroll {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
         }
-        @keyframes revReveal { to { opacity: 1; transform: translateY(0); } }
-        .review-card:hover { transform: translateY(-4px); border-color: #5a5a5a; background: #0c0c0c; }
-        .review-stars { color: #bdbdbd; letter-spacing: 2px; margin-bottom: 16px; font-size: 0.8rem; }
+        .review-block {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid #2a2a2a;
+            border-radius: 40px;
+            padding: 28px;
+            transition: 0.2s;
+        }
+        .review-block:hover {
+            border-color: #6f6f6f;
+            transform: translateY(-5px);
+        }
+        .stars i {
+            color: #c7c7c7;
+            font-size: 0.8rem;
+            margin-right: 2px;
+        }
 
-        .payment-options { max-width: 680px; margin: 0 auto; }
-        .pay-box {
-            background: #030303cc;
-            backdrop-filter: blur(6px);
-            border: 1px solid #2b2b2b;
-            border-radius: 42px;
-            padding: 28px;
-            margin-bottom: 28px;
-            transition: 0.25s;
-            opacity: 0;
-            transform: scale(0.97);
-            animation: payPop 0.4s forwards;
+        /* Оплата */
+        .payment-modern {
+            max-width: 700px;
+            margin: 0 auto;
         }
-        @keyframes payPop { to { opacity: 1; transform: scale(1); } }
-        .pay-box:hover { border-color: #6a6a6a; transform: translateY(-3px); }
-        .copy-number {
-            background: #030303;
+        .payment-card {
+            background: #060606c9;
+            backdrop-filter: blur(12px);
+            border: 1px solid #2e2e2e;
+            border-radius: 48px;
+            padding: 28px;
+            margin-bottom: 24px;
+            transition: 0.2s;
+        }
+        .payment-card:hover {
+            border-color: #777;
+        }
+        .copy-number-field {
+            background: #0b0b0b;
+            padding: 14px 18px;
+            border-radius: 40px;
             font-family: monospace;
-            padding: 14px;
-            border-radius: 28px;
-            margin: 15px 0;
-            border: 1px solid #363636;
             font-size: 1rem;
-            letter-spacing: 0.5px;
+            margin: 12px 0;
+            border: 1px solid #3a3a3a;
         }
-        .copy-btn { background: #0f0f0f; border: none; padding: 8px 22px; border-radius: 60px; cursor: pointer; color: #ddd; font-weight: 500; transition: 0.2s; }
-        .copy-btn:hover { background: #2a2a2a; }
+        .copy-action {
+            background: #111;
+            border: none;
+            padding: 8px 28px;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-        #quickModal {
+        /* Модалка */
+        .modal-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.96);
-            backdrop-filter: blur(28px);
-            z-index: 2500;
+            background: rgba(0,0,0,0.97);
+            backdrop-filter: blur(40px);
+            z-index: 3000;
             align-items: center;
             justify-content: center;
-            animation: modalFade 0.3s ease;
         }
-        @keyframes modalFade { from { opacity: 0; backdrop-filter: blur(0); } to { opacity: 1; backdrop-filter: blur(28px); } }
-        .modal-content {
-            background: #080808;
-            max-width: 460px;
+        .modal-window {
+            background: #0c0c0c;
+            max-width: 480px;
             width: 90%;
-            border-radius: 56px;
-            padding: 36px 32px;
-            border: 1px solid #3d3d3d;
-            transform: scale(0.96);
-            animation: modalZoom 0.3s forwards;
+            border-radius: 64px;
+            padding: 40px 32px;
+            border: 1px solid #4a4a4a;
         }
-        @keyframes modalZoom { to { transform: scale(1); } }
-        footer { text-align: center; margin-top: 90px; opacity: 0.45; font-size: 0.7rem; letter-spacing: 2px; }
+        footer {
+            text-align: center;
+            margin-top: 100px;
+            opacity: 0.5;
+            font-size: 0.7rem;
+        }
         @media (max-width: 720px) {
-            .glow-title { font-size: 3.2rem; }
+            .glitch-title { font-size: 3.2rem; letter-spacing: -2px; }
             .service-name { font-size: 1.6rem; }
-            .currency-list span { font-size: 0.7rem; }
-            .lang-switch { justify-content: center; margin-bottom: 15px; }
+            .tabs-modern { gap: 10px; }
+            .tab-btn { padding: 6px 18px; font-size: 0.75rem; }
         }
     </style>
 </head>
 <body>
-
-<div class="black-overlay"></div>
-<canvas id="three-canvas"></canvas>
+<div class="gradient-bg"></div>
+<div class="noise"></div>
+<canvas id="canvas-bg"></canvas>
 
 <div id="preloader">
-    <div class="preloader-ring"></div>
-    <div class="preloader-text">YOTAMARU</div>
-    <div style="margin-top: 18px; font-size: 0.65rem; color:#6a6a6a; letter-spacing: 3px;">BLACK ELITE PROTOCOL</div>
-</div>
-
-<div id="password-screen">
-    <div class="password-card">
-        <div class="password-icon">⌨️⚡</div>
-        <div class="password-title">AUTHENTICATE</div>
-        <input type="text" class="password-field" id="passwordInput" value="0000" readonly>
-        <div style="color:#6e6e6e; font-size:0.7rem; margin-bottom:12px;">🔒 secured terminal access</div>
-        <button id="confirmPasswordBtn" class="unlock-password-btn">⟡ UNLOCK VOID ⟡</button>
+    <div class="preloader-content">
+        <div class="glow-pulse"></div>
+        <div class="preloader-logo">YOTAMARU</div>
+        <div class="preloader-progress"><div class="preloader-progress-fill" id="progressFill"></div></div>
+        <div class="preloader-status" id="preloaderStatus">ЗАГРУЗКА МОДУЛЕЙ</div>
     </div>
 </div>
 
-<div class="main-container" id="mainContent">
-    <div class="lang-switch">
-        <button class="lang-btn active" data-lang="ru">RU</button>
-        <button class="lang-btn" data-lang="kz">ҚАЗ</button>
-        <button class="lang-btn" data-lang="en">EN</button>
+<div class="main-container" id="mainApp">
+    <div class="lang-ribbon">
+        <div class="lang-chip active" data-lang="ru">РУС</div>
+        <div class="lang-chip" data-lang="kz">ҚАЗАҚ</div>
+        <div class="lang-chip" data-lang="en">ENGLISH</div>
     </div>
+
     <div class="hero">
-        <h1 class="glow-title">YOTAMARU</h1>
-        <div class="sub-badge" data-i18n="subtitle">BLACK VOID • ABSOLUTE ELITE</div>
+        <h1 class="glitch-title">YOTAMARU</h1>
+        <div class="hero-badge" id="heroSub">BLACK VOID • ELITE PERFORMANCE</div>
     </div>
 
-    <div class="tabs">
-        <div class="tab active" data-tab="services">⚡ УСЛУГИ</div>
-        <div class="tab" data-tab="reviews">★ ОТЗЫВЫ</div>
-        <div class="tab" data-tab="payment">₽ ОПЛАТА</div>
+    <div class="tabs-modern">
+        <div class="tab-btn active" data-tab="services"><i class="fas fa-bolt"></i> УСЛУГИ</div>
+        <div class="tab-btn" data-tab="reviews"><i class="fas fa-star"></i> ОТЗЫВЫ</div>
+        <div class="tab-btn" data-tab="payment"><i class="fas fa-credit-card"></i> ОПЛАТА</div>
     </div>
 
-    <!-- Услуги обновлены: эмулятор и эмулятор+оптимизация -->
-    <div id="servicesTab" class="tab-content active-tab">
+    <div id="servicesPane" class="tab-pane active-pane">
         <div class="services-grid">
-            <div class="service-card">
-                <div class="service-name" data-i18n="service1_name">🔥 Эмулятор YOTAMARU</div>
-                <div class="price-tag" data-i18n="service1_price">3000₸ | 550₽ | 1250G</div>
-                <div class="currency-list"><span>₸ Tenge</span><span>₽ RUB</span><span>💎 G</span></div>
-                <ul class="features">
-                    <li data-i18n="feat1_1">✨ Красивый и удобный интерфейс</li>
-                    <li data-i18n="feat1_2">🚫 Полное отсутствие рекламы</li>
-                    <li data-i18n="feat1_3">⚡ Повышение частоты кадров (FPS Boost)</li>
-                    <li data-i18n="feat1_4">🎮 Плавный игровой процесс + фикс сенсы</li>
-                    <li data-i18n="feat1_5">🛡️ Система входа по HWID Lock</li>
-                    <li data-i18n="feat1_6">💣 Отсутствие сбоев и вылетов</li>
+            <div class="service-item">
+                <div class="service-name" id="s1Name">🔥 Эмулятор YOTAMARU</div>
+                <div class="price-chip" id="s1Price">3000₸ | 550₽ | 1250G</div>
+                <div class="price-multicurrency"><span>🇰🇿 Kaspi</span><span>🇷🇺 RUB</span><span>⭐ G·Stars</span></div>
+                <ul class="feature-list">
+                    <li><i class="fas fa-gem"></i> <span id="f1_1">Красивый и удобный интерфейс</span></li>
+                    <li><i class="fas fa-ban"></i> <span id="f1_2">Полное отсутствие рекламы</span></li>
+                    <li><i class="fas fa-chart-line"></i> <span id="f1_3">Повышение частоты кадров</span></li>
+                    <li><i class="fas fa-gamepad"></i> <span id="f1_4">Плавный геймплей + фикс сенсы</span></li>
+                    <li><i class="fas fa-fingerprint"></i> <span id="f1_5">Вход по HWID Lock</span></li>
+                    <li><i class="fas fa-shield-alt"></i> <span id="f1_6">Отсутствие сбоев и вылетов</span></li>
                 </ul>
-                <button class="btn-pay openPayModal">💳 ОПЛАТИТЬ</button>
-                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-pay tg-btn">📱 TELEGRAM BOT</a>
+                <button class="btn-order openPay"><i class="fas fa-shopping-cart"></i> ОПЛАТИТЬ</button>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-order tg-order"><i class="fab fa-telegram"></i> TELEGRAM BOT</a>
             </div>
-            <div class="service-card">
-                <div class="service-name" data-i18n="service2_name">🔥 Yotamaru + OPTIMIZATION</div>
-                <div class="price-tag" data-i18n="service2_price">4500₸ | 750₽ | 1750G</div>
-                <div class="currency-list"><span>₸ Tenge</span><span>₽ RUB</span><span>💎 G</span></div>
-                <ul class="features">
-                    <li data-i18n="feat2_1">🎯 Оптимизация под CS2 / VALORANT / Dota 2</li>
-                    <li data-i18n="feat2_2">🚀 Стабильность фпс и снижение задержек</li>
-                    <li data-i18n="feat2_3">🧬 Твикинг системы + Latency Killer</li>
-                    <li data-i18n="feat2_4">🔧 Полная поддержка Bluestacks и не только</li>
-                    <li data-i18n="feat2_5">📞 VIP консультация 24/7</li>
-                    <li data-i18n="feat2_6">⚠️ Покупатель несёт ответственность за комиссию</li>
+            <div class="service-item">
+                <div class="service-name" id="s2Name">🔥 YOTAMARU + ОПТИМИЗАЦИЯ</div>
+                <div class="price-chip" id="s2Price">4500₸ | 750₽ | 1750G</div>
+                <div class="price-multicurrency"><span>🎮 CS2 / VALORANT / Dota 2</span></div>
+                <ul class="feature-list">
+                    <li><i class="fas fa-tachometer-alt"></i> <span id="f2_1">Твикинг под игры + Latency Killer</span></li>
+                    <li><i class="fas fa-microchip"></i> <span id="f2_2">Стабильность FPS и прошивки</span></li>
+                    <li><i class="fas fa-wrench"></i> <span id="f2_3">Оптимизация Bluestacks и системы</span></li>
+                    <li><i class="fas fa-headset"></i> <span id="f2_4">VIP консультация 24/7</span></li>
+                    <li><i class="fas fa-coins"></i> <span id="f2_5">Покупатель оплачивает комиссию</span></li>
                 </ul>
-                <button class="btn-pay openPayModal">💳 ОПЛАТИТЬ</button>
-                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-pay tg-btn">📱 TELEGRAM BOT</a>
+                <button class="btn-order openPay"><i class="fas fa-shopping-cart"></i> ОПЛАТИТЬ</button>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-order tg-order"><i class="fab fa-telegram"></i> TELEGRAM BOT</a>
             </div>
         </div>
-        <div style="margin-top: 35px; text-align: center; background: #0c0c0c60; border-radius: 48px; padding: 18px; border: 1px solid #2a2a2a;">
-            <span data-i18n="bluestacks_note">‼️ О блюстаксе: Качественное визуальное оформление и полная оптимизация самого Bluestacks. Встроенный фикс сенсорики и стабильность.</span>
-        </div>
+        <div style="margin-top: 45px; text-align: center; padding: 18px; background: #0f0f0f60; border-radius: 60px; font-size: 0.8rem;" id="bluestacksNote">‼️ О блюстаксе: Качественное визуальное оформление и полная оптимизация Bluestacks + встроенный фикс сенсорики</div>
     </div>
 
-    <div id="reviewsTab" class="tab-content">
-        <div class="reviews-grid">
-            <div class="review-card"><div class="review-stars">★★★★★</div><span data-i18n="rev1">“Эмулятор летает, минимализм и мощь. Сенса настроена идеально. Топ за свои деньги!”</span><br>— Артём</div>
-            <div class="review-card"><div class="review-stars">★★★★★</div><span data-i18n="rev2">“Оптимизация превратила мой ПК в зверя, CS2 300+ fps. Абсолютный black сервис.”</span><br>— Екатерина</div>
-            <div class="review-card"><div class="review-stars">★★★★★</div><span data-i18n="rev3">“Лучший сервис в нише. Всё чётко, без воды — премиум качество + быстрая поддержка.”</span><br>— Дамир</div>
+    <div id="reviewsPane" class="tab-pane">
+        <div class="reviews-scroll">
+            <div class="review-block"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p id="rev1">“Эмулятор летает, минимализм и мощь. Сенса настроена идеально. Топ за свои деньги!”</p><span>— Артём</span></div>
+            <div class="review-block"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p id="rev2">“Оптимизация превратила мой ПК в зверя, CS2 300+ fps. Абсолютный black сервис.”</p><span>— Екатерина</span></div>
+            <div class="review-block"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p id="rev3">“Лучший сервис в нише, всё чётко, без воды — премиум качество + быстрая поддержка.”</p><span>— Дамир</span></div>
         </div>
-        <div style="text-align: center; margin-top: 44px; color:#9e9e9e; font-size:0.85rem;" data-i18n="rating">✦ Рейтинг 4.99 (750+ отзывов) ✦</div>
+        <div style="text-align: center; margin-top: 45px; color:#aaa;" id="ratingText">✦ Рейтинг 4.99 (750+ отзывов) ✦</div>
     </div>
 
-    <div id="paymentTab" class="tab-content">
-        <div class="payment-options">
-            <div class="pay-box"><h3>Kaspi.kz</h3><div class="copy-number">4400 4303 4792 1634</div><div style="color:#aaa; margin-bottom: 8px;">Мираса А.</div><button class="copy-btn" data-clip="4400 4303 4792 1634">📋 Копировать</button></div>
-            <div class="pay-box"><h3>ЮMoney / RUB</h3><div class="copy-number">5599 0020 9639 5761</div><button class="copy-btn" data-clip="5599 0020 9639 5761">📋 Копировать</button></div>
-            <div class="pay-box"><h3>Telegram Stars / Premium</h3><a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#ddd; font-weight:500;">@YotamaruShopBot</a><div style="margin-top: 8px; font-size:0.75rem; opacity:0.7;">⚡ автоматическая выдача ключей</div></div>
-            <div class="pay-box"><h3>⎯ 24/7 SUPPORT ⎯</h3><a href="https://t.me/ianchikexe" target="_blank" style="color:#bbbbff; text-decoration: none; font-weight:500;">@ianchikexe</a><div style="margin-top: 5px; font-size:0.7rem; color:#888;">прямой контакт / консультация</div></div>
+    <div id="paymentPane" class="tab-pane">
+        <div class="payment-modern">
+            <div class="payment-card"><h3><i class="fab fa-kaspi"></i> Kaspi.kz</h3><div class="copy-number-field">4400 4303 4792 1634</div><div style="color:#aaa;">Мираса А.</div><button class="copy-action" data-clip="4400 4303 4792 1634"><i class="fas fa-copy"></i> Копировать</button></div>
+            <div class="payment-card"><h3><i class="fas fa-ruble-sign"></i> ЮMoney / RUB</h3><div class="copy-number-field">5599 0020 9639 5761</div><button class="copy-action" data-clip="5599 0020 9639 5761"><i class="fas fa-copy"></i> Копировать</button></div>
+            <div class="payment-card"><h3><i class="fab fa-telegram"></i> Telegram Stars</h3><a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#ccc;">@YotamaruShopBot</a><div style="margin-top: 8px;">⚡ автовыдача ключей</div></div>
+            <div class="payment-card"><h3><i class="fas fa-headset"></i> Поддержка 24/7</h3><a href="https://t.me/ianchikexe" target="_blank" style="color:#bbbbff;">@ianchikexe</a><div>личный контакт / консультация</div></div>
         </div>
     </div>
-    <footer>YOTAMARU • ABSOLUTE BLACK ELITE — 2026</footer>
+    <footer>YOTAMARU • BLACK ELITE — ВОСХОЖДЕНИЕ 2026</footer>
 </div>
 
-<div id="quickModal"><div class="modal-content"><div style="text-align: right; font-size: 32px; cursor: pointer; color:#ddd;" id="closeQuickModal">&times;</div><h3 style="color:#fff;">ОПЛАТА ВЫБРАННОЙ УСЛУГИ</h3><div style="margin: 20px 0; border-left: 3px solid #6a6a6a; padding-left: 18px; color:#ccc;"><strong>Kaspi:</strong> 4400 4303 4792 1634</div><div style="margin-bottom: 20px; border-left: 3px solid #6a6a6a; padding-left: 18px; color:#ccc;"><strong>ЮMoney:</strong> 5599 0020 9639 5761</div><a href="https://t.me/YotamaruShopBot" target="_blank" style="display: block; background: #121212; text-align: center; padding: 14px; border-radius: 60px; color: #fff; text-decoration: none; font-weight: bold; border:1px solid #5a5a5a;">🤖 Telegram Bot →</a></div></div>
+<div id="globalModal" class="modal-overlay"><div class="modal-window"><div style="text-align: right; font-size: 32px; cursor: pointer;" id="closeModalBtn">&times;</div><h3 style="margin-bottom: 20px;">💳 Реквизиты оплаты</h3><div class="copy-number-field" style="background:#111;">Kaspi: 4400 4303 4792 1634</div><div class="copy-number-field" style="background:#111;">ЮMoney: 5599 0020 9639 5761</div><a href="https://t.me/YotamaruShopBot" target="_blank" style="display: block; text-align: center; background: #1a1a1a; padding: 12px; border-radius: 60px; margin-top: 25px; text-decoration: none; color:white;">🤖 Telegram Bot →</a></div></div>
 
-<script type="importmap">{ "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js" } }</script>
-<script type="module">
-    import * as THREE from 'three';
-    const canvas = document.getElementById('three-canvas');
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: false, antialias: true, powerPreference: "high-performance" });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x000000, 1);
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x000000, 0.018);
-    const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 0.5, 9.2);
-    const ambientLight = new THREE.AmbientLight(0x111111);
-    scene.add(ambientLight);
-    const mainLight = new THREE.DirectionalLight(0x2a2a2a, 0.5);
-    mainLight.position.set(2, 3, 4);
-    scene.add(mainLight);
-    const backRim = new THREE.PointLight(0x222222, 0.45);
-    backRim.position.set(-1, 1, -2.5);
-    scene.add(backRim);
-    
-    const icoGeo = new THREE.IcosahedronGeometry(1.1, 0);
-    const coreMat = new THREE.MeshStandardMaterial({ color: 0x030303, emissive: 0x141414, emissiveIntensity: 0.18, metalness: 0.93, roughness: 0.35 });
-    const coreIco = new THREE.Mesh(icoGeo, coreMat);
-    scene.add(coreIco);
-    const wireMat = new THREE.MeshBasicMaterial({ color: 0x5a5a5a, wireframe: true, transparent: true, opacity: 0.12 });
-    const wireIco = new THREE.Mesh(icoGeo, wireMat);
-    wireIco.scale.set(1.1, 1.1, 1.1);
-    scene.add(wireIco);
-    const ringGeo = new THREE.TorusGeometry(1.68, 0.045, 130, 400);
-    const metalRingMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, metalness: 0.85, roughness: 0.4, emissive: 0x111111 });
-    const ring = new THREE.Mesh(ringGeo, metalRingMat);
-    ring.rotation.x = Math.PI / 2;
-    scene.add(ring);
-    const outerRingGeo = new THREE.TorusGeometry(2.18, 0.035, 140, 500);
-    const outerRing = new THREE.Mesh(outerRingGeo, metalRingMat);
-    outerRing.rotation.z = 0.5; outerRing.rotation.x = 0.8;
-    scene.add(outerRing);
-    const particleCount = 2500;
-    const particleGeo = new THREE.BufferGeometry();
-    const positions = new Float32Array(particleCount * 3);
-    for (let i = 0; i < particleCount; i++) {
-        const radius = 2.5 + Math.random() * 1.2;
-        const theta = Math.random() * Math.PI * 2;
-        const phi = Math.acos(2 * Math.random() - 1);
-        positions[i*3] = radius * Math.sin(phi) * Math.cos(theta);
-        positions[i*3+1] = radius * Math.sin(phi) * Math.sin(theta) * 0.6;
-        positions[i*3+2] = radius * Math.cos(phi);
-    }
-    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    const particleField = new THREE.Points(particleGeo, new THREE.PointsMaterial({ color: 0x3a3a3a, size: 0.035, transparent: true, blending: THREE.AdditiveBlending }));
-    scene.add(particleField);
-    const starCount = 2400;
-    const starFieldGeo = new THREE.BufferGeometry();
-    const starPos = new Float32Array(starCount * 3);
-    for (let i = 0; i < starCount; i++) { starPos[i*3] = (Math.random() - 0.5)*200; starPos[i*3+1] = (Math.random()-0.5)*110; starPos[i*3+2] = (Math.random()-0.5)*90-40; }
-    starFieldGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-    const starsField = new THREE.Points(starFieldGeo, new THREE.PointsMaterial({ color: 0x3f3f3f, size: 0.048, transparent: true, opacity: 0.4 }));
-    scene.add(starsField);
-    let clock = 0;
-    function animate() {
-        requestAnimationFrame(animate);
-        clock += 0.009;
-        coreIco.rotation.y = clock * 0.45;
-        coreIco.rotation.x = Math.sin(clock * 0.28) * 0.12;
-        wireIco.rotation.copy(coreIco.rotation);
-        ring.rotation.z += 0.0032;
-        ring.rotation.x = Math.PI / 2 + Math.sin(clock * 0.21) * 0.04;
-        outerRing.rotation.y += 0.0026;
-        outerRing.rotation.x = 0.78 + Math.sin(clock * 0.19) * 0.045;
-        particleField.rotation.y = clock * 0.08;
-        starsField.rotation.y = clock * 0.003;
-        camera.position.x += (0 - camera.position.x) * 0.04;
-        camera.lookAt(0, 0.1, 0);
-        renderer.render(scene, camera);
-    }
-    animate();
-    window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
-</script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
     (function() {
-        let percent = 0;
-        const fill = document.getElementById('preloaderFill');
-        if(fill) {
-            const interval = setInterval(() => {
-                percent += Math.floor(Math.random() * 9) + 5;
-                if (percent >= 100) { percent = 100; clearInterval(interval); setTimeout(() => { const preloader = document.getElementById('preloader'); if(preloader){ preloader.style.opacity = '0'; setTimeout(() => preloader.style.display = 'none', 550); } }, 240); }
-                fill.style.width = percent + '%';
-            }, 30);
-        } else { setTimeout(() => { const preloader = document.getElementById('preloader'); if(preloader) preloader.style.display = 'none'; }, 400);}
-        
-        const pwdScreen = document.getElementById('password-screen');
-        const confirmBtn = document.getElementById('confirmPasswordBtn');
-        const mainCont = document.getElementById('mainContent');
-        const pwdInput = document.getElementById('passwordInput');
-        confirmBtn.addEventListener('click', () => {
-            if (pwdInput.value === '0000') { pwdScreen.style.opacity = '0'; setTimeout(() => { pwdScreen.style.display = 'none'; mainCont.classList.add('visible'); }, 480); } 
-            else alert('ACCESS DENIED');
+        // Трехмерный фон элегантный
+        const canvas = document.getElementById('canvas-bg');
+        const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0);
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth/window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 1, 12);
+        const geometry = new THREE.IcosahedronGeometry(1.2, 0);
+        const material = new THREE.MeshStandardMaterial({ color: 0x101010, emissive: 0x151515, roughness: 0.4, metalness: 0.85 });
+        const core = new THREE.Mesh(geometry, material);
+        scene.add(core);
+        const wireMat = new THREE.MeshBasicMaterial({ color: 0x5a5a5a, wireframe: true, transparent: true, opacity: 0.15 });
+        const wire = new THREE.Mesh(geometry, wireMat);
+        wire.scale.set(1.2,1.2,1.2);
+        scene.add(wire);
+        const ring = new THREE.Mesh(new THREE.TorusGeometry(1.8, 0.04, 128, 300), new THREE.MeshStandardMaterial({ color: 0x2a2a2a, metalness: 0.7 }));
+        ring.rotation.x = Math.PI/2;
+        scene.add(ring);
+        const ambient = new THREE.AmbientLight(0x222222);
+        const light = new THREE.DirectionalLight(0xffffff, 0.5);
+        light.position.set(1,2,3);
+        scene.add(ambient, light);
+        const points = [];
+        for(let i=0;i<1800;i++){ points.push((Math.random()-0.5)*40, (Math.random()-0.5)*20, (Math.random()-0.5)*30-15); }
+        const starGeo = new THREE.BufferGeometry();
+        starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(points), 3));
+        const starMat = new THREE.PointsMaterial({ color: 0x4f4f4f, size: 0.06, transparent: true });
+        const stars = new THREE.Points(starGeo, starMat);
+        scene.add(stars);
+        let time = 0;
+        function animateBG() {
+            requestAnimationFrame(animateBG);
+            time += 0.008;
+            core.rotation.y = time * 0.3;
+            core.rotation.x = Math.sin(time*0.2)*0.1;
+            wire.rotation.copy(core.rotation);
+            ring.rotation.z += 0.004;
+            ring.rotation.x = Math.PI/2 + Math.sin(time*0.25)*0.03;
+            stars.rotation.y = time*0.02;
+            renderer.render(scene, camera);
+        }
+        animateBG();
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth/window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
-        
-        // tabs
-        const tabs = document.querySelectorAll('.tab');
-        const srvDiv = document.getElementById('servicesTab');
-        const revDiv = document.getElementById('reviewsTab');
-        const payDiv = document.getElementById('paymentTab');
-        tabs.forEach(t => { t.addEventListener('click', () => { const target = t.getAttribute('data-tab'); tabs.forEach(tab => tab.classList.remove('active')); t.classList.add('active'); [srvDiv, revDiv, payDiv].forEach(c => c.classList.remove('active-tab')); if (target === 'services') srvDiv.classList.add('active-tab'); if (target === 'reviews') revDiv.classList.add('active-tab'); if (target === 'payment') payDiv.classList.add('active-tab'); }); });
-        
-        const modal = document.getElementById('quickModal');
-        const openModalBtns = document.querySelectorAll('.openPayModal');
-        const closeModal = document.getElementById('closeQuickModal');
-        openModalBtns.forEach(btn => btn.addEventListener('click', () => modal.style.display = 'flex'));
-        if(closeModal) closeModal.addEventListener('click', () => modal.style.display = 'none');
-        window.addEventListener('click', e => { if(e.target === modal) modal.style.display = 'none'; });
-        
-        const copyButtons = document.querySelectorAll('.copy-btn');
-        copyButtons.forEach(btn => { btn.addEventListener('click', () => { const text = btn.getAttribute('data-clip'); if(text) { navigator.clipboard.writeText(text).then(() => { const original = btn.innerText; btn.innerText = '✓ Copied'; setTimeout(() => btn.innerText = original, 1400); }).catch(() => {}); } }); });
-        
-        // Мультиязычность с живыми текстами
-        const translations = {
-            ru: { subtitle: "BLACK VOID • ABSOLUTE ELITE", service1_name: "🔥 Эмулятор YOTAMARU", service1_price: "3000₸ | 550₽ | 1250G", service2_name: "🔥 Yotamaru + ОПТИМИЗАЦИЯ", service2_price: "4500₸ | 750₽ | 1750G", feat1_1: "✨ Красивый и удобный интерфейс", feat1_2: "🚫 Полное отсутствие рекламы", feat1_3: "⚡ Повышение частоты кадров (FPS Boost)", feat1_4: "🎮 Плавный игровой процесс + фикс сенсы", feat1_5: "🛡️ Система входа по HWID Lock", feat1_6: "💣 Отсутствие сбоев и вылетов", feat2_1: "🎯 Оптимизация под CS2 / VALORANT / Dota 2", feat2_2: "🚀 Стабильность фпс и снижение задержек", feat2_3: "🧬 Твикинг системы + Latency Killer", feat2_4: "🔧 Полная поддержка Bluestacks и не только", feat2_5: "📞 VIP консультация 24/7", feat2_6: "⚠️ Покупатель несёт ответственность за комиссию", bluestacks_note: "‼️ О блюстаксе: Качественное визуальное оформление и полная оптимизация самого Bluestacks. Встроенный фикс сенсорики и стабильность.", rev1: "“Эмулятор летает, минимализм и мощь. Сенса настроена идеально. Топ за свои деньги!”", rev2: "“Оптимизация превратила мой ПК в зверя, CS2 300+ fps. Абсолютный black сервис.”", rev3: "“Лучший сервис в нише. Всё чётко, без воды — премиум качество + быстрая поддержка.”", rating: "✦ Рейтинг 4.99 (750+ отзывов) ✦" },
-            kz: { subtitle: "ҚАРА ҚҰРЫЛЫМ • АБСОЛЮТ ЭЛИТ", service1_name: "🔥 YOTAMARU эмуляторы", service1_price: "3000₸ | 550₽ | 1250G", service2_name: "🔥 Yotamaru + ОПТИМИЗАЦИЯ", service2_price: "4500₸ | 750₽ | 1750G", feat1_1: "✨ Әдемі және ыңғайлы интерфейс", feat1_2: "🚫 Жарнаманың толық болмауы", feat1_3: "⚡ Кадр жиілігін арттыру", feat1_4: "🎮 Тегіс ойын + сенсорды түзету", feat1_5: "🛡️ HWID кіру жүйесі", feat1_6: "💣 Ақаусыз және қатесіз жұмыс", feat2_1: "🎯 CS2 / VALORANT / Dota 2 ойындарына бейімдеу", feat2_2: "🚀 FPS тұрақтылығы мен кідірісті азайту", feat2_3: "🧬 Жүйелік твикинг + Latency Killer", feat2_4: "🔧 Bluestacks және басқа платформаларды қолдау", feat2_5: "📞 VIP кеңес 24/7", feat2_6: "⚠️ Сатып алушы комиссияға жауапты", bluestacks_note: "‼️ Bluestacks туралы: сапалы визуалды безендіру және Bluestacks толық оңтайландыру. Сенсорды түзету кірістірілген.", rev1: "“Эмулятор тамаша ұшады, минимализм және күш. Сенсор тамаша бапталған.”", rev2: "“Оптимизация менің ПК-імді аңға айналдырды, CS2 300+ fps. Абсолютті қара сервис.”", rev3: "“Өз саласындағы ең жақсы сервис. Барлығы нақты, сусыз — премиум сапа және жылдам қолдау.”", rating: "✦ Рейтинг 4.99 (750+ пікір) ✦" },
-            en: { subtitle: "BLACK VOID • ABSOLUTE ELITE", service1_name: "🔥 YOTAMARU Emulator", service1_price: "3000₸ | 550₽ | 1250G", service2_name: "🔥 Yotamaru + OPTIMIZATION", service2_price: "4500₸ | 750₽ | 1750G", feat1_1: "✨ Beautiful & user-friendly UI", feat1_2: "🚫 Completely ad-free", feat1_3: "⚡ Frame rate boost (FPS+)", feat1_4: "🎮 Smooth gameplay + sensor fix", feat1_5: "🛡️ HWID Lock system", feat1_6: "💣 No crashes or bugs", feat2_1: "🎯 Tuned for CS2 / VALORANT / Dota2", feat2_2: "🚀 Stable FPS & reduced latency", feat2_3: "🧬 System tweaks + Latency Killer", feat2_4: "🔧 Full Bluestacks support & beyond", feat2_5: "📞 VIP 24/7 consultation", feat2_6: "⚠️ Buyer covers transaction fee", bluestacks_note: "‼️ About Bluestacks: Premium visual overhaul and deep optimization. Built-in sensor stability.", rev1: "“Emulator flies, minimalistic and powerful. Sensor tuned perfectly. Worth every penny!”", rev2: "“Optimization turned my PC into a beast, CS2 300+ fps. Absolute black service.”", rev3: "“Best service in the niche, no fluff — premium quality and fast support.”", rating: "✦ Rating 4.99 (750+ reviews) ✦" }
-        };
-        let currentLang = 'ru';
-        function applyLanguage(lang) { currentLang = lang; document.querySelectorAll('[data-i18n]').forEach(el => { const key = el.getAttribute('data-i18n'); if(translations[lang] && translations[lang][key]) el.innerText = translations[lang][key]; }); document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active')); document.querySelector(`.lang-btn[data-lang="${lang}"]`).classList.add('active'); }
-        document.querySelectorAll('.lang-btn').forEach(btn => { btn.addEventListener('click', () => { const lang = btn.getAttribute('data-lang'); applyLanguage(lang); }); });
-        applyLanguage('ru');
     })();
+
+    // ПРЕЛОАДЕР С КРАСИВОЙ АНИМАЦИЕЙ (без пароля)
+    let progress = 0;
+    const fillEl = document.getElementById('progressFill');
+    const preloaderDiv = document.getElementById('preloader');
+    const statusText = document.getElementById('preloaderStatus');
+    const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 12) + 3;
+        if (progress >= 100) {
+            progress = 100;
+            clearInterval(interval);
+            statusText.innerText = "ГОТОВО ★ ENTER THE VOID";
+            setTimeout(() => {
+                preloaderDiv.style.opacity = '0';
+                setTimeout(() => {
+                    preloaderDiv.style.display = 'none';
+                    document.getElementById('mainApp').classList.add('loaded');
+                }, 800);
+            }, 400);
+        }
+        if(fillEl) fillEl.style.width = progress + '%';
+        if(statusText && progress<100) statusText.innerText = `ЗАГРУЗКА ${progress}%`;
+    }, 35);
+
+    // языковые данные
+    const langs = {
+        ru: { heroSub: "BLACK VOID • ELITE PERFORMANCE", s1Name: "🔥 Эмулятор YOTAMARU", s1Price: "3000₸ | 550₽ | 1250G", s2Name: "🔥 YOTAMARU + ОПТИМИЗАЦИЯ", s2Price: "4500₸ | 750₽ | 1750G", f1_1:"Красивый и удобный интерфейс", f1_2:"Полное отсутствие рекламы", f1_3:"Повышение частоты кадров", f1_4:"Плавный геймплей + фикс сенсы", f1_5:"Вход по HWID Lock", f1_6:"Отсутствие сбоев и вылетов", f2_1:"Твикинг под игры + Latency Killer", f2_2:"Стабильность FPS и прошивки", f2_3:"Оптимизация Bluestacks и системы", f2_4:"VIP консультация 24/7", f2_5:"Покупатель оплачивает комиссию", bluestacksNote:"‼️ О блюстаксе: Качественное визуальное оформление и полная оптимизация Bluestacks + встроенный фикс сенсорики", rev1:"“Эмулятор летает, минимализм и мощь. Сенса настроена идеально. Топ за свои деньги!”", rev2:"“Оптимизация превратила мой ПК в зверя, CS2 300+ fps. Абсолютный black сервис.”", rev3:"“Лучший сервис в нише, всё чётко, без воды — премиум качество + быстрая поддержка.”", ratingText:"✦ Рейтинг 4.99 (750+ отзывов) ✦" },
+        kz: { heroSub: "ҚАРА ҚҰРЫЛЫМ • ЭЛИТАРЛЫҚ", s1Name: "🔥 YOTAMARU эмуляторы", s1Price: "3000₸ | 550₽ | 1250G", s2Name: "🔥 YOTAMARU + ОҢТАЙЛАНДЫРУ", s2Price: "4500₸ | 750₽ | 1750G", f1_1:"Әдемі және ыңғайлы интерфейс", f1_2:"Жарнаманың толық болмауы", f1_3:"Кадр жиілігін арттыру", f1_4:"Тегіс ойын + сенсорды түзету", f1_5:"HWID кіру жүйесі", f1_6:"Ақаусыз және қатесіз", f2_1:"Ойындарға бейімдеу + Latency Killer", f2_2:"FPS тұрақтылығы", f2_3:"Bluestacks және жүйені оңтайландыру", f2_4:"VIP кеңес 24/7", f2_5:"Сатып алушы комиссияны төлейді", bluestacksNote:"‼️ Bluestacks туралы: сапалы визуалды безендіру және толық оңтайландыру + сенсорды түзету", rev1:"“Эмулятор тамаша ұшады, минимализм және күш. Сенсор тамаша бапталған.”", rev2:"“Оптимизация менің ПК-імді аңға айналдырды, CS2 300+ fps. Абсолютті қара сервис.”", rev3:"“Өз саласындағы ең жақсы сервис. Барлығы нақты, сусыз — премиум сапа.”", ratingText:"✦ Рейтинг 4.99 (750+ пікір) ✦" },
+        en: { heroSub: "BLACK VOID • ELITE PERFORMANCE", s1Name: "🔥 YOTAMARU Emulator", s1Price: "3000₸ | 550₽ | 1250G", s2Name: "🔥 YOTAMARU + OPTIMIZATION", s2Price: "4500₸ | 750₽ | 1750G", f1_1:"Beautiful & user-friendly UI", f1_2:"Completely ad-free", f1_3:"Frame rate boost", f1_4:"Smooth gameplay + sensor fix", f1_5:"HWID Lock system", f1_6:"No crashes or bugs", f2_1:"Game tweaks + Latency Killer", f2_2:"FPS stability & firmware", f2_3:"Bluestacks & system optimization", f2_4:"VIP 24/7 consultation", f2_5:"Buyer covers transaction fee", bluestacksNote:"‼️ About Bluestacks: Premium visual design & full optimization + sensor fix", rev1:"“Emulator flies, minimalistic and powerful. Sensor tuned perfectly.”", rev2:"“Optimization turned my PC into a beast, CS2 300+ fps. Absolute black service.”", rev3:"“Best service in the niche, clear & premium quality + fast support.”", ratingText:"✦ Rating 4.99 (750+ reviews) ✦" }
+    };
+    let current = 'ru';
+    function setLang(lang) { current=lang; const d=langs[lang]; if(!d)return; document.getElementById('heroSub').innerText=d.heroSub; document.getElementById('s1Name').innerText=d.s1Name; document.getElementById('s1Price').innerText=d.s1Price; document.getElementById('s2Name').innerText=d.s2Name; document.getElementById('s2Price').innerText=d.s2Price; document.getElementById('f1_1').innerText=d.f1_1; document.getElementById('f1_2').innerText=d.f1_2; document.getElementById('f1_3').innerText=d.f1_3; document.getElementById('f1_4').innerText=d.f1_4; document.getElementById('f1_5').innerText=d.f1_5; document.getElementById('f1_6').innerText=d.f1_6; document.getElementById('f2_1').innerText=d.f2_1; document.getElementById('f2_2').innerText=d.f2_2; document.getElementById('f2_3').innerText=d.f2_3; document.getElementById('f2_4').innerText=d.f2_4; document.getElementById('f2_5').innerText=d.f2_5; document.getElementById('bluestacksNote').innerHTML=d.bluestacksNote; document.getElementById('rev1').innerHTML=d.rev1; document.getElementById('rev2').innerHTML=d.rev2; document.getElementById('rev3').innerHTML=d.rev3; document.getElementById('ratingText').innerHTML=d.ratingText; document.querySelectorAll('.lang-chip').forEach(el=>el.classList.remove('active')); document.querySelector(`.lang-chip[data-lang="${lang}"]`).classList.add('active'); }
+    document.querySelectorAll('.lang-chip').forEach(btn=>{ btn.addEventListener('click',()=>{ setLang(btn.getAttribute('data-lang')); }); });
+    
+    // Табы
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panes = { services: document.getElementById('servicesPane'), reviews: document.getElementById('reviewsPane'), payment: document.getElementById('paymentPane') };
+    tabs.forEach(t=>{ t.addEventListener('click',()=>{ const target=t.getAttribute('data-tab'); tabs.forEach(btn=>btn.classList.remove('active')); t.classList.add('active'); Object.values(panes).forEach(p=>p.classList.remove('active-pane')); if(target==='services') panes.services.classList.add('active-pane'); if(target==='reviews') panes.reviews.classList.add('active-pane'); if(target==='payment') panes.payment.classList.add('active-pane'); }); });
+    
+    // Модалка
+    const modal = document.getElementById('globalModal');
+    const closeModal = document.getElementById('closeModalBtn');
+    document.querySelectorAll('.openPay').forEach(btn=>btn.addEventListener('click',()=>modal.style.display='flex'));
+    closeModal.addEventListener('click',()=>modal.style.display='none');
+    window.addEventListener('click',e=>{ if(e.target===modal) modal.style.display='none'; });
+    // копирование
+    document.querySelectorAll('.copy-action').forEach(btn=>{ btn.addEventListener('click',()=>{ const text=btn.getAttribute('data-clip'); if(text){ navigator.clipboard.writeText(text); const old=btn.innerHTML; btn.innerHTML='<i class="fas fa-check"></i> Готово'; setTimeout(()=>btn.innerHTML=old,1300); } }); });
+    setLang('ru');
+    // дефолт
 </script>
 </body>
 </html>
