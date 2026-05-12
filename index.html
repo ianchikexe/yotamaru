@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#000000">
-    <title>YOTAMARU | NEURAL ELITE — next level performance</title>
+    <title>YOTAMARU | Эмулятор & Оптимизация</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -17,33 +17,33 @@
         body {
             font-family: 'Space Grotesk', 'Inter', sans-serif;
             background-color: #000000;
-            color: #f5f5f5;
+            color: #f0f0f0;
             overflow-x: hidden;
             min-height: 100vh;
         }
 
-        /* DEEP AMBIENT */
-        .ambient-glow {
+        /* атмосферный фон */
+        .ambient-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 30% 20%, rgba(10,10,10,0.98) 0%, #000000 100%);
+            background: radial-gradient(circle at 40% 30%, #0a0a0a 0%, #000000 100%);
             z-index: -2;
         }
-        .grain {
+        .noise-texture {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
             pointer-events: none;
             z-index: -1;
         }
 
-        canvas#quantum-canvas {
+        canvas#bg-canvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -51,11 +51,11 @@
             height: 100%;
             display: block;
             z-index: -1;
-            opacity: 0.85;
+            opacity: 0.8;
             pointer-events: none;
         }
 
-        /* PRELOADER — сияющий портал */
+        /* прелоадер — элегантный */
         #preloader {
             position: fixed;
             inset: 0;
@@ -66,284 +66,276 @@
             z-index: 10000;
             transition: opacity 1s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        .preloader-container {
+        .preloader-content {
             text-align: center;
         }
-        .preloader-ring-glow {
-            width: 110px;
-            height: 110px;
+        .preloader-ring {
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            background: rgba(20,20,20,0.4);
-            border: 1.5px solid rgba(255,255,255,0.3);
-            box-shadow: 0 0 25px rgba(255,255,255,0.2), inset 0 0 15px rgba(255,255,255,0.1);
-            margin: 0 auto 30px;
-            animation: rotatePulse 1.3s infinite alternate;
+            background: rgba(20,20,20,0.5);
+            border: 1.5px solid rgba(255,255,255,0.25);
+            margin: 0 auto 28px;
+            animation: pulseRing 1.2s infinite alternate;
+            box-shadow: 0 0 20px rgba(255,255,255,0.1);
         }
-        @keyframes rotatePulse {
-            0% { transform: scale(0.92) rotate(0deg); box-shadow: 0 0 5px rgba(255,255,255,0.2); border-color: #4a4a4a;}
-            100% { transform: scale(1.08) rotate(10deg); box-shadow: 0 0 45px rgba(255,255,255,0.4); border-color: #f0f0f0;}
+        @keyframes pulseRing {
+            0% { transform: scale(0.94); border-color: #3a3a3a; box-shadow: 0 0 5px rgba(255,255,255,0.1);}
+            100% { transform: scale(1.06); border-color: #cdcdcd; box-shadow: 0 0 30px rgba(255,255,255,0.25);}
         }
-        .preloader-brand {
-            font-size: 2.8rem;
+        .preloader-logo {
+            font-size: 2.4rem;
             font-weight: 800;
-            letter-spacing: 12px;
-            background: linear-gradient(135deg, #fff, #b0b0b0, #e0e0e0);
+            letter-spacing: 10px;
+            background: linear-gradient(135deg, #fff, #b0b0b0);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 20px;
         }
-        .preloader-track {
-            width: 340px;
+        .preloader-bar {
+            width: 280px;
             height: 2px;
-            background: #181818;
-            margin: 20px auto;
-            position: relative;
+            background: #151515;
+            margin: 24px auto 12px;
         }
-        .preloader-track-fill {
+        .preloader-bar-fill {
             width: 0%;
             height: 100%;
-            background: linear-gradient(90deg, #bbb, #fff, #aaa);
-            transition: width 0.05s linear;
-            box-shadow: 0 0 4px white;
+            background: linear-gradient(90deg, #aaa, #fff);
+            transition: width 0.06s linear;
         }
 
-        /* MAIN APP */
-        .main-wrapper {
+        /* основной контейнер */
+        .main-site {
             max-width: 1400px;
             margin: 0 auto;
             padding: 35px 32px 100px;
             opacity: 0;
-            transform: translateY(45px);
-            transition: opacity 1.2s cubic-bezier(0.2, 0.9, 0.3, 1), transform 1s cubic-bezier(0.2, 0.9, 0.3, 1);
+            transform: translateY(40px);
+            transition: opacity 1s ease, transform 0.9s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        .main-wrapper.revealed {
+        .main-site.visible {
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* LANGUAGE SELECTOR — PREMIUM */
-        .lang-panel {
+        /* переключатель языков */
+        .lang-bar {
             display: flex;
             justify-content: flex-end;
-            gap: 12px;
+            gap: 14px;
             margin-bottom: 35px;
         }
-        .lang-pill {
-            background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(8px);
-            border: 1px solid #2f2f2f;
-            padding: 6px 20px;
-            border-radius: 60px;
+        .lang-badge {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
+            border: 1px solid #2c2c2c;
+            padding: 5px 22px;
+            border-radius: 50px;
             font-size: 0.7rem;
             font-weight: 600;
             cursor: pointer;
-            transition: 0.25s;
-            color: #bcbcbc;
+            transition: 0.2s;
+            color: #b0b0b0;
         }
-        .lang-pill.active {
-            border-color: #ffffffaa;
-            background: #131313;
+        .lang-badge.active {
+            border-color: #ffffffcc;
+            background: #151515;
             color: white;
-            box-shadow: 0 0 12px rgba(255,255,255,0.1);
+            box-shadow: 0 0 12px rgba(255,255,255,0.08);
         }
 
-        /* HERO SECTION — БЕЗ ЛИШНИХ ФРАЗ */
-        .hero-neo {
+        /* Hero — только бренд */
+        .hero-section {
             text-align: center;
-            margin-bottom: 80px;
+            margin-bottom: 75px;
         }
-        .hero-neo h1 {
-            font-size: 7.2rem;
+        .hero-title {
+            font-size: 7rem;
             font-weight: 800;
-            background: linear-gradient(125deg, #ffffff 10%, #c0c0c0 50%, #7e7e7e 90%);
+            background: linear-gradient(125deg, #ffffff, #c0c0c0, #8a8a8a);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             letter-spacing: -5px;
-            filter: drop-shadow(0 0 35px rgba(255,255,255,0.2));
-            animation: heroFloat 5s ease-in-out infinite;
+            filter: drop-shadow(0 0 25px rgba(255,255,255,0.15));
+            animation: titleGlide 5s ease-in-out infinite;
         }
-        @keyframes heroFloat {
-            0%,100% { transform: translateY(0px); text-shadow: 0 0 5px rgba(255,255,255,0.15);}
-            50% { transform: translateY(-8px); text-shadow: 0 0 25px rgba(255,255,255,0.35);}
-        }
-        .hero-sub {
-            font-size: 0.75rem;
-            letter-spacing: 10px;
-            margin-top: 20px;
-            border-top: 1px solid #3a3a3a;
-            display: inline-block;
-            padding-top: 20px;
-            font-weight: 400;
-            color: #bcbcbc;
+        @keyframes titleGlide {
+            0%,100% { transform: translateY(0px);}
+            50% { transform: translateY(-6px);}
         }
 
-        /* TABS ЛЮКС */
-        .tabs-lux {
+        /* табы */
+        .tabs-elegant {
             display: flex;
             justify-content: center;
-            gap: 25px;
+            gap: 24px;
             flex-wrap: wrap;
-            margin-bottom: 60px;
+            margin-bottom: 55px;
         }
-        .tab-lux-btn {
-            background: rgba(4,4,4,0.7);
+        .tab-elegant {
+            background: rgba(3,3,3,0.7);
             backdrop-filter: blur(12px);
-            border: 1px solid #2e2e2e;
-            padding: 12px 36px;
+            border: 1px solid #2d2d2d;
+            padding: 12px 38px;
             border-radius: 60px;
             font-weight: 700;
             font-size: 0.9rem;
             cursor: pointer;
             transition: 0.3s;
-            color: #d4d4d4;
+            color: #d0d0d0;
         }
-        .tab-lux-btn i { margin-right: 10px; }
-        .tab-lux-btn.active-lux {
-            background: #121212;
+        .tab-elegant i { margin-right: 10px; }
+        .tab-elegant.active-tab {
+            background: #111111;
             border-color: #e0e0e0;
             color: white;
-            box-shadow: 0 0 18px rgba(255,255,255,0.08);
             transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255,255,255,0.06);
         }
 
-        .pane-lux {
+        .tab-pane {
             display: none;
-            animation: fadeScale 0.55s ease;
+            animation: fadeRise 0.5s ease;
         }
-        .pane-lux.active-lux-pane {
+        .tab-pane.active-pane {
             display: block;
         }
-        @keyframes fadeScale {
-            from { opacity: 0; transform: scale(0.97); filter: blur(2px);}
-            to { opacity: 1; transform: scale(1); filter: blur(0);}
+        @keyframes fadeRise {
+            from { opacity: 0; transform: translateY(12px);}
+            to { opacity: 1; transform: translateY(0);}
         }
 
-        /* CARDS — CRYSTAL NEON */
-        .grid-premium {
+        /* карточки услуг — премиум стекло */
+        .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-            gap: 55px;
+            grid-template-columns: repeat(auto-fit, minmax(370px, 1fr));
+            gap: 50px;
         }
-        .crystal-card {
+        .service-card {
             background: rgba(6,6,6,0.85);
-            backdrop-filter: blur(18px);
-            border-radius: 68px;
-            border: 1px solid rgba(80,80,80,0.5);
-            padding: 46px 38px;
-            transition: all 0.45s cubic-bezier(0.2, 0.95, 0.4, 1);
-            transform: translateY(35px);
+            backdrop-filter: blur(16px);
+            border-radius: 64px;
+            border: 1px solid rgba(80,80,80,0.45);
+            padding: 44px 36px;
+            transition: all 0.4s cubic-bezier(0.2, 0.95, 0.4, 1);
+            transform: translateY(30px);
             opacity: 0;
-            animation: riseCardUlt 0.7s forwards;
-            box-shadow: 0 35px 45px -25px black;
-            position: relative;
+            animation: cardFloat 0.7s forwards;
+            box-shadow: 0 30px 40px -25px black;
         }
-        .crystal-card::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 68px;
-            padding: 1px;
-            background: radial-gradient(ellipse at 30% 40%, rgba(255,255,255,0.1), transparent);
-            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
+        .service-card:hover {
+            transform: translateY(-10px);
+            border-color: #9a9a9a;
+            background: rgba(14,14,14,0.96);
+            box-shadow: 0 40px 55px -28px #000000;
         }
-        .crystal-card:hover { transform: translateY(-12px); border-color: #a0a0a0; background: rgba(14,14,14,0.96); box-shadow: 0 40px 60px -28px black; }
-        @keyframes riseCardUlt { to { opacity: 1; transform: translateY(0); } }
-        .card-name {
-            font-size: 2.2rem;
+        @keyframes cardFloat {
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .service-title {
+            font-size: 2.1rem;
             font-weight: 800;
-            background: linear-gradient(130deg, #fff, #cfcfcf);
+            background: linear-gradient(120deg, #fff, #cdcdcd);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            letter-spacing: -0.5px;
         }
-        .price-badge {
-            font-size: 1.45rem;
+        .price-highlight {
+            font-size: 1.4rem;
             font-weight: 700;
-            background: #0e0e0e;
+            background: #0c0c0c;
             display: inline-block;
-            padding: 8px 26px;
-            border-radius: 80px;
-            margin: 20px 0 12px;
-            border-left: 3px solid #bebebe;
+            padding: 8px 28px;
+            border-radius: 70px;
+            margin: 18px 0 10px;
+            border-left: 3px solid #b4b4b4;
         }
-        .currency-row {
+        .currency-icons {
             display: flex;
-            gap: 20px;
+            gap: 22px;
             margin: 10px 0 28px;
-            color: #bcbcbc;
+            color: #bfbfbf;
             font-weight: 500;
         }
-        .feature-list-modern {
+        .features-list {
             list-style: none;
-            margin: 25px 0 30px;
+            margin: 28px 0 30px;
         }
-        .feature-list-modern li {
-            margin-bottom: 18px;
+        .features-list li {
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             gap: 14px;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
         }
-        .feature-list-modern li i { width: 26px; color: #d8d8d8; }
-        .btn-action {
+        .features-list li i { width: 24px; color: #dddddd; }
+        .btn-order {
             background: #0c0c0c;
             border: 1px solid #3d3d3d;
-            padding: 14px 10px;
+            padding: 14px 12px;
             border-radius: 60px;
             font-weight: 700;
             width: 100%;
             cursor: pointer;
             transition: 0.25s;
-            margin-top: 18px;
+            margin-top: 16px;
             font-size: 0.9rem;
         }
-        .btn-action i { margin-right: 8px; }
-        .btn-action:hover { background: #1d1d1d; border-color: #cccccc; transform: translateY(-2px); letter-spacing: 0.5px; }
-        .telegram-link-card {
+        .btn-order i { margin-right: 8px; }
+        .btn-order:hover { background: #1d1d1d; border-color: #bfbfbf; transform: translateY(-2px); letter-spacing: 0.3px; }
+
+        /* Telegram Bot — синее мерцание */
+        .telegram-btn {
             margin-top: 12px;
             text-decoration: none;
             display: block;
             text-align: center;
-            background: #060606;
+            background: #0a0a0a;
+            border: 1px solid #3d3d3d;
+            transition: all 0.25s;
+        }
+        .telegram-btn i { margin-right: 8px; color: #38b0ff; }
+        .telegram-btn:hover {
+            background: #0d2b45;
+            border-color: #2a8cff;
+            box-shadow: 0 0 16px #1e88e5, 0 0 6px #0d6efd;
+            color: white;
+            text-shadow: 0 0 2px #0a6cff;
         }
 
-        /* REVIEWS GLASSMORPH */
-        .review-matrix {
+        /* отзывы */
+        .reviews-gallery {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-            gap: 35px;
+            gap: 34px;
         }
-        .review-glass {
-            background: rgba(3,3,3,0.7);
-            backdrop-filter: blur(12px);
-            border-radius: 50px;
+        .review-item {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 48px;
             padding: 32px;
             border: 1px solid #2a2a2a;
             transition: 0.3s;
         }
-        .review-glass:hover { border-color: #8a8a8a; background: #0d0d0dcc; transform: translateY(-5px); }
-        .star-rating i { color: #ddd; font-size: 0.75rem; margin-right: 3px; }
+        .review-item:hover { border-color: #8a8a8a; background: #0d0d0dcc; transform: translateY(-5px); }
+        .stars i { color: #e0e0e0; font-size: 0.75rem; margin-right: 3px; }
 
-        /* PAYMENT SECTION */
-        .pay-zone {
+        /* оплата */
+        .payment-wrapper {
             max-width: 760px;
             margin: 0 auto;
         }
-        .pay-card {
+        .payment-card {
             background: #070707c4;
             backdrop-filter: blur(14px);
-            border-radius: 60px;
+            border-radius: 56px;
             padding: 28px 32px;
             margin-bottom: 28px;
             border: 1px solid #2e2e2e;
         }
-        .clip-number {
+        .clip-area {
             background: #000000aa;
             padding: 14px 20px;
             border-radius: 50px;
@@ -352,192 +344,193 @@
             margin: 16px 0;
             border: 1px solid #3f3f3f;
         }
-        .copy-button-style {
-            background: #141414;
+        .copy-btn-custom {
+            background: #151515;
             border: none;
             padding: 8px 28px;
             border-radius: 50px;
             font-weight: 600;
             cursor: pointer;
+            transition: 0.2s;
         }
 
-        /* MODAL DARK LUX */
-        .modal-neon {
+        /* модалка */
+        .modal-pay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.97);
+            background: rgba(0,0,0,0.98);
             backdrop-filter: blur(40px);
             z-index: 11000;
             align-items: center;
             justify-content: center;
         }
-        .modal-inner {
+        .modal-content-inner {
             background: #0c0c0c;
             max-width: 500px;
             width: 90%;
-            border-radius: 72px;
+            border-radius: 70px;
             padding: 44px 36px;
             border: 1px solid #5a5a5a;
         }
         footer {
             text-align: center;
             margin-top: 100px;
-            opacity: 0.5;
+            opacity: 0.45;
             font-size: 0.7rem;
         }
-        @media (max-width: 800px) {
-            .hero-neo h1 { font-size: 3.6rem; letter-spacing: -2px; }
-            .grid-premium { gap: 35px; }
-            .crystal-card { padding: 32px 24px; }
+        @media (max-width: 780px) {
+            .hero-title { font-size: 3.6rem; letter-spacing: -2px; }
+            .services-grid { gap: 35px; }
+            .service-card { padding: 32px 24px; }
         }
     </style>
 </head>
 <body>
-<div class="ambient-glow"></div>
-<div class="grain"></div>
-<canvas id="quantum-canvas"></canvas>
+<div class="ambient-bg"></div>
+<div class="noise-texture"></div>
+<canvas id="bg-canvas"></canvas>
 
 <div id="preloader">
-    <div class="preloader-container">
-        <div class="preloader-ring-glow"></div>
-        <div class="preloader-brand">YOTAMARU</div>
-        <div class="preloader-track"><div class="preloader-track-fill" id="preloaderFill"></div></div>
-        <div style="font-size: 0.7rem; letter-spacing: 2px; color: #aaa; margin-top: 12px;" id="preloaderText">ЗАПУСК СИСТЕМЫ</div>
+    <div class="preloader-content">
+        <div class="preloader-ring"></div>
+        <div class="preloader-logo">YOTAMARU</div>
+        <div class="preloader-bar"><div class="preloader-bar-fill" id="preloaderFill"></div></div>
+        <div style="font-size: 0.65rem; color: #888; margin-top: 12px;" id="preloaderStatus">ЗАГРУЗКА</div>
     </div>
 </div>
 
-<div class="main-wrapper" id="appMain">
-    <div class="lang-panel">
-        <div class="lang-pill active" data-lang="ru">РУС</div>
-        <div class="lang-pill" data-lang="kz">ҚАЗАҚ</div>
-        <div class="lang-pill" data-lang="en">ENGLISH</div>
+<div class="main-site" id="mainApp">
+    <div class="lang-bar">
+        <div class="lang-badge active" data-lang="ru">РУС</div>
+        <div class="lang-badge" data-lang="kz">ҚАЗАҚ</div>
+        <div class="lang-badge" data-lang="en">ENGLISH</div>
     </div>
 
-    <div class="hero-neo">
-        <h1>YOTAMARU</h1>
-        <div class="hero-sub" id="heroDynamicTag">НЕЙРОННЫЙ ЭЛИТ • АБСОЛЮТ</div>
+    <div class="hero-section">
+        <h1 class="hero-title">YOTAMARU</h1>
     </div>
 
-    <div class="tabs-lux">
-        <div class="tab-lux-btn active-lux" data-tab="services"><i class="fas fa-bolt"></i> УСЛУГИ</div>
-        <div class="tab-lux-btn" data-tab="reviews"><i class="fas fa-crown"></i> ОТЗЫВЫ</div>
-        <div class="tab-lux-btn" data-tab="payment"><i class="fas fa-credit-card"></i> ОПЛАТА</div>
+    <div class="tabs-elegant">
+        <div class="tab-elegant active-tab" data-tab="services"><i class="fas fa-microchip"></i> УСЛУГИ</div>
+        <div class="tab-elegant" data-tab="reviews"><i class="fas fa-star"></i> ОТЗЫВЫ</div>
+        <div class="tab-elegant" data-tab="payment"><i class="fas fa-coins"></i> ОПЛАТА</div>
     </div>
 
-    <div id="servicesPane" class="pane-lux active-lux-pane">
-        <div class="grid-premium">
-            <div class="crystal-card">
-                <div class="card-name" id="cardName1">🔥 Эмулятор YOTAMARU</div>
-                <div class="price-badge" id="price1">3000₸ | 550₽ | 1250G</div>
-                <div class="currency-row"><span><i class="fas fa-tenge"></i> Kaspi</span><span><i class="fas fa-ruble-sign"></i> RUB</span><span><i class="fas fa-gem"></i> Stars</span></div>
-                <ul class="feature-list-modern">
-                    <li><i class="fas fa-crown"></i> <span id="feat11">Кинематографичный интерфейс + ZeroLag</span></li>
-                    <li><i class="fas fa-ban"></i> <span id="feat12">Полное отсутствие рекламы</span></li>
-                    <li><i class="fas fa-charging-station"></i> <span id="feat13">FPS Boost + частота кадров до 300%</span></li>
-                    <li><i class="fas fa-fingerprint"></i> <span id="feat14">Система HWID Lock</span></li>
-                    <li><i class="fas fa-crosshairs"></i> <span id="feat15">Фикс сенсорики / абсолютная стабильность</span></li>
+    <div id="servicesPane" class="tab-pane active-pane">
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="service-title" id="srvTitle1">🔥 Эмулятор YOTAMARU</div>
+                <div class="price-highlight" id="srvPrice1">3000₸ | 550₽ | 1250G</div>
+                <div class="currency-icons"><span><i class="fas fa-tenge"></i> Kaspi</span><span><i class="fas fa-ruble-sign"></i> RUB</span><span><i class="fas fa-gem"></i> Stars</span></div>
+                <ul class="features-list">
+                    <li><i class="fas fa-crown"></i> <span id="featA1">Кинематографичный интерфейс + ZeroLag</span></li>
+                    <li><i class="fas fa-ban"></i> <span id="featA2">Полное отсутствие рекламы</span></li>
+                    <li><i class="fas fa-bolt"></i> <span id="featA3">FPS Boost + плавность кадров</span></li>
+                    <li><i class="fas fa-fingerprint"></i> <span id="featA4">HWID Lock система защиты</span></li>
+                    <li><i class="fas fa-crosshairs"></i> <span id="featA5">Фикс сенсорики / без вылетов</span></li>
                 </ul>
-                <button class="btn-action openGlobalModal"><i class="fas fa-shopping-cart"></i> ОПЛАТИТЬ</button>
-                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-action telegram-link-card"><i class="fab fa-telegram"></i> TELEGRAM BOT</a>
+                <button class="btn-order openModalBtn"><i class="fas fa-shopping-cart"></i> ОПЛАТИТЬ</button>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-order telegram-btn"><i class="fab fa-telegram"></i> TELEGRAM BOT</a>
             </div>
-            <div class="crystal-card">
-                <div class="card-name" id="cardName2">🔥 YOTAMARU + Optimization</div>
-                <div class="price-badge" id="price2">4500₸ | 750₽ | 1750G</div>
-                <div class="currency-row"><span><i class="fas fa-gamepad"></i> CS2/Valorant/Dota2</span></div>
-                <ul class="feature-list-modern">
-                    <li><i class="fas fa-tachometer-alt"></i> <span id="feat21">Latency Killer + экстремальный твикинг</span></li>
-                    <li><i class="fas fa-microchip"></i> <span id="feat22">Стабильность частот CPU/GPU</span></li>
-                    <li><i class="fas fa-desktop"></i> <span id="feat23">Bluestacks & системная оптимизация</span></li>
-                    <li><i class="fas fa-concierge-bell"></i> <span id="feat24">VIP поддержка 24/7</span></li>
-                    <li><i class="fas fa-hand-holding-usd"></i> <span id="feat25">Комиссия оплачивается покупателем</span></li>
+            <div class="service-card">
+                <div class="service-title" id="srvTitle2">🔥 YOTAMARU + Optimization</div>
+                <div class="price-highlight" id="srvPrice2">4500₸ | 750₽ | 1750G</div>
+                <div class="currency-icons"><span><i class="fas fa-gamepad"></i> CS2 / VALORANT / Dota 2</span></div>
+                <ul class="features-list">
+                    <li><i class="fas fa-tachometer-alt"></i> <span id="featB1">Latency Killer + экстремальный твикинг</span></li>
+                    <li><i class="fas fa-microchip"></i> <span id="featB2">Стабильность CPU/GPU прошивки</span></li>
+                    <li><i class="fas fa-desktop"></i> <span id="featB3">Bluestacks & система глубокая оптимизация</span></li>
+                    <li><i class="fas fa-headset"></i> <span id="featB4">VIP поддержка 24/7</span></li>
+                    <li><i class="fas fa-hand-holding-usd"></i> <span id="featB5">Комиссия оплачивается покупателем</span></li>
                 </ul>
-                <button class="btn-action openGlobalModal"><i class="fas fa-shopping-cart"></i> ОПЛАТИТЬ</button>
-                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-action telegram-link-card"><i class="fab fa-telegram"></i> TELEGRAM BOT</a>
+                <button class="btn-order openModalBtn"><i class="fas fa-shopping-cart"></i> ОПЛАТИТЬ</button>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-order telegram-btn"><i class="fab fa-telegram"></i> TELEGRAM BOT</a>
             </div>
         </div>
-        <div style="margin-top: 55px; text-align: center; background: #0b0b0b80; border-radius: 90px; padding: 18px; border: 1px solid #2e2e2e; backdrop-filter: blur(5px);" id="bluestackNoteBlob">
-            ⚡ О блюстаксе: Качественное визуальное оформление + полная оптимизация Bluestacks. Встроенный фикс сенсорики, отсутствие вылетов.
+        <div style="margin-top: 55px; text-align: center; background: #0b0b0b80; border-radius: 90px; padding: 18px; backdrop-filter: blur(6px); border: 1px solid #2f2f2f;" id="bluestacksInfo">
+            ⚡ О блюстаксе: Качественное визуальное оформление + полная оптимизация Bluestacks. Встроенный фикс сенсорики, отсутствие сбоев.
         </div>
     </div>
 
-    <div id="reviewsPane" class="pane-lux">
-        <div class="review-matrix">
-            <div class="review-glass"><div class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p id="reviewTxt1">“Абсолютный black опыт. Эмулятор летает, минимализм и мощь. Сенса настроена идеально. Лучшее вложение!”</p><span>— Артём</span></div>
-            <div class="review-glass"><div class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p id="reviewTxt2">“Оптимизация превратила ПК в зверя, CS2 400+ стабильных фпс. Black сервис и молниеносный саппорт.”</p><span>— Екатерина</span></div>
-            <div class="review-glass"><div class="star-rating"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p id="reviewTxt3">“Премиум качество, всё чётко. Лучший сервис в нише, без воды, поддержка 24/7.”</p><span>— Дамир</span></div>
+    <div id="reviewsPane" class="tab-pane">
+        <div class="reviews-gallery">
+            <div class="review-item"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p id="revText1">“Абсолютный black опыт. Эмулятор летает, минимализм и мощь. Сенса настроена идеально. Лучшее вложение!”</p><span>— Артём</span></div>
+            <div class="review-item"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p id="revText2">“Оптимизация превратила ПК в зверя, CS2 400+ стабильных фпс. Black сервис и молниеносный саппорт.”</p><span>— Екатерина</span></div>
+            <div class="review-item"><div class="stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p id="revText3">“Премиум качество, всё чётко. Лучший сервис в нише, без воды, поддержка 24/7.”</p><span>— Дамир</span></div>
         </div>
-        <div style="text-align: center; margin-top: 48px; font-weight: 500; color: #b0b0b0;" id="ratingStat">✦ РЕЙТИНГ 5.0 (1200+ отзывов) ✦</div>
+        <div style="text-align: center; margin-top: 48px; font-weight: 500; color: #adadad;" id="ratingSpanBlock">✦ РЕЙТИНГ 5.0 (1200+ отзывов) ✦</div>
     </div>
 
-    <div id="paymentPane" class="pane-lux">
-        <div class="pay-zone">
-            <div class="pay-card"><h3><i class="fab fa-kaspi"></i> Kaspi.kz</h3><div class="clip-number">4400 4303 4792 1634</div><div>Мираса А.</div><button class="copy-button-style" data-clip="4400 4303 4792 1634"><i class="fas fa-copy"></i> Копировать номер</button></div>
-            <div class="pay-card"><h3><i class="fas fa-ruble-sign"></i> ЮMoney / RUB</h3><div class="clip-number">5599 0020 9639 5761</div><button class="copy-button-style" data-clip="5599 0020 9639 5761"><i class="fas fa-copy"></i> Копировать</button></div>
-            <div class="pay-card"><h3><i class="fab fa-telegram"></i> Telegram Stars</h3><a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#ccc;">@YotamaruShopBot</a><div style="margin-top: 8px;">⚡ Автоматическая выдача ключей</div></div>
-            <div class="pay-card"><h3><i class="fas fa-headset"></i> Поддержка 24/7</h3><a href="https://t.me/ianchikexe" target="_blank" style="color:#bbbbff;">@ianchikexe</a><div>Личный менеджер / решение проблем</div></div>
+    <div id="paymentPane" class="tab-pane">
+        <div class="payment-wrapper">
+            <div class="payment-card"><h3><i class="fab fa-kaspi"></i> Kaspi.kz</h3><div class="clip-area">4400 4303 4792 1634</div><div>Мираса А.</div><button class="copy-btn-custom" data-clip="4400 4303 4792 1634"><i class="fas fa-copy"></i> Копировать номер</button></div>
+            <div class="payment-card"><h3><i class="fas fa-ruble-sign"></i> ЮMoney / RUB</h3><div class="clip-area">5599 0020 9639 5761</div><button class="copy-btn-custom" data-clip="5599 0020 9639 5761"><i class="fas fa-copy"></i> Копировать</button></div>
+            <div class="payment-card"><h3><i class="fab fa-telegram"></i> Telegram Stars</h3><a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#ccc;">@YotamaruShopBot</a><div style="margin-top: 8px;">⚡ Автоматическая выдача ключей</div></div>
+            <div class="payment-card"><h3><i class="fas fa-headset"></i> Поддержка 24/7</h3><a href="https://t.me/ianchikexe" target="_blank" style="color:#bbbbff;">@ianchikexe</a><div>Личный менеджер / консультация</div></div>
         </div>
     </div>
-    <footer>YOTAMARU • NEURAL ELITE — АБСОЛЮТНАЯ ВЛАСТЬ 2026</footer>
+    <footer>YOTAMARU — АБСОЛЮТНАЯ ПРОИЗВОДИТЕЛЬНОСТЬ 2026</footer>
 </div>
 
-<div id="globalModalNeon" class="modal-neon"><div class="modal-inner"><div style="text-align: right; font-size: 36px; cursor: pointer;" id="closeModalCross">&times;</div><h3 style="margin-bottom: 20px;">💎 ОПЛАТА УСЛУГИ</h3><div class="clip-number" style="background:#121212;">Kaspi: 4400 4303 4792 1634</div><div class="clip-number" style="background:#121212;">ЮMoney: 5599 0020 9639 5761</div><a href="https://t.me/YotamaruShopBot" target="_blank" style="display: block; text-align: center; background: #181818; padding: 14px; border-radius: 60px; margin-top: 30px; color: white; text-decoration: none;">🤖 Telegram Bot →</a></div></div>
+<div id="modalGlobal" class="modal-pay"><div class="modal-content-inner"><div style="text-align: right; font-size: 36px; cursor: pointer;" id="closeModalCross">&times;</div><h3 style="margin-bottom: 20px;">💎 ОПЛАТА УСЛУГИ</h3><div class="clip-area" style="background:#121212;">Kaspi: 4400 4303 4792 1634</div><div class="clip-area" style="background:#121212;">ЮMoney: 5599 0020 9639 5761</div><a href="https://t.me/YotamaruShopBot" target="_blank" style="display: block; text-align: center; background: #181818; padding: 14px; border-radius: 60px; margin-top: 30px; color: white; text-decoration: none;">🤖 Telegram Bot →</a></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-    // THREE.JS DEEP SPACE CORE
+    // THREE.JS фон — эффект глубины
     (function() {
-        const canvas = document.getElementById('quantum-canvas');
+        const canvas = document.getElementById('bg-canvas');
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(50, window.innerWidth/window.innerHeight, 0.1, 1000);
-        camera.position.set(0, 0.6, 11);
+        camera.position.set(0, 0.5, 11);
         const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.setClearColor(0x000000, 0);
         
-        const coreGeo = new THREE.IcosahedronGeometry(1.1, 0);
-        const coreMat = new THREE.MeshStandardMaterial({ color: 0x0c0c0c, emissive: 0x1a1a1a, roughness: 0.3, metalness: 0.85 });
-        const coreMesh = new THREE.Mesh(coreGeo, coreMat);
-        scene.add(coreMesh);
-        const wireMatGlow = new THREE.MeshBasicMaterial({ color: 0x6e6e6e, wireframe: true, transparent: true, opacity: 0.2 });
-        const wireMesh = new THREE.Mesh(coreGeo, wireMatGlow);
-        wireMesh.scale.set(1.18,1.18,1.18);
-        scene.add(wireMesh);
+        const geometry = new THREE.IcosahedronGeometry(1.1, 0);
+        const material = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, emissive: 0x181818, roughness: 0.35, metalness: 0.85 });
+        const core = new THREE.Mesh(geometry, material);
+        scene.add(core);
+        const wireMat = new THREE.MeshBasicMaterial({ color: 0x6a6a6a, wireframe: true, transparent: true, opacity: 0.2 });
+        const wire = new THREE.Mesh(geometry, wireMat);
+        wire.scale.set(1.2,1.2,1.2);
+        scene.add(wire);
         
-        const ringA = new THREE.Mesh(new THREE.TorusGeometry(1.8, 0.045, 160, 420), new THREE.MeshStandardMaterial({ color: 0x333333, metalness: 0.7 }));
-        ringA.rotation.x = Math.PI/2;
-        scene.add(ringA);
-        const ringB = new THREE.Mesh(new THREE.TorusGeometry(2.3, 0.035, 160, 520), new THREE.MeshStandardMaterial({ color: 0x4a4a4a, metalness: 0.65 }));
-        ringB.rotation.x = 0.9;
-        ringB.rotation.z = 0.4;
-        scene.add(ringB);
+        const ring1 = new THREE.Mesh(new THREE.TorusGeometry(1.75, 0.045, 140, 420), new THREE.MeshStandardMaterial({ color: 0x2e2e2e, metalness: 0.7 }));
+        ring1.rotation.x = Math.PI/2;
+        scene.add(ring1);
+        const ring2 = new THREE.Mesh(new THREE.TorusGeometry(2.25, 0.032, 160, 520), new THREE.MeshStandardMaterial({ color: 0x424242, metalness: 0.65 }));
+        ring2.rotation.x = 0.92;
+        ring2.rotation.z = 0.45;
+        scene.add(ring2);
         
-        const starField = new THREE.BufferGeometry();
-        const starPositions = [];
-        for(let i=0;i<2800;i++) { starPositions.push((Math.random()-0.5)*210, (Math.random()-0.5)*120, (Math.random()-0.5)*90-25); }
-        starField.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPositions), 3));
-        const starsPoints = new THREE.Points(starField, new THREE.PointsMaterial({ color: 0x6a6a6a, size: 0.05, transparent: true }));
-        scene.add(starsPoints);
+        const starCount = 2800;
+        const starPos = [];
+        for(let i=0;i<starCount;i++) { starPos.push((Math.random()-0.5)*200, (Math.random()-0.5)*110, (Math.random()-0.5)*85-25); }
+        const starGeo = new THREE.BufferGeometry();
+        starGeo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(starPos), 3));
+        const starsField = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0x6a6a6a, size: 0.045, transparent: true }));
+        scene.add(starsField);
         
-        const ambientLight = new THREE.AmbientLight(0x1a1a1a);
-        const dirLight = new THREE.DirectionalLight(0xffffff, 0.55);
+        const ambientLight = new THREE.AmbientLight(0x191919);
+        const dirLight = new THREE.DirectionalLight(0xffffff, 0.6);
         dirLight.position.set(1,2,2);
         scene.add(ambientLight, dirLight);
         
-        let time = 0;
-        function animateBackground() {
-            requestAnimationFrame(animateBackground);
-            time += 0.007;
-            coreMesh.rotation.y = time * 0.32;
-            coreMesh.rotation.x = Math.sin(time*0.22)*0.1;
-            wireMesh.rotation.copy(coreMesh.rotation);
-            ringA.rotation.z += 0.003;
-            ringB.rotation.y += 0.0025;
-            ringB.rotation.x = 0.9 + Math.sin(time*0.18)*0.025;
-            starsPoints.rotation.y = time * 0.015;
+        let t = 0;
+        function animateBG() {
+            requestAnimationFrame(animateBG);
+            t += 0.007;
+            core.rotation.y = t * 0.34;
+            core.rotation.x = Math.sin(t*0.23)*0.08;
+            wire.rotation.copy(core.rotation);
+            ring1.rotation.z += 0.003;
+            ring2.rotation.y += 0.0025;
+            ring2.rotation.x = 0.92 + Math.sin(t*0.19)*0.02;
+            starsField.rotation.y = t * 0.012;
             renderer.render(scene, camera);
         }
-        animateBackground();
+        animateBG();
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth/window.innerHeight;
             camera.updateProjectionMatrix();
@@ -545,49 +538,49 @@
         });
     })();
 
-    // PRELOADER 
-    let progressVal = 0;
-    const fillEl = document.getElementById('preloaderFill');
+    // прелоадер
+    let prog = 0;
+    const fillBar = document.getElementById('preloaderFill');
     const preloaderDiv = document.getElementById('preloader');
-    const mainApp = document.getElementById('appMain');
-    const preloaderTextSpan = document.getElementById('preloaderText');
-    const preloadInterval = setInterval(() => {
-        progressVal += Math.floor(Math.random() * 9) + 4;
-        if(progressVal >= 100) { progressVal = 100; clearInterval(preloadInterval);
-            if(preloaderTextSpan) preloaderTextSpan.innerText = 'ГОТОВО • ENTER';
+    const mainSite = document.getElementById('mainApp');
+    const statusSpan = document.getElementById('preloaderStatus');
+    const intervalPre = setInterval(() => {
+        prog += Math.floor(Math.random() * 11) + 4;
+        if(prog >= 100) { prog = 100; clearInterval(intervalPre);
+            if(statusSpan) statusSpan.innerText = 'ГОТОВО';
             setTimeout(() => {
                 preloaderDiv.style.opacity = '0';
-                setTimeout(() => { preloaderDiv.style.display = 'none'; mainApp.classList.add('revealed'); }, 800);
+                setTimeout(() => { preloaderDiv.style.display = 'none'; mainSite.classList.add('visible'); }, 800);
             }, 400);
         }
-        if(fillEl) fillEl.style.width = progressVal + '%';
-        if(preloaderTextSpan && progressVal < 100) preloaderTextSpan.innerText = `ЗАГРУЗКА ${progressVal}%`;
-    }, 40);
+        if(fillBar) fillBar.style.width = prog + '%';
+        if(statusSpan && prog<100) statusSpan.innerText = `ЗАГРУЗКА ${prog}%`;
+    }, 35);
 
-    // MULTI LANG (FULL RICH)
-    const translations = {
-        ru: { heroDynamicTag: "НЕЙРОННЫЙ ЭЛИТ • АБСОЛЮТ", cardName1: "🔥 Эмулятор YOTAMARU", price1: "3000₸ | 550₽ | 1250G", cardName2: "🔥 YOTAMARU + Optimization", price2: "4500₸ | 750₽ | 1750G", feat11: "Кинематографичный интерфейс + ZeroLag", feat12: "Полное отсутствие рекламы", feat13: "FPS Boost + частота кадров до 300%", feat14: "Система HWID Lock", feat15: "Фикс сенсорики / абсолютная стабильность", feat21: "Latency Killer + экстремальный твикинг", feat22: "Стабильность частот CPU/GPU", feat23: "Bluestacks & системная оптимизация", feat24: "VIP поддержка 24/7", feat25: "Комиссия оплачивается покупателем", bluestackNoteBlob: "⚡ О блюстаксе: Качественное визуальное оформление + полная оптимизация Bluestacks. Встроенный фикс сенсорики, отсутствие вылетов.", reviewTxt1: "“Абсолютный black опыт. Эмулятор летает, минимализм и мощь. Сенса настроена идеально. Лучшее вложение!”", reviewTxt2: "“Оптимизация превратила ПК в зверя, CS2 400+ стабильных фпс. Black сервис и молниеносный саппорт.”", reviewTxt3: "“Премиум качество, всё чётко. Лучший сервис в нише, без воды, поддержка 24/7.”", ratingStat: "✦ РЕЙТИНГ 5.0 (1200+ отзывов) ✦" },
-        kz: { heroDynamicTag: "НЕЙРОНДЫҚ ЭЛИТ • АБСОЛЮТ", cardName1: "🔥 YOTAMARU эмуляторы", price1: "3000₸ | 550₽ | 1250G", cardName2: "🔥 YOTAMARU + Оңтайландыру", price2: "4500₸ | 750₽ | 1750G", feat11: "Кинематографиялық интерфейс + ZeroLag", feat12: "Жарнаманың толық болмауы", feat13: "FPS арттыру + 300% кадр жиілігі", feat14: "HWID кіру жүйесі", feat15: "Сенсорды түзету / тұрақтылық", feat21: "Latency Killer + твикинг", feat22: "CPU/GPU жиіліктерінің тұрақтылығы", feat23: "Bluestacks және жүйелік оңтайландыру", feat24: "VIP қолдау 24/7", feat25: "Комиссия сатып алушыға жүктеледі", bluestackNoteBlob: "⚡ Bluestacks туралы: сапалы визуалды безендіру + толық оңтайландыру, сенсорды түзету.", reviewTxt1: "“Эмулятор керемет ұшады, сенсор өте дәл. Қара элит!”", reviewTxt2: "“Оптимизация ПК-ны аңға айналдырды, CS2 400+ fps. Қара сервис.”", reviewTxt3: "“Үздік сервис, бәрі нақты, премиум сапа.”", ratingStat: "✦ Рейтинг 5.0 (1200+ пікір) ✦" },
-        en: { heroDynamicTag: "NEURAL ELITE • ABSOLUTE", cardName1: "🔥 YOTAMARU Emulator", price1: "3000₸ | 550₽ | 1250G", cardName2: "🔥 YOTAMARU + Optimization", price2: "4500₸ | 750₽ | 1750G", feat11: "Cinematic UI + ZeroLag", feat12: "Completely ad-free", feat13: "FPS Boost + up to 300% frame rate", feat14: "HWID Lock system", feat15: "Sensor fix / absolute stability", feat21: "Latency Killer + extreme tweaks", feat22: "CPU/GPU frequency stability", feat23: "Bluestacks & system optimization", feat24: "VIP 24/7 support", feat25: "Buyer pays commission fee", bluestackNoteBlob: "⚡ About Bluestacks: Premium visual design + full optimization. Built-in sensor fix, no crashes.", reviewTxt1: "“Absolute black experience. Emulator flies, minimalistic power. Perfect sensor!”", reviewTxt2: "“Optimization turned my PC into a beast, CS2 400+ fps. Black service, instant support.”", reviewTxt3: "“Premium quality, crystal clear. Best service in the niche, 24/7 support.”", ratingStat: "✦ RATING 5.0 (1200+ reviews) ✦" } };
-    let lang = 'ru';
-    function applyLanguage(l) { const t = translations[l]; if(!t) return; document.getElementById('heroDynamicTag').innerText = t.heroDynamicTag; document.getElementById('cardName1').innerText = t.cardName1; document.getElementById('price1').innerText = t.price1; document.getElementById('cardName2').innerText = t.cardName2; document.getElementById('price2').innerText = t.price2; document.getElementById('feat11').innerText = t.feat11; document.getElementById('feat12').innerText = t.feat12; document.getElementById('feat13').innerText = t.feat13; document.getElementById('feat14').innerText = t.feat14; document.getElementById('feat15').innerText = t.feat15; document.getElementById('feat21').innerText = t.feat21; document.getElementById('feat22').innerText = t.feat22; document.getElementById('feat23').innerText = t.feat23; document.getElementById('feat24').innerText = t.feat24; document.getElementById('feat25').innerText = t.feat25; document.getElementById('bluestackNoteBlob').innerHTML = t.bluestackNoteBlob; document.getElementById('reviewTxt1').innerHTML = t.reviewTxt1; document.getElementById('reviewTxt2').innerHTML = t.reviewTxt2; document.getElementById('reviewTxt3').innerHTML = t.reviewTxt3; document.getElementById('ratingStat').innerHTML = t.ratingStat; document.querySelectorAll('.lang-pill').forEach(el=>el.classList.remove('active')); document.querySelector(`.lang-pill[data-lang="${l}"]`).classList.add('active'); }
-    document.querySelectorAll('.lang-pill').forEach(btn => btn.addEventListener('click', () => { applyLanguage(btn.getAttribute('data-lang')); }));
+    // языковые данные — без лишних фраз, только нужные тексты
+    const langData = {
+        ru: { srvTitle1:"🔥 Эмулятор YOTAMARU", srvPrice1:"3000₸ | 550₽ | 1250G", srvTitle2:"🔥 YOTAMARU + Optimization", srvPrice2:"4500₸ | 750₽ | 1750G", featA1:"Кинематографичный интерфейс + ZeroLag", featA2:"Полное отсутствие рекламы", featA3:"FPS Boost + плавность кадров", featA4:"HWID Lock система защиты", featA5:"Фикс сенсорики / без вылетов", featB1:"Latency Killer + экстремальный твикинг", featB2:"Стабильность CPU/GPU прошивки", featB3:"Bluestacks & система глубокая оптимизация", featB4:"VIP поддержка 24/7", featB5:"Комиссия оплачивается покупателем", bluestacksInfo:"⚡ О блюстаксе: Качественное визуальное оформление + полная оптимизация Bluestacks. Встроенный фикс сенсорики, отсутствие сбоев.", revText1:"“Абсолютный black опыт. Эмулятор летает, минимализм и мощь. Сенса настроена идеально. Лучшее вложение!”", revText2:"“Оптимизация превратила ПК в зверя, CS2 400+ стабильных фпс. Black сервис и молниеносный саппорт.”", revText3:"“Премиум качество, всё чётко. Лучший сервис в нише, без воды, поддержка 24/7.”", ratingSpanBlock:"✦ РЕЙТИНГ 5.0 (1200+ отзывов) ✦" },
+        kz: { srvTitle1:"🔥 YOTAMARU эмуляторы", srvPrice1:"3000₸ | 550₽ | 1250G", srvTitle2:"🔥 YOTAMARU + Оңтайландыру", srvPrice2:"4500₸ | 750₽ | 1750G", featA1:"Кинематографиялық интерфейс + ZeroLag", featA2:"Жарнаманың толық болмауы", featA3:"FPS арттыру + тегіс кадрлар", featA4:"HWID кіру жүйесі", featA5:"Сенсорды түзету / ақаусыз", featB1:"Latency Killer + твикинг", featB2:"CPU/GPU тұрақтылығы", featB3:"Bluestacks және терең оңтайландыру", featB4:"VIP қолдау 24/7", featB5:"Комиссия сатып алушыға жүктеледі", bluestacksInfo:"⚡ Bluestacks туралы: сапалы визуалды безендіру + толық оңтайландыру, сенсорды түзету.", revText1:"“Эмулятор керемет ұшады, сенсор өте дәл. Қара элит!”", revText2:"“Оптимизация ПК-ны аңға айналдырды, CS2 400+ fps. Қара сервис.”", revText3:"“Үздік сервис, бәрі нақты, премиум сапа.”", ratingSpanBlock:"✦ Рейтинг 5.0 (1200+ пікір) ✦" },
+        en: { srvTitle1:"🔥 YOTAMARU Emulator", srvPrice1:"3000₸ | 550₽ | 1250G", srvTitle2:"🔥 YOTAMARU + Optimization", srvPrice2:"4500₸ | 750₽ | 1750G", featA1:"Cinematic UI + ZeroLag", featA2:"Completely ad-free", featA3:"FPS Boost + smooth frames", featA4:"HWID Lock system", featA5:"Sensor fix / no crashes", featB1:"Latency Killer + extreme tweaks", featB2:"CPU/GPU stability", featB3:"Bluestacks & deep system optimization", featB4:"VIP 24/7 support", featB5:"Buyer pays commission", bluestacksInfo:"⚡ About Bluestacks: Premium visual design + full optimization. Built-in sensor fix, no crashes.", revText1:"“Absolute black experience. Emulator flies, minimalistic power. Perfect sensor!”", revText2:"“Optimization turned my PC into a beast, CS2 400+ fps. Black service, instant support.”", revText3:"“Premium quality, crystal clear. Best service in the niche.”", ratingSpanBlock:"✦ RATING 5.0 (1200+ reviews) ✦" } };
+    let currentLang = 'ru';
+    function setLanguage(l) { const dict = langData[l]; if(!dict) return; document.getElementById('srvTitle1').innerText = dict.srvTitle1; document.getElementById('srvPrice1').innerText = dict.srvPrice1; document.getElementById('srvTitle2').innerText = dict.srvTitle2; document.getElementById('srvPrice2').innerText = dict.srvPrice2; document.getElementById('featA1').innerText = dict.featA1; document.getElementById('featA2').innerText = dict.featA2; document.getElementById('featA3').innerText = dict.featA3; document.getElementById('featA4').innerText = dict.featA4; document.getElementById('featA5').innerText = dict.featA5; document.getElementById('featB1').innerText = dict.featB1; document.getElementById('featB2').innerText = dict.featB2; document.getElementById('featB3').innerText = dict.featB3; document.getElementById('featB4').innerText = dict.featB4; document.getElementById('featB5').innerText = dict.featB5; document.getElementById('bluestacksInfo').innerHTML = dict.bluestacksInfo; document.getElementById('revText1').innerHTML = dict.revText1; document.getElementById('revText2').innerHTML = dict.revText2; document.getElementById('revText3').innerHTML = dict.revText3; document.getElementById('ratingSpanBlock').innerHTML = dict.ratingSpanBlock; document.querySelectorAll('.lang-badge').forEach(el=>el.classList.remove('active')); document.querySelector(`.lang-badge[data-lang="${l}"]`).classList.add('active'); }
+    document.querySelectorAll('.lang-badge').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang'))));
     
-    // TABS
-    const tabBtns = document.querySelectorAll('.tab-lux-btn');
-    const panesMap = { services: document.getElementById('servicesPane'), reviews: document.getElementById('reviewsPane'), payment: document.getElementById('paymentPane') };
-    tabBtns.forEach(btn => { btn.addEventListener('click', () => { const target = btn.getAttribute('data-tab'); tabBtns.forEach(b=>b.classList.remove('active-lux')); btn.classList.add('active-lux'); Object.values(panesMap).forEach(p=>p.classList.remove('active-lux-pane')); panesMap[target].classList.add('active-lux-pane'); }); });
+    // табы
+    const tabBtns = document.querySelectorAll('.tab-elegant');
+    const panes = { services: document.getElementById('servicesPane'), reviews: document.getElementById('reviewsPane'), payment: document.getElementById('paymentPane') };
+    tabBtns.forEach(btn => { btn.addEventListener('click', () => { const target = btn.getAttribute('data-tab'); tabBtns.forEach(b=>b.classList.remove('active-tab')); btn.classList.add('active-tab'); Object.values(panes).forEach(p=>p.classList.remove('active-pane')); panes[target].classList.add('active-pane'); }); });
     
-    // MODAL
-    const modalNeon = document.getElementById('globalModalNeon');
-    const closeModalX = document.getElementById('closeModalCross');
-    document.querySelectorAll('.openGlobalModal').forEach(btn => btn.addEventListener('click', () => modalNeon.style.display = 'flex'));
-    closeModalX.addEventListener('click', () => modalNeon.style.display = 'none');
-    window.addEventListener('click', e => { if(e.target === modalNeon) modalNeon.style.display = 'none'; });
+    // модалка
+    const modal = document.getElementById('modalGlobal');
+    const closeModalBtn = document.getElementById('closeModalCross');
+    document.querySelectorAll('.openModalBtn').forEach(btn => btn.addEventListener('click', () => modal.style.display = 'flex'));
+    closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
+    window.addEventListener('click', e => { if(e.target === modal) modal.style.display = 'none'; });
     
-    // COPY
-    document.querySelectorAll('.copy-button-style').forEach(btn => { btn.addEventListener('click', () => { const text = btn.getAttribute('data-clip'); if(text) { navigator.clipboard.writeText(text); const old = btn.innerHTML; btn.innerHTML = '<i class="fas fa-check"></i> Copied!'; setTimeout(() => btn.innerHTML = old, 1300); } }); });
-    applyLanguage('ru');
+    // копирование
+    document.querySelectorAll('.copy-btn-custom').forEach(btn => { btn.addEventListener('click', () => { const text = btn.getAttribute('data-clip'); if(text) { navigator.clipboard.writeText(text); const old = btn.innerHTML; btn.innerHTML = '<i class="fas fa-check"></i> Copied!'; setTimeout(() => btn.innerHTML = old, 1300); } }); });
+    setLanguage('ru');
 </script>
 </body>
 </html>
