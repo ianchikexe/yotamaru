@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#000000">
-    <title>YOTAMARU | BLACK ELITE — ABSOLUTE VOID</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>YOTAMARU | BLACK ELITE — VOID PROTOCOL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -17,37 +17,35 @@
         body {
             font-family: 'Space Grotesk', sans-serif;
             background-color: #000000;
-            color: #e8e8e8;
+            color: #ececec;
             overflow-x: hidden;
             min-height: 100vh;
         }
 
-        /* кастомный скролл */
         ::-webkit-scrollbar {
-            width: 3px;
+            width: 2px;
         }
         ::-webkit-scrollbar-track {
             background: #000000;
         }
         ::-webkit-scrollbar-thumb {
-            background: #2a2a2a;
+            background: #7a7a7a;
             border-radius: 2px;
         }
 
-        /* оверлей */
+        /* градиентные слои */
         .black-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(circle at 30% 40%, #000000, #000000);
+            background: radial-gradient(ellipse at 40% 45%, #0a0a0a 0%, #000000 90%);
             z-index: -2;
-            opacity: 0.96;
+            opacity: 0.98;
             pointer-events: none;
         }
 
-        /* Canvas Three.js */
         #three-canvas {
             position: fixed;
             top: 0;
@@ -59,7 +57,7 @@
             pointer-events: none;
         }
 
-        /* ========== ПРЕЛОАДЕР ========== */
+        /* прелоадер с эффектом свечения */
         #preloader {
             position: fixed;
             inset: 0;
@@ -69,132 +67,128 @@
             align-items: center;
             justify-content: center;
             z-index: 2000;
-            transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
         .preloader-ring {
-            width: 70px;
-            height: 70px;
-            border: 2px solid rgba(80, 80, 80, 0.2);
-            border-top: 2px solid #999999;
+            width: 80px;
+            height: 80px;
+            border: 2px solid rgba(150, 150, 150, 0.15);
+            border-top: 2px solid #bbbbbb;
             border-radius: 50%;
-            animation: spin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-            margin-bottom: 24px;
+            animation: spin 0.9s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+            margin-bottom: 28px;
+            box-shadow: 0 0 12px rgba(180,180,180,0.2);
         }
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .preloader-text {
-            font-size: 1.4rem;
-            font-weight: 500;
-            letter-spacing: 5px;
-            color: #dddddd;
-            margin-bottom: 16px;
-            opacity: 0;
-            animation: fadeText 0.6s ease forwards 0.2s;
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            background: linear-gradient(135deg, #ddd, #888);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 20px;
         }
-        @keyframes fadeText { to { opacity: 1; } }
         .preloader-bar {
-            width: 180px;
+            width: 220px;
             height: 2px;
-            background: #151515;
+            background: #181818;
             border-radius: 4px;
             overflow: hidden;
         }
         .preloader-fill {
             width: 0%;
             height: 100%;
-            background: #aaaaaa;
-            transition: width 0.08s cubic-bezier(0.2, 0.9, 0.4, 1);
+            background: linear-gradient(90deg, #aaa, #eee);
+            transition: width 0.1s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
 
-        /* ========== ЭКРАН ПАРОЛЯ ========== */
+        /* экран пароля — минималистичный хакерский стиль */
         #password-screen {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.98);
-            backdrop-filter: blur(12px);
+            background: rgba(0, 0, 0, 0.96);
+            backdrop-filter: blur(16px);
             z-index: 1500;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transition: opacity 0.5s ease;
         }
         .password-card {
-            background: rgba(0, 0, 0, 0.9);
-            border: 1px solid #2a2a2a;
-            border-radius: 48px;
-            padding: 40px 32px;
+            background: rgba(6, 6, 6, 0.9);
+            border: 1px solid #2c2c2c;
+            border-radius: 56px;
+            padding: 44px 34px;
             width: 90%;
             max-width: 440px;
             text-align: center;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 20px 40px -12px rgba(0,0,0,1), 0 0 0 1px rgba(60,60,60,0.3);
-            animation: cardGlow 2s infinite alternate;
-        }
-        @keyframes cardGlow {
-            0% { border-color: #2a2a2a; box-shadow: 0 20px 40px -12px rgba(0,0,0,1); }
-            100% { border-color: #4a4a4a; box-shadow: 0 20px 40px -12px rgba(0,0,0,1), 0 0 0 2px rgba(100,100,100,0.1); }
+            box-shadow: 0 30px 50px -20px black, inset 0 1px 0 rgba(255,255,255,0.02);
+            transition: all 0.3s;
         }
         .password-icon {
-            font-size: 52px;
-            margin-bottom: 18px;
-            filter: drop-shadow(0 0 4px #666);
-            animation: iconPulse 2s infinite;
-        }
-        @keyframes iconPulse {
-            0%, 100% { opacity: 0.7; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
+            font-size: 58px;
+            filter: drop-shadow(0 0 6px #666);
+            margin-bottom: 12px;
         }
         .password-title {
-            font-size: 1.6rem;
+            font-size: 1.9rem;
             font-weight: 600;
-            margin-bottom: 20px;
-            color: #ffffff;
             letter-spacing: -0.5px;
+            margin-bottom: 24px;
+            background: linear-gradient(120deg, #fff, #aaa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         .password-field {
-            background: #050505;
-            border: 1px solid #2a2a2a;
+            background: #0c0c0c;
+            border: 1px solid #2f2f2f;
             border-radius: 60px;
             padding: 14px 20px;
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             font-family: monospace;
-            letter-spacing: 5px;
+            letter-spacing: 8px;
             text-align: center;
-            color: #cccccc;
-            margin: 20px 0;
+            color: #e0e0e0;
+            margin: 16px 0;
             width: 100%;
-            transition: all 0.3s ease;
+            transition: all 0.2s;
         }
         .password-field:focus {
-            border-color: #777;
+            border-color: #8a8a8a;
             outline: none;
+            background: #000;
         }
         .unlock-password-btn {
-            background: #111111;
-            border: 1px solid #444;
-            padding: 12px 24px;
+            background: #101010;
+            border: 1px solid #3c3c3c;
+            padding: 14px 28px;
             width: 100%;
             border-radius: 60px;
             font-weight: 600;
-            font-size: 0.95rem;
-            color: white;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            color: #f0f0f0;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.25s;
         }
         .unlock-password-btn:hover {
-            background: #2a2a2a;
-            border-color: #888;
-            color: #fff;
+            background: #1e1e1e;
+            border-color: #b0b0b0;
             transform: translateY(-2px);
+            box-shadow: 0 10px 20px -8px black;
         }
 
-        /* ========== ОСНОВНОЙ КОНТЕНТ ========== */
+        /* основной контент */
         .main-container {
             max-width: 1300px;
             margin: 0 auto;
-            padding: 45px 24px 80px;
+            padding: 50px 28px 90px;
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.7s cubic-bezier(0.2, 0.9, 0.4, 1);
+            transform: translateY(35px);
+            transition: opacity 0.9s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.8s cubic-bezier(0.2, 0.9, 0.4, 1);
             position: relative;
             z-index: 10;
         }
@@ -205,289 +199,292 @@
 
         .hero {
             text-align: center;
-            margin-bottom: 60px;
-            animation: fadeInUp 0.8s ease;
-        }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            margin-bottom: 70px;
         }
         .glow-title {
-            font-size: 5rem;
-            font-weight: 700;
-            color: #ffffff;
-            letter-spacing: -2px;
-            text-shadow: 0 0 12px rgba(255,255,255,0.08);
-            animation: titleGlow 3s infinite alternate;
-        }
-        @keyframes titleGlow {
-            0% { text-shadow: 0 0 8px rgba(255,255,255,0.05); }
-            100% { text-shadow: 0 0 16px rgba(255,255,255,0.12); }
+            font-size: 6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #9e9e9e 80%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -3px;
+            filter: drop-shadow(0 0 15px rgba(100,100,100,0.3));
         }
         .sub-badge {
             font-size: 0.7rem;
-            letter-spacing: 6px;
+            letter-spacing: 8px;
             text-transform: uppercase;
-            border-top: 1px solid #333;
+            border-top: 1px solid #2a2a2a;
             display: inline-block;
-            padding-top: 10px;
-            margin-top: 10px;
+            padding-top: 14px;
+            margin-top: 8px;
+            font-weight: 400;
             color: #aaa;
         }
 
-        /* ТАБЫ */
+        /* табы с глянцем */
         .tabs {
             display: flex;
             justify-content: center;
-            gap: 14px;
-            margin-bottom: 50px;
+            gap: 16px;
+            margin-bottom: 54px;
             flex-wrap: wrap;
         }
         .tab {
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(6px);
-            border: 1px solid #222;
-            padding: 9px 28px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid #2a2a2a;
+            padding: 10px 32px;
             border-radius: 50px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
-            color: #ccc;
+            transition: all 0.3s;
+            color: #c0c0c0;
+            font-size: 0.95rem;
+            letter-spacing: 1px;
         }
         .tab:hover {
-            border-color: #666;
+            border-color: #8a8a8a;
+            background: #0f0f0f;
             transform: translateY(-2px);
         }
         .tab.active {
-            background: #111;
-            border-color: #888;
+            background: #0c0c0c;
+            border-color: #c0c0c0;
             color: #ffffff;
+            box-shadow: 0 0 12px rgba(255,255,255,0.05);
         }
         .tab-content {
             display: none;
-            animation: fadeUp 0.5s cubic-bezier(0.2, 0.9, 0.4, 1);
+            animation: fadeSlide 0.55s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
         .tab-content.active-tab {
             display: block;
         }
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(15px); }
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* КАРТОЧКИ УСЛУГ */
+        /* карточки услуг — темный карбон */
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-            gap: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+            gap: 45px;
         }
         .service-card {
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(8, 8, 8, 0.9);
             backdrop-filter: blur(6px);
-            border: 1px solid #222;
-            border-radius: 36px;
-            padding: 32px 26px;
+            border: 1px solid #242424;
+            border-radius: 40px;
+            padding: 36px 28px;
             transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1);
-            opacity: 0;
             transform: translateY(30px);
-            animation: cardReveal 0.6s cubic-bezier(0.2, 0.9, 0.4, 1) forwards;
+            opacity: 0;
+            animation: riseCard 0.6s forwards;
+            box-shadow: 0 20px 30px -20px rgba(0,0,0,0.8);
         }
-        @keyframes cardReveal {
+        @keyframes riseCard {
             to { opacity: 1; transform: translateY(0); }
         }
-        .service-card:nth-child(1) { animation-delay: 0.1s; }
-        .service-card:nth-child(2) { animation-delay: 0.2s; }
+        .service-card:nth-child(1) { animation-delay: 0.08s; }
+        .service-card:nth-child(2) { animation-delay: 0.18s; }
         .service-card:hover {
-            border-color: #5a5a5a;
+            border-color: #616161;
             transform: translateY(-8px);
-            box-shadow: 0 25px 40px -20px rgba(0,0,0,1);
-            background: rgba(10, 10, 10, 0.95);
+            background: #0e0e0e;
+            box-shadow: 0 30px 40px -18px black;
         }
         .service-name {
-            font-size: 1.8rem;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            color: #fff;
-        }
-        .price {
             font-size: 1.9rem;
             font-weight: 700;
-            margin: 18px 0;
-            color: #cccccc;
+            letter-spacing: -0.5px;
+            background: linear-gradient(130deg, #fff, #b9b9b9);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .price {
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 20px 0;
+            color: #dbdbdb;
+            border-left: 3px solid #6a6a6a;
+            padding-left: 16px;
         }
         .features {
             list-style: none;
-            margin: 24px 0 32px;
+            margin: 28px 0 32px;
         }
         .features li {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-size: 0.95rem;
-            color: #ddd;
-        }
-        .features li::before {
-            content: "✦";
-            color: #aaa;
+            color: #ccc;
             font-weight: 400;
         }
+        .features li::before {
+            content: "◆";
+            color: #aaa;
+            font-size: 0.7rem;
+        }
         .btn-pay {
-            background: transparent;
-            border: 1px solid #444;
-            padding: 12px;
-            border-radius: 60px;
+            background: #0a0a0a;
+            border: 1px solid #3a3a3a;
+            padding: 12px 10px;
+            border-radius: 44px;
             font-weight: 600;
             text-align: center;
-            color: white;
+            color: #f5f5f5;
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 8px;
+            transition: 0.25s;
+            margin-top: 10px;
             display: block;
-            text-decoration: none;
+            width: 100%;
             font-size: 0.9rem;
+            letter-spacing: 0.5px;
         }
         .btn-pay:hover {
-            background: #1f1f1f;
-            border-color: #aaa;
+            background: #1a1a1a;
+            border-color: #9a9a9a;
             transform: translateY(-2px);
         }
         .tg-btn {
-            background: rgba(30,30,30,0.3);
-            border-color: #3a3a3a;
+            background: #040404;
+            border-color: #2e2e2e;
         }
 
-        /* ОТЗЫВЫ С АНИМАЦИЕЙ */
+        /* отзывы с профилями */
         .reviews-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 28px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
         }
         .review-card {
-            background: #040404;
-            border-radius: 28px;
-            padding: 24px;
-            border: 1px solid #1c1c1c;
-            backdrop-filter: blur(4px);
-            font-size: 0.9rem;
-            line-height: 1.45;
-            color: #ccc;
-            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            background: #050505e0;
+            backdrop-filter: blur(5px);
+            border-radius: 32px;
+            padding: 28px;
+            border: 1px solid #252525;
+            transition: 0.25s;
             opacity: 0;
-            transform: translateY(20px);
-            animation: reviewFade 0.5s ease forwards;
+            transform: translateY(15px);
+            animation: revReveal 0.5s forwards;
+            box-shadow: 0 10px 20px -10px black;
         }
-        @keyframes reviewFade {
+        @keyframes revReveal {
             to { opacity: 1; transform: translateY(0); }
         }
         .review-card:nth-child(1) { animation-delay: 0.05s; }
         .review-card:nth-child(2) { animation-delay: 0.1s; }
         .review-card:nth-child(3) { animation-delay: 0.15s; }
         .review-card:hover {
-            transform: translateY(-5px);
-            border-color: #444;
-            background: #0a0a0a;
+            transform: translateY(-4px);
+            border-color: #5a5a5a;
+            background: #0c0c0c;
+        }
+        .review-stars {
+            color: #bdbdbd;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            font-size: 0.8rem;
         }
 
-        /* ОПЛАТА */
+        /* оплата стильно */
         .payment-options {
-            max-width: 600px;
+            max-width: 640px;
             margin: 0 auto;
         }
         .pay-box {
-            background: #030303;
-            border: 1px solid #222;
-            border-radius: 32px;
-            padding: 24px;
-            margin-bottom: 24px;
-            backdrop-filter: blur(4px);
-            transition: all 0.3s ease;
+            background: #030303cc;
+            backdrop-filter: blur(6px);
+            border: 1px solid #2b2b2b;
+            border-radius: 42px;
+            padding: 28px;
+            margin-bottom: 28px;
+            transition: 0.25s;
             opacity: 0;
             transform: scale(0.97);
-            animation: payBoxFade 0.5s ease forwards;
+            animation: payPop 0.4s forwards;
         }
-        @keyframes payBoxFade {
+        @keyframes payPop {
             to { opacity: 1; transform: scale(1); }
         }
-        .pay-box:nth-child(1) { animation-delay: 0.05s; }
-        .pay-box:nth-child(2) { animation-delay: 0.1s; }
-        .pay-box:nth-child(3) { animation-delay: 0.15s; }
-        .pay-box:nth-child(4) { animation-delay: 0.2s; }
         .pay-box:hover {
-            border-color: #555;
+            border-color: #6a6a6a;
             transform: translateY(-3px);
         }
         .copy-number {
-            background: #000000;
+            background: #030303;
             font-family: monospace;
-            padding: 12px;
-            border-radius: 20px;
-            margin: 12px 0;
-            border: 1px dashed #3a3a3a;
-            font-size: 0.9rem;
-            color: #bbb;
+            padding: 14px;
+            border-radius: 28px;
+            margin: 15px 0;
+            border: 1px solid #363636;
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+            color: #dbdbdb;
         }
         .copy-btn {
-            background: #111;
+            background: #0f0f0f;
             border: none;
-            padding: 6px 18px;
-            border-radius: 40px;
+            padding: 8px 22px;
+            border-radius: 60px;
             cursor: pointer;
             color: #ddd;
-            transition: all 0.2s ease;
-            font-size: 0.8rem;
+            font-weight: 500;
+            transition: 0.2s;
         }
         .copy-btn:hover {
             background: #2a2a2a;
-            transform: scale(1.02);
+            transform: scale(1.01);
         }
 
-        /* МОДАЛКА */
+        /* модалка */
         #quickModal {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.98);
-            backdrop-filter: blur(20px);
+            background: rgba(0,0,0,0.96);
+            backdrop-filter: blur(28px);
             z-index: 2500;
             align-items: center;
             justify-content: center;
-            animation: modalFadeIn 0.3s ease;
+            animation: modalFade 0.3s ease;
         }
-        @keyframes modalFadeIn {
+        @keyframes modalFade {
             from { opacity: 0; backdrop-filter: blur(0); }
-            to { opacity: 1; backdrop-filter: blur(20px); }
+            to { opacity: 1; backdrop-filter: blur(28px); }
         }
         .modal-content {
-            background: #050505;
-            max-width: 440px;
+            background: #080808;
+            max-width: 460px;
             width: 90%;
-            border-radius: 44px;
-            padding: 32px;
-            border: 1px solid #333;
-            transform: scale(0.95);
-            animation: modalScale 0.3s cubic-bezier(0.2, 0.9, 0.4, 1) forwards;
+            border-radius: 56px;
+            padding: 36px 32px;
+            border: 1px solid #3d3d3d;
+            transform: scale(0.96);
+            animation: modalZoom 0.3s forwards;
         }
-        @keyframes modalScale {
+        @keyframes modalZoom {
             to { transform: scale(1); }
         }
 
         footer {
             text-align: center;
-            margin-top: 80px;
-            opacity: 0.4;
+            margin-top: 90px;
+            opacity: 0.45;
             font-size: 0.7rem;
-            color: #aaa;
+            letter-spacing: 2px;
         }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @media (max-width: 700px) {
-            .glow-title { font-size: 2.8rem; }
-            .service-name { font-size: 1.5rem; }
-            .price { font-size: 1.6rem; }
+        @media (max-width: 720px) {
+            .glow-title { font-size: 3.2rem; }
+            .service-name { font-size: 1.6rem; }
+            .price { font-size: 1.7rem; }
+            .tab { padding: 6px 20px; }
         }
     </style>
 </head>
@@ -496,36 +493,33 @@
 <div class="black-overlay"></div>
 <canvas id="three-canvas"></canvas>
 
-<!-- прелоадер -->
 <div id="preloader">
     <div class="preloader-ring"></div>
     <div class="preloader-text">YOTAMARU</div>
     <div class="preloader-bar"><div class="preloader-fill" id="preloaderFill"></div></div>
-    <div style="margin-top: 14px; font-size: 0.6rem; color:#888; letter-spacing: 2px;">BLACK VOID</div>
+    <div style="margin-top: 18px; font-size: 0.65rem; color:#6a6a6a; letter-spacing: 3px;">VOID PROTOCOL</div>
 </div>
 
-<!-- экран пароля -->
 <div id="password-screen">
     <div class="password-card">
-        <div class="password-icon">⛓️</div>
-        <div class="password-title">АВТОРИЗАЦИЯ</div>
+        <div class="password-icon">⌨️⚡</div>
+        <div class="password-title">AUTHENTICATE</div>
         <input type="text" class="password-field" id="passwordInput" value="0000" readonly>
-        <div style="color:#777; font-size:0.7rem; margin-bottom:8px;">🔑 система автоматического доступа</div>
-        <button id="confirmPasswordBtn" class="unlock-password-btn">ВОЙТИ В СИСТЕМУ</button>
+        <div style="color:#6e6e6e; font-size:0.7rem; margin-bottom:12px;">🔒 secured terminal access</div>
+        <button id="confirmPasswordBtn" class="unlock-password-btn">⟡ UNLOCK VOID ⟡</button>
     </div>
 </div>
 
-<!-- основной контент -->
 <div class="main-container" id="mainContent">
     <div class="hero">
         <h1 class="glow-title">YOTAMARU</h1>
-        <div class="sub-badge">BLACK VOID • ELITE</div>
+        <div class="sub-badge">BLACK VOID • ABSOLUTE ELITE</div>
     </div>
 
     <div class="tabs">
-        <div class="tab active" data-tab="services">УСЛУГИ</div>
-        <div class="tab" data-tab="reviews">ОТЗЫВЫ</div>
-        <div class="tab" data-tab="payment">ОПЛАТА</div>
+        <div class="tab active" data-tab="services">⚡ УСЛУГИ</div>
+        <div class="tab" data-tab="reviews">★ ОТЗЫВЫ</div>
+        <div class="tab" data-tab="payment">₽ ОПЛАТА</div>
     </div>
 
     <div id="servicesTab" class="tab-content active-tab">
@@ -534,74 +528,73 @@
                 <div class="service-name">Yotamaru Emulator</div>
                 <div class="price">2 000 ₽</div>
                 <ul class="features">
-                    <li>ZeroLag интерфейс</li>
-                    <li>Антидетект + HWID</li>
+                    <li>ZeroLag интерфейс & Ultra Low Latency</li>
+                    <li>Антидетект + HWID Lock System</li>
                     <li>FPS Boost + премиум сенсорика</li>
-                    <li>Полная анонимность</li>
+                    <li>Полная анонимность / трафик скрыт</li>
                 </ul>
-                <button class="btn-pay openPayModal">ОПЛАТИТЬ</button>
-                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-pay tg-btn">TELEGRAM BOT</a>
+                <button class="btn-pay openPayModal">💳 ОПЛАТИТЬ</button>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-pay tg-btn">📱 TELEGRAM BOT</a>
             </div>
             <div class="service-card">
                 <div class="service-name">PC Optimization</div>
                 <div class="price">2 000 ₽</div>
                 <ul class="features">
-                    <li>Твикинг CS2 / Valorant</li>
-                    <li>Минимизация инпута</li>
-                    <li>Latency Killer</li>
-                    <li>VIP 24/7 поддержка</li>
+                    <li>Твикинг CS2 / Valorant / Dota 2</li>
+                    <li>Минимизация инпута & Latency Killer</li>
+                    <li>Стабильность прошивки / процессоров</li>
+                    <li>VIP 24/7 консультация</li>
                 </ul>
-                <button class="btn-pay openPayModal">ОПЛАТИТЬ</button>
-                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-pay tg-btn">TELEGRAM BOT</a>
+                <button class="btn-pay openPayModal">💳 ОПЛАТИТЬ</button>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-pay tg-btn">📱 TELEGRAM BOT</a>
             </div>
         </div>
     </div>
 
     <div id="reviewsTab" class="tab-content">
         <div class="reviews-grid">
-            <div class="review-card">“Абсолютный black опыт. Эмулятор летает, интерфейс минималистичный и мощный.”<br>— Артём</div>
-            <div class="review-card">“Оптимизация превратила мой ПК в зверя. Стиль и производительность на высоте.”<br>— Екатерина</div>
-            <div class="review-card">“Лучший сервис в своей нише. Всё чётко, без лишнего света.”<br>— Дамир</div>
+            <div class="review-card"><div class="review-stars">★★★★★</div>“Абсолютный black опыт. Эмулятор летает, минимализм и мощь. Сенса настроена идеально.”<br>— Артём</div>
+            <div class="review-card"><div class="review-stars">★★★★★</div>“Оптимизация превратила мой ПК в зверя, CS2 300+ fps. Скорость поддержки поражает.”<br>— Екатерина</div>
+            <div class="review-card"><div class="review-stars">★★★★★</div>“Лучший сервис в своей нише. Всё чётко, без лишнего света — премиум качество.”<br>— Дамир</div>
         </div>
-        <div style="text-align: center; margin-top: 40px; color:#888; font-size:0.85rem;">★ 4.99 на основе 500+ отзывов</div>
+        <div style="text-align: center; margin-top: 44px; color:#9e9e9e; font-size:0.85rem;">✦ Рейтинг 4.99 (500+ отзывов) ✦</div>
     </div>
 
     <div id="paymentTab" class="tab-content">
         <div class="payment-options">
             <div class="pay-box">
-                <h3 style="color:#ddd;">Kaspi.kz</h3>
+                <h3 style="color:#ececec;">Kaspi.kz</h3>
                 <div class="copy-number">4400 4303 4792 1634</div>
-                <div style="color:#aaa;">Мираса А.</div>
-                <button class="copy-btn" data-clip="4400 4303 4792 1634">📋 Скопировать</button>
+                <div style="color:#aaa; margin-bottom: 8px;">Мираса А.</div>
+                <button class="copy-btn" data-clip="4400 4303 4792 1634">📋 Копировать</button>
             </div>
             <div class="pay-box">
-                <h3 style="color:#ddd;">ЮMoney</h3>
+                <h3 style="color:#ececec;">ЮMoney</h3>
                 <div class="copy-number">5599 0020 9639 5761</div>
-                <button class="copy-btn" data-clip="5599 0020 9639 5761">📋 Скопировать</button>
+                <button class="copy-btn" data-clip="5599 0020 9639 5761">📋 Копировать</button>
             </div>
             <div class="pay-box">
-                <h3 style="color:#ddd;">Telegram Bot</h3>
-                <a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#aaa; text-decoration: none;">@YotamaruShopBot</a>
-                <div style="margin-top: 6px; font-size:0.75rem; opacity:0.7;">Автоматическая выдача</div>
+                <h3 style="color:#ececec;">Telegram Stars / Bot</h3>
+                <a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#ddd; font-weight:500;">@YotamaruShopBot</a>
+                <div style="margin-top: 8px; font-size:0.75rem; opacity:0.7;">⚡ автоматическая выдача ключей</div>
             </div>
             <div class="pay-box">
-                <h3 style="color:#ddd;">ПОДДЕРЖКА 24/7</h3>
-                <a href="https://t.me/ianchikexe" target="_blank" style="color:#bbb; text-decoration: none; font-weight:500;">@ianchikexe</a>
-                <div style="margin-top: 5px; font-size:0.75rem; color:#888;">прямой контакт</div>
+                <h3 style="color:#ececec;">⎯ SUPPORT 24/7 ⎯</h3>
+                <a href="https://t.me/ianchikexe" target="_blank" style="color:#bbbbff; text-decoration: none; font-weight:500;">@ianchikexe</a>
+                <div style="margin-top: 5px; font-size:0.7rem; color:#888;">прямой контакт / консультация</div>
             </div>
         </div>
     </div>
-    <footer>YOTAMARU • ABSOLUTE BLACK ELITE 2026</footer>
+    <footer>YOTAMARU • ABSOLUTE BLACK ELITE — 2026</footer>
 </div>
 
-<!-- модалка оплаты -->
 <div id="quickModal">
     <div class="modal-content">
-        <div style="text-align: right; font-size: 28px; cursor: pointer; color:#fff;" id="closeQuickModal">&times;</div>
+        <div style="text-align: right; font-size: 32px; cursor: pointer; color:#ddd;" id="closeQuickModal">&times;</div>
         <h3 style="color:#fff;">ОПЛАТА 2000 ₽</h3>
-        <div style="margin: 20px 0; border-left: 2px solid #666; padding-left: 16px; color:#ccc;"><strong>Kaspi:</strong> 4400 4303 4792 1634</div>
-        <div style="margin-bottom: 20px; border-left: 2px solid #666; padding-left: 16px; color:#ccc;"><strong>ЮMoney:</strong> 5599 0020 9639 5761</div>
-        <a href="https://t.me/YotamaruShopBot" target="_blank" style="display: block; background: #111; text-align: center; padding: 12px; border-radius: 50px; color: #fff; text-decoration: none; font-weight: bold; border:1px solid #555; transition: all 0.2s;">🤖 Telegram Bot</a>
+        <div style="margin: 20px 0; border-left: 3px solid #6a6a6a; padding-left: 18px; color:#ccc;"><strong>Kaspi:</strong> 4400 4303 4792 1634</div>
+        <div style="margin-bottom: 20px; border-left: 3px solid #6a6a6a; padding-left: 18px; color:#ccc;"><strong>ЮMoney:</strong> 5599 0020 9639 5761</div>
+        <a href="https://t.me/YotamaruShopBot" target="_blank" style="display: block; background: #121212; text-align: center; padding: 14px; border-radius: 60px; color: #fff; text-decoration: none; font-weight: bold; border:1px solid #5a5a5a; transition:0.2s;">🤖 Telegram Bot →</a>
     </div>
 </div>
 
@@ -622,120 +615,103 @@
     renderer.setClearColor(0x000000, 1);
     
     const scene = new THREE.Scene();
-    scene.background = null;
-    scene.fog = new THREE.FogExp2(0x000000, 0.014);
+    scene.fog = new THREE.FogExp2(0x000000, 0.018);
     
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(0, 0.6, 8.8);
-    camera.lookAt(0, 0, 0);
+    const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 0.5, 9.2);
     
-    const ambient = new THREE.AmbientLight(0x0a0a0a);
-    scene.add(ambient);
-    const backLight = new THREE.PointLight(0x222222, 0.4);
-    backLight.position.set(-1, 1.2, -3);
-    scene.add(backLight);
-    const fillLight = new THREE.PointLight(0x333333, 0.3);
-    fillLight.position.set(1.5, 0.8, 2);
-    scene.add(fillLight);
+    const ambientLight = new THREE.AmbientLight(0x111111);
+    scene.add(ambientLight);
+    const mainLight = new THREE.DirectionalLight(0x2a2a2a, 0.5);
+    mainLight.position.set(2, 3, 4);
+    scene.add(mainLight);
+    const backRim = new THREE.PointLight(0x222222, 0.45);
+    backRim.position.set(-1, 1, -2.5);
+    scene.add(backRim);
     
-    const geoCore = new THREE.TorusKnotGeometry(1.0, 0.27, 200, 32, 3, 4);
-    const blackMetal = new THREE.MeshStandardMaterial({
-        color: 0x050505,
-        emissive: 0x111111,
-        emissiveIntensity: 0.12,
-        metalness: 0.96,
-        roughness: 0.42,
+    // центральный объект - икосаэдр с двойной обмоткой
+    const icoGeo = new THREE.IcosahedronGeometry(1.1, 0);
+    const coreMat = new THREE.MeshStandardMaterial({
+        color: 0x030303,
+        emissive: 0x141414,
+        emissiveIntensity: 0.18,
+        metalness: 0.93,
+        roughness: 0.35,
+        flatShading: false
     });
-    const coreKnot = new THREE.Mesh(geoCore, blackMetal);
-    scene.add(coreKnot);
+    const coreIco = new THREE.Mesh(icoGeo, coreMat);
+    scene.add(coreIco);
     
-    const wireMat = new THREE.MeshBasicMaterial({ color: 0x444444, wireframe: true, transparent: true, opacity: 0.08 });
-    const wireKnot = new THREE.Mesh(geoCore, wireMat);
-    wireKnot.scale.set(1.04, 1.04, 1.04);
-    scene.add(wireKnot);
+    const wireMat = new THREE.MeshBasicMaterial({ color: 0x5a5a5a, wireframe: true, transparent: true, opacity: 0.12 });
+    const wireIco = new THREE.Mesh(icoGeo, wireMat);
+    wireIco.scale.set(1.1, 1.1, 1.1);
+    scene.add(wireIco);
     
-    const ringGeo = new THREE.TorusGeometry(1.65, 0.04, 128, 360);
-    const darkRingMat = new THREE.MeshStandardMaterial({ color: 0x020202, emissive: 0x111111, emissiveIntensity: 0.08, metalness: 0.88 });
-    const ringA = new THREE.Mesh(ringGeo, darkRingMat);
-    ringA.rotation.x = Math.PI / 2;
-    scene.add(ringA);
+    const ringGeo = new THREE.TorusGeometry(1.68, 0.045, 130, 400);
+    const metalRingMat = new THREE.MeshStandardMaterial({ color: 0x0a0a0a, metalness: 0.85, roughness: 0.4, emissive: 0x111111 });
+    const ring = new THREE.Mesh(ringGeo, metalRingMat);
+    ring.rotation.x = Math.PI / 2;
+    scene.add(ring);
     
-    const ringBGeo = new THREE.TorusGeometry(2.05, 0.032, 128, 360);
-    const ringB = new THREE.Mesh(ringBGeo, darkRingMat);
-    ringB.rotation.z = 0.7;
-    ringB.rotation.x = 0.85;
-    scene.add(ringB);
+    const outerRingGeo = new THREE.TorusGeometry(2.18, 0.035, 140, 500);
+    const outerRing = new THREE.Mesh(outerRingGeo, metalRingMat);
+    outerRing.rotation.z = 0.5;
+    outerRing.rotation.x = 0.8;
+    scene.add(outerRing);
     
-    const dustCount = 1800;
-    const dustGeo = new THREE.BufferGeometry();
-    const dustPositions = new Float32Array(dustCount * 3);
-    for (let i = 0; i < dustCount; i++) {
-        const r = 2.3 + Math.random() * 1.4;
-        const ang = Math.random() * Math.PI * 2;
-        const tilt = (Math.random() - 0.5) * 1.1;
-        dustPositions[i*3] = Math.cos(ang) * r;
-        dustPositions[i*3+1] = tilt * 0.75;
-        dustPositions[i*3+2] = Math.sin(ang) * r;
+    const particleCount = 2500;
+    const particleGeo = new THREE.BufferGeometry();
+    const positions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+        const radius = 2.5 + Math.random() * 1.2;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = Math.acos(2 * Math.random() - 1);
+        positions[i*3] = radius * Math.sin(phi) * Math.cos(theta);
+        positions[i*3+1] = radius * Math.sin(phi) * Math.sin(theta) * 0.6;
+        positions[i*3+2] = radius * Math.cos(phi);
     }
-    dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-    const dustMat = new THREE.PointsMaterial({ color: 0x222222, size: 0.035, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending });
-    const dustRing = new THREE.Points(dustGeo, dustMat);
-    scene.add(dustRing);
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const particleMat = new THREE.PointsMaterial({ color: 0x3a3a3a, size: 0.035, transparent: true, blending: THREE.AdditiveBlending });
+    const particleField = new THREE.Points(particleGeo, particleMat);
+    scene.add(particleField);
     
-    const starCount = 1600;
-    const starGeo = new THREE.BufferGeometry();
-    const starPositions = new Float32Array(starCount * 3);
+    const starCount = 2400;
+    const starFieldGeo = new THREE.BufferGeometry();
+    const starPos = new Float32Array(starCount * 3);
     for (let i = 0; i < starCount; i++) {
-        starPositions[i*3] = (Math.random() - 0.5) * 180;
-        starPositions[i*3+1] = (Math.random() - 0.5) * 100;
-        starPositions[i*3+2] = (Math.random() - 0.5) * 80 - 30;
+        starPos[i*3] = (Math.random() - 0.5) * 200;
+        starPos[i*3+1] = (Math.random() - 0.5) * 110;
+        starPos[i*3+2] = (Math.random() - 0.5) * 90 - 40;
     }
-    starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-    const starMat = new THREE.PointsMaterial({ color: 0x2a2a2a, size: 0.055, transparent: true, opacity: 0.3 });
-    const stars = new THREE.Points(starGeo, starMat);
-    scene.add(stars);
+    starFieldGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+    const starPointsMat = new THREE.PointsMaterial({ color: 0x3f3f3f, size: 0.048, transparent: true, opacity: 0.4 });
+    const starsField = new THREE.Points(starFieldGeo, starPointsMat);
+    scene.add(starsField);
     
-    const hazeCount = 700;
-    const hazeGeo = new THREE.BufferGeometry();
-    const hazePos = new Float32Array(hazeCount * 3);
-    for (let i = 0; i < hazeCount; i++) {
-        hazePos[i*3] = (Math.random() - 0.5) * 9;
-        hazePos[i*3+1] = (Math.random() - 0.5) * 5;
-        hazePos[i*3+2] = (Math.random() - 0.5) * 8 - 2;
-    }
-    hazeGeo.setAttribute('position', new THREE.BufferAttribute(hazePos, 3));
-    const hazeMat = new THREE.PointsMaterial({ color: 0x080808, size: 0.045, transparent: true, opacity: 0.2 });
-    const hazePoints = new THREE.Points(hazeGeo, hazeMat);
-    scene.add(hazePoints);
-    
-    let time = 0;
-    
-    function animateVoid() {
-        requestAnimationFrame(animateVoid);
-        time += 0.006;
+    let clock = 0;
+    function animate() {
+        requestAnimationFrame(animate);
+        clock += 0.009;
         
-        coreKnot.rotation.y = time * 0.62;
-        coreKnot.rotation.x = Math.sin(time * 0.2) * 0.14;
-        coreKnot.rotation.z = Math.sin(time * 0.34) * 0.09;
-        wireKnot.rotation.copy(coreKnot.rotation);
+        coreIco.rotation.y = clock * 0.45;
+        coreIco.rotation.x = Math.sin(clock * 0.28) * 0.12;
+        wireIco.rotation.copy(coreIco.rotation);
         
-        ringA.rotation.z += 0.0035;
-        ringA.rotation.x = Math.PI / 2 + Math.sin(time * 0.17) * 0.045;
-        ringB.rotation.y += 0.0028;
-        ringB.rotation.x = 0.85 + Math.sin(time * 0.28) * 0.05;
+        ring.rotation.z += 0.0032;
+        ring.rotation.x = Math.PI / 2 + Math.sin(clock * 0.21) * 0.04;
+        outerRing.rotation.y += 0.0026;
+        outerRing.rotation.x = 0.78 + Math.sin(clock * 0.19) * 0.045;
         
-        dustRing.rotation.y = time * 0.11;
-        dustRing.rotation.x = Math.sin(time * 0.13) * 0.07;
-        hazePoints.rotation.y = time * 0.012;
-        stars.rotation.y = time * 0.005;
+        particleField.rotation.y = clock * 0.08;
+        particleField.rotation.x = Math.sin(clock * 0.14) * 0.05;
+        starsField.rotation.y = clock * 0.003;
         
         camera.position.x += (0 - camera.position.x) * 0.04;
-        camera.lookAt(0, 0.05, 0);
+        camera.lookAt(0, 0.1, 0);
         
         renderer.render(scene, camera);
     }
-    
-    animateVoid();
+    animate();
     
     window.addEventListener('resize', () => {
         camera.aspect = window.innerWidth / window.innerHeight;
@@ -750,17 +726,17 @@
         const fill = document.getElementById('preloaderFill');
         const preloader = document.getElementById('preloader');
         const interval = setInterval(() => {
-            percent += Math.floor(Math.random() * 10) + 3;
+            percent += Math.floor(Math.random() * 9) + 5;
             if (percent >= 100) {
                 percent = 100;
                 clearInterval(interval);
                 setTimeout(() => {
                     preloader.style.opacity = '0';
-                    setTimeout(() => preloader.style.display = 'none', 600);
-                }, 200);
+                    setTimeout(() => preloader.style.display = 'none', 550);
+                }, 240);
             }
             fill.style.width = percent + '%';
-        }, 28);
+        }, 30);
         
         const pwdScreen = document.getElementById('password-screen');
         const confirmBtn = document.getElementById('confirmPasswordBtn');
@@ -772,44 +748,44 @@
                 setTimeout(() => {
                     pwdScreen.style.display = 'none';
                     mainCont.classList.add('visible');
-                }, 500);
+                }, 480);
             } else {
-                alert('НЕВЕРНЫЙ ПАРОЛЬ');
+                alert('ACCESS DENIED');
             }
         });
         
         const tabs = document.querySelectorAll('.tab');
-        const srv = document.getElementById('servicesTab');
-        const rev = document.getElementById('reviewsTab');
-        const pay = document.getElementById('paymentTab');
+        const srvDiv = document.getElementById('servicesTab');
+        const revDiv = document.getElementById('reviewsTab');
+        const payDiv = document.getElementById('paymentTab');
         tabs.forEach(t => {
             t.addEventListener('click', () => {
                 const target = t.getAttribute('data-tab');
                 tabs.forEach(tab => tab.classList.remove('active'));
                 t.classList.add('active');
-                [srv, rev, pay].forEach(c => c.classList.remove('active-tab'));
-                if (target === 'services') srv.classList.add('active-tab');
-                if (target === 'reviews') rev.classList.add('active-tab');
-                if (target === 'payment') pay.classList.add('active-tab');
+                [srvDiv, revDiv, payDiv].forEach(c => c.classList.remove('active-tab'));
+                if (target === 'services') srvDiv.classList.add('active-tab');
+                if (target === 'reviews') revDiv.classList.add('active-tab');
+                if (target === 'payment') payDiv.classList.add('active-tab');
             });
         });
         
         const modal = document.getElementById('quickModal');
-        const openBtns = document.querySelectorAll('.openPayModal');
+        const openModalBtns = document.querySelectorAll('.openPayModal');
         const closeModal = document.getElementById('closeQuickModal');
-        openBtns.forEach(btn => btn.addEventListener('click', () => modal.style.display = 'flex'));
+        openModalBtns.forEach(btn => btn.addEventListener('click', () => modal.style.display = 'flex'));
         if(closeModal) closeModal.addEventListener('click', () => modal.style.display = 'none');
         window.addEventListener('click', e => { if(e.target === modal) modal.style.display = 'none'; });
         
-        const copyBtns = document.querySelectorAll('.copy-btn');
-        copyBtns.forEach(btn => {
+        const copyButtons = document.querySelectorAll('.copy-btn');
+        copyButtons.forEach(btn => {
             btn.addEventListener('click', () => {
-                const txt = btn.getAttribute('data-clip');
-                if(txt) {
-                    navigator.clipboard.writeText(txt).then(() => {
-                        const old = btn.innerText;
-                        btn.innerText = '✓ Скопировано';
-                        setTimeout(() => btn.innerText = old, 1300);
+                const text = btn.getAttribute('data-clip');
+                if(text) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        const original = btn.innerText;
+                        btn.innerText = '✓ Copied';
+                        setTimeout(() => btn.innerText = original, 1400);
                     }).catch(() => {});
                 }
             });
