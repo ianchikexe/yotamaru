@@ -77,7 +77,6 @@
             border: 1.5px solid rgba(255,255,255,0.25);
             margin: 0 auto 28px;
             animation: pulseRing 1.2s infinite alternate;
-            box-shadow: 0 0 20px rgba(255,255,255,0.1);
         }
         @keyframes pulseRing {
             0% { transform: scale(0.94); border-color: #3a3a3a; box-shadow: 0 0 5px rgba(255,255,255,0.1);}
@@ -137,7 +136,6 @@
             cursor: pointer;
             transition: 0.2s;
             color: #b0b0b0;
-            letter-spacing: 0.5px;
         }
         .lang-badge.active {
             border-color: #ffffffcc;
@@ -246,15 +244,17 @@
             align-items: center;
             gap: 12px;
         }
-        .fire-icon {
-            font-size: 2rem;
+        /* 🔥 Стикер-огонь как на iPhone (эмодзи с анимацией) */
+        .fire-sticker {
+            font-size: 2.6rem;
             display: inline-block;
-            filter: drop-shadow(0 0 6px #ff6600);
-            animation: flicker 1.2s infinite alternate;
+            filter: drop-shadow(0 0 8px #ff7e05);
+            animation: fireStickerGlow 1s infinite alternate ease-in-out;
+            transform-origin: center;
         }
-        @keyframes flicker {
-            0% { text-shadow: 0 0 2px #ff4500; opacity: 0.9; transform: scale(1);}
-            100% { text-shadow: 0 0 12px #ff8800; opacity: 1; transform: scale(1.05);}
+        @keyframes fireStickerGlow {
+            0% { transform: scale(0.98); text-shadow: 0 0 2px #ff4400; filter: drop-shadow(0 0 4px #ff5500);}
+            100% { transform: scale(1.08); text-shadow: 0 0 14px #ff8800; filter: drop-shadow(0 0 14px #ff6600);}
         }
         .price-highlight {
             font-size: 1.4rem;
@@ -285,6 +285,39 @@
             font-size: 0.92rem;
         }
         .features-list li i { width: 24px; color: #dddddd; }
+        
+        /* блок дополнительных кнопок */
+        .extra-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .btn-secondary {
+            background: #0a0a0a;
+            border: 1px solid #3a3a3a;
+            padding: 12px 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+            color: #ccc;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            flex: 1;
+        }
+        .btn-secondary i { font-size: 0.85rem; }
+        .btn-secondary:hover {
+            background: #1a1a1a;
+            border-color: #aaa;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
         .btn-order {
             background: #0c0c0c;
             border: 1px solid #3d3d3d;
@@ -313,9 +346,8 @@
         .telegram-btn:hover {
             background: #0d2b45;
             border-color: #2a8cff;
-            box-shadow: 0 0 16px #1e88e5, 0 0 6px #0d6efd;
+            box-shadow: 0 0 16px #1e88e5;
             color: white;
-            text-shadow: 0 0 2px #0a6cff;
         }
 
         /* отзывы */
@@ -374,7 +406,6 @@
             color: transparent;
             font-weight: bold;
         }
-
         /* модалка */
         .modal-pay {
             display: none;
@@ -404,6 +435,7 @@
             .hero-title { font-size: 3.6rem; letter-spacing: -2px; }
             .services-grid { gap: 35px; }
             .service-card { padding: 32px 24px; }
+            .fire-sticker { font-size: 2rem; }
         }
     </style>
 </head>
@@ -436,13 +468,14 @@
         <div class="tab-elegant active-tab" data-tab="services"><i class="fas fa-microchip"></i> УСЛУГИ</div>
         <div class="tab-elegant" data-tab="reviews"><i class="fas fa-star"></i> ОТЗЫВЫ</div>
         <div class="tab-elegant" data-tab="payment"><i class="fas fa-coins"></i> ОПЛАТА</div>
+        <div class="tab-elegant" data-tab="support"><i class="fas fa-headset"></i> ПОДДЕРЖКА</div>
     </div>
 
     <div id="servicesPane" class="tab-pane active-pane">
         <div class="services-grid">
             <div class="service-card">
                 <div class="service-title">
-                    <i class="fas fa-fire fire-icon"></i> 
+                    <span class="fire-sticker">🔥</span>
                     <span id="srvTitle1">Эмулятор YOTAMARU</span>
                 </div>
                 <div class="price-highlight" id="srvPrice1">3000₸ | 550₽ | 1250⭐</div>
@@ -455,11 +488,15 @@
                     <li><i class="fas fa-crosshairs"></i> <span id="featA5">Фикс сенсорики / без вылетов</span></li>
                 </ul>
                 <button class="btn-order openModalBtn"><i class="fas fa-shopping-cart"></i> ОПЛАТИТЬ</button>
+                <div class="extra-buttons">
+                    <button class="btn-secondary" id="demoBtn1"><i class="fas fa-play-circle"></i> Тест-драйв</button>
+                    <button class="btn-secondary" id="guideBtn1"><i class="fas fa-book-open"></i> Гайд</button>
+                </div>
                 <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-order telegram-btn"><i class="fab fa-telegram"></i> TELEGRAM BOT</a>
             </div>
             <div class="service-card">
                 <div class="service-title">
-                    <i class="fas fa-fire fire-icon"></i> 
+                    <span class="fire-sticker">🔥</span>
                     <span id="srvTitle2">YOTAMARU + Optimization</span>
                 </div>
                 <div class="price-highlight" id="srvPrice2">4500₸ | 750₽ | 1750⭐</div>
@@ -472,6 +509,10 @@
                     <li><i class="fas fa-hand-holding-usd"></i> <span id="featB5">Комиссия оплачивается покупателем</span></li>
                 </ul>
                 <button class="btn-order openModalBtn"><i class="fas fa-shopping-cart"></i> ОПЛАТИТЬ</button>
+                <div class="extra-buttons">
+                    <button class="btn-secondary" id="demoBtn2"><i class="fas fa-chart-line"></i> Бенчмарк</button>
+                    <button class="btn-secondary" id="guideBtn2"><i class="fas fa-tools"></i> Настройка</button>
+                </div>
                 <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-order telegram-btn"><i class="fab fa-telegram"></i> TELEGRAM BOT</a>
             </div>
         </div>
@@ -494,13 +535,33 @@
             <div class="payment-card"><h3><i class="fab fa-kaspi"></i> Kaspi.kz</h3><div class="clip-area">4400 4303 4792 1634</div><div>Мираса А.</div><button class="copy-btn-custom" data-clip="4400 4303 4792 1634"><i class="fas fa-copy"></i> Копировать номер</button></div>
             <div class="payment-card"><h3><i class="fas fa-ruble-sign"></i> ЮMoney / RUB</h3><div class="clip-area">5599 0020 9639 5761</div><button class="copy-btn-custom" data-clip="5599 0020 9639 5761"><i class="fas fa-copy"></i> Копировать</button></div>
             <div class="payment-card"><h3><i class="fas fa-star stars-payment"></i> Telegram Stars</h3>
-                <div class="clip-area" style="display: flex; justify-content: space-between; align-items: center;">⭐ @YotamaruShopBot <button class="copy-btn-custom" data-clip="@YotamaruShopBot" style="padding: 6px 18px; margin:0;">Копировать</button></div>
-                <div style="margin-top: 12px;">🤖 Перейдите в бота → <a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#FFD966; font-weight: bold;">t.me/YotamaruShopBot</a></div>
+                <div class="clip-area" style="display: flex; justify-content: space-between; align-items: center;">⭐ @YotamaruShopBot <button class="copy-btn-custom" data-clip="@YotamaruShopBot" style="padding: 6px 18px;">Копировать</button></div>
+                <div style="margin-top: 12px;">🤖 Перейти в бота → <a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#FFD966; font-weight: bold;">t.me/YotamaruShopBot</a></div>
                 <div style="margin-top: 8px; font-size: 0.8rem;">⚡ Автоматическая выдача ключей через Telegram Stars</div>
             </div>
-            <div class="payment-card"><h3><i class="fas fa-headset"></i> Поддержка 24/7</h3><a href="https://t.me/ianchikexe" target="_blank" style="color:#bbbbff;">@ianchikexe</a><div>Личный менеджер / консультация</div></div>
         </div>
     </div>
+
+    <div id="supportPane" class="tab-pane">
+        <div class="payment-wrapper">
+            <div class="payment-card"><h3><i class="fas fa-headset"></i> Круглосуточная поддержка</h3>
+                <p style="margin: 12px 0;">💬 Любые вопросы по эмулятору, оптимизации или оплате — ответим моментально.</p>
+                <div class="extra-buttons" style="margin-top: 8px;">
+                    <a href="https://t.me/ianchikexe" target="_blank" class="btn-secondary" style="background:#0c2b3e;"><i class="fab fa-telegram"></i> Написать @ianchikexe</a>
+                    <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-secondary"><i class="fab fa-telegram-plane"></i> Бот с ключами</a>
+                </div>
+                <div style="margin-top: 24px; padding: 12px; background: #0f0f0f; border-radius: 32px;">
+                    <i class="fas fa-clock"></i> Режим работы: 24/7<br>
+                    <i class="fas fa-tachometer-alt"></i> Среднее время ответа: до 2 минут
+                </div>
+            </div>
+            <div class="payment-card"><h3><i class="fas fa-question-circle"></i> FAQ</h3>
+                <div style="margin-top: 12px;"><strong>❓ Как получить эмулятор после оплаты?</strong><br>Свяжитесь с @ianchikexe или бот @YotamaruShopBot выдаст ключ.</div>
+                <div style="margin-top: 16px;"><strong>❓ Есть ли пробная версия?</strong><br>Да, напишите поддержке для тестового доступа.</div>
+            </div>
+        </div>
+    </div>
+
     <footer>YOTAMARU — АБСОЛЮТНАЯ ПРОИЗВОДИТЕЛЬНОСТЬ 2026</footer>
 </div>
 
@@ -588,7 +649,7 @@
         if(statusSpan && prog<100) statusSpan.innerText = `ЗАГРУЗКА ${prog}%`;
     }, 35);
 
-    // языковые данные (RUS / KZK / ENG)
+    // языковые данные
     const langData = {
         ru: { 
             srvTitle1:"Эмулятор YOTAMARU", srvPrice1:"3000₸ | 550₽ | 1250⭐", srvTitle2:"YOTAMARU + Optimization", srvPrice2:"4500₸ | 750₽ | 1750⭐", 
@@ -641,10 +702,15 @@
     
     document.querySelectorAll('.lang-badge').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang'))));
     
-    // табы
+    // табы с поддержкой нового раздела
     const tabBtns = document.querySelectorAll('.tab-elegant');
-    const panes = { services: document.getElementById('servicesPane'), reviews: document.getElementById('reviewsPane'), payment: document.getElementById('paymentPane') };
-    tabBtns.forEach(btn => { btn.addEventListener('click', () => { const target = btn.getAttribute('data-tab'); tabBtns.forEach(b=>b.classList.remove('active-tab')); btn.classList.add('active-tab'); Object.values(panes).forEach(p=>p.classList.remove('active-pane')); panes[target].classList.add('active-pane'); }); });
+    const panes = { 
+        services: document.getElementById('servicesPane'), 
+        reviews: document.getElementById('reviewsPane'), 
+        payment: document.getElementById('paymentPane'),
+        support: document.getElementById('supportPane')
+    };
+    tabBtns.forEach(btn => { btn.addEventListener('click', () => { const target = btn.getAttribute('data-tab'); tabBtns.forEach(b=>b.classList.remove('active-tab')); btn.classList.add('active-tab'); Object.values(panes).forEach(p=>p.classList.remove('active-pane')); if(panes[target]) panes[target].classList.add('active-pane'); }); });
     
     // модалка
     const modal = document.getElementById('modalGlobal');
@@ -655,6 +721,12 @@
     
     // копирование
     document.querySelectorAll('.copy-btn-custom').forEach(btn => { btn.addEventListener('click', () => { const text = btn.getAttribute('data-clip'); if(text) { navigator.clipboard.writeText(text); const old = btn.innerHTML; btn.innerHTML = '<i class="fas fa-check"></i> Copied!'; setTimeout(() => btn.innerHTML = old, 1300); } }); });
+    
+    // новые кнопки (демо / гайд / бенчмарк) - уведомления
+    document.getElementById('demoBtn1')?.addEventListener('click', () => alert('🔥 Тестовый доступ: напишите @ianchikexe для активации демо-режима'));
+    document.getElementById('guideBtn1')?.addEventListener('click', () => alert('📖 Полный гайд по установке эмулятора: https://telegra.ph/YOTAMARU-Guide-01'));
+    document.getElementById('demoBtn2')?.addEventListener('click', () => alert('⚡ Запрос на бенчмарк оптимизации — свяжитесь с поддержкой'));
+    document.getElementById('guideBtn2')?.addEventListener('click', () => alert('🛠️ Расширенная настройка: эксклюзивные параметры для максимального FPS'));
     
     setLanguage('ru');
 </script>
