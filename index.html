@@ -55,7 +55,7 @@
             pointer-events: none;
         }
 
-        /* прелоадер — элегантный */
+        /* прелоадер */
         #preloader {
             position: fixed;
             inset: 0;
@@ -132,11 +132,12 @@
             border: 1px solid #2c2c2c;
             padding: 5px 22px;
             border-radius: 50px;
-            font-size: 0.7rem;
-            font-weight: 600;
+            font-size: 0.75rem;
+            font-weight: 700;
             cursor: pointer;
             transition: 0.2s;
             color: #b0b0b0;
+            letter-spacing: 0.5px;
         }
         .lang-badge.active {
             border-color: #ffffffcc;
@@ -145,7 +146,7 @@
             box-shadow: 0 0 12px rgba(255,255,255,0.08);
         }
 
-        /* Hero — только бренд */
+        /* Hero */
         .hero-section {
             text-align: center;
             margin-bottom: 75px;
@@ -207,7 +208,7 @@
             to { opacity: 1; transform: translateY(0);}
         }
 
-        /* карточки услуг — премиум стекло */
+        /* карточки услуг */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(370px, 1fr));
@@ -235,12 +236,25 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .service-title {
-            font-size: 2.1rem;
+            font-size: 2rem;
             font-weight: 800;
             background: linear-gradient(120deg, #fff, #cdcdcd);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .fire-icon {
+            font-size: 2rem;
+            display: inline-block;
+            filter: drop-shadow(0 0 6px #ff6600);
+            animation: flicker 1.2s infinite alternate;
+        }
+        @keyframes flicker {
+            0% { text-shadow: 0 0 2px #ff4500; opacity: 0.9; transform: scale(1);}
+            100% { text-shadow: 0 0 12px #ff8800; opacity: 1; transform: scale(1.05);}
         }
         .price-highlight {
             font-size: 1.4rem;
@@ -286,7 +300,6 @@
         .btn-order i { margin-right: 8px; }
         .btn-order:hover { background: #1d1d1d; border-color: #bfbfbf; transform: translateY(-2px); letter-spacing: 0.3px; }
 
-        /* Telegram Bot — синее мерцание */
         .telegram-btn {
             margin-top: 12px;
             text-decoration: none;
@@ -320,7 +333,7 @@
             transition: 0.3s;
         }
         .review-item:hover { border-color: #8a8a8a; background: #0d0d0dcc; transform: translateY(-5px); }
-        .stars i { color: #e0e0e0; font-size: 0.75rem; margin-right: 3px; }
+        .stars i { color: #FFD966; font-size: 0.85rem; margin-right: 3px; text-shadow: 0 0 4px #ffb347;}
 
         /* оплата */
         .payment-wrapper {
@@ -352,6 +365,14 @@
             font-weight: 600;
             cursor: pointer;
             transition: 0.2s;
+            color: white;
+        }
+        .stars-payment {
+            background: linear-gradient(135deg, #FFD966, #FFA500);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: bold;
         }
 
         /* модалка */
@@ -402,9 +423,9 @@
 
 <div class="main-site" id="mainApp">
     <div class="lang-bar">
-        <div class="lang-badge active" data-lang="ru">РУС</div>
-        <div class="lang-badge" data-lang="kz">ҚАЗАҚ</div>
-        <div class="lang-badge" data-lang="en">ENGLISH</div>
+        <div class="lang-badge active" data-lang="ru">🇷🇺 RUS</div>
+        <div class="lang-badge" data-lang="kz">🇰🇿 KZK</div>
+        <div class="lang-badge" data-lang="en">🇬🇧 ENG</div>
     </div>
 
     <div class="hero-section">
@@ -420,9 +441,12 @@
     <div id="servicesPane" class="tab-pane active-pane">
         <div class="services-grid">
             <div class="service-card">
-                <div class="service-title" id="srvTitle1">🔥 Эмулятор YOTAMARU</div>
-                <div class="price-highlight" id="srvPrice1">3000₸ | 550₽ | 1250G</div>
-                <div class="currency-icons"><span><i class="fas fa-tenge"></i> Kaspi</span><span><i class="fas fa-ruble-sign"></i> RUB</span><span><i class="fas fa-gem"></i> Stars</span></div>
+                <div class="service-title">
+                    <i class="fas fa-fire fire-icon"></i> 
+                    <span id="srvTitle1">Эмулятор YOTAMARU</span>
+                </div>
+                <div class="price-highlight" id="srvPrice1">3000₸ | 550₽ | 1250⭐</div>
+                <div class="currency-icons"><span><i class="fas fa-tenge"></i> Kaspi</span><span><i class="fas fa-ruble-sign"></i> RUB</span><span><i class="fas fa-star"></i> Stars</span></div>
                 <ul class="features-list">
                     <li><i class="fas fa-crown"></i> <span id="featA1">Кинематографичный интерфейс + ZeroLag</span></li>
                     <li><i class="fas fa-ban"></i> <span id="featA2">Полное отсутствие рекламы</span></li>
@@ -434,8 +458,11 @@
                 <a href="https://t.me/YotamaruShopBot" target="_blank" class="btn-order telegram-btn"><i class="fab fa-telegram"></i> TELEGRAM BOT</a>
             </div>
             <div class="service-card">
-                <div class="service-title" id="srvTitle2">🔥 YOTAMARU + Optimization</div>
-                <div class="price-highlight" id="srvPrice2">4500₸ | 750₽ | 1750G</div>
+                <div class="service-title">
+                    <i class="fas fa-fire fire-icon"></i> 
+                    <span id="srvTitle2">YOTAMARU + Optimization</span>
+                </div>
+                <div class="price-highlight" id="srvPrice2">4500₸ | 750₽ | 1750⭐</div>
                 <div class="currency-icons"><span><i class="fas fa-gamepad"></i> CS2 / VALORANT / Dota 2</span></div>
                 <ul class="features-list">
                     <li><i class="fas fa-tachometer-alt"></i> <span id="featB1">Latency Killer + экстремальный твикинг</span></li>
@@ -466,18 +493,22 @@
         <div class="payment-wrapper">
             <div class="payment-card"><h3><i class="fab fa-kaspi"></i> Kaspi.kz</h3><div class="clip-area">4400 4303 4792 1634</div><div>Мираса А.</div><button class="copy-btn-custom" data-clip="4400 4303 4792 1634"><i class="fas fa-copy"></i> Копировать номер</button></div>
             <div class="payment-card"><h3><i class="fas fa-ruble-sign"></i> ЮMoney / RUB</h3><div class="clip-area">5599 0020 9639 5761</div><button class="copy-btn-custom" data-clip="5599 0020 9639 5761"><i class="fas fa-copy"></i> Копировать</button></div>
-            <div class="payment-card"><h3><i class="fab fa-telegram"></i> Telegram Stars</h3><a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#ccc;">@YotamaruShopBot</a><div style="margin-top: 8px;">⚡ Автоматическая выдача ключей</div></div>
+            <div class="payment-card"><h3><i class="fas fa-star stars-payment"></i> Telegram Stars</h3>
+                <div class="clip-area" style="display: flex; justify-content: space-between; align-items: center;">⭐ @YotamaruShopBot <button class="copy-btn-custom" data-clip="@YotamaruShopBot" style="padding: 6px 18px; margin:0;">Копировать</button></div>
+                <div style="margin-top: 12px;">🤖 Перейдите в бота → <a href="https://t.me/YotamaruShopBot" target="_blank" style="color:#FFD966; font-weight: bold;">t.me/YotamaruShopBot</a></div>
+                <div style="margin-top: 8px; font-size: 0.8rem;">⚡ Автоматическая выдача ключей через Telegram Stars</div>
+            </div>
             <div class="payment-card"><h3><i class="fas fa-headset"></i> Поддержка 24/7</h3><a href="https://t.me/ianchikexe" target="_blank" style="color:#bbbbff;">@ianchikexe</a><div>Личный менеджер / консультация</div></div>
         </div>
     </div>
     <footer>YOTAMARU — АБСОЛЮТНАЯ ПРОИЗВОДИТЕЛЬНОСТЬ 2026</footer>
 </div>
 
-<div id="modalGlobal" class="modal-pay"><div class="modal-content-inner"><div style="text-align: right; font-size: 36px; cursor: pointer;" id="closeModalCross">&times;</div><h3 style="margin-bottom: 20px;">💎 ОПЛАТА УСЛУГИ</h3><div class="clip-area" style="background:#121212;">Kaspi: 4400 4303 4792 1634</div><div class="clip-area" style="background:#121212;">ЮMoney: 5599 0020 9639 5761</div><a href="https://t.me/YotamaruShopBot" target="_blank" style="display: block; text-align: center; background: #181818; padding: 14px; border-radius: 60px; margin-top: 30px; color: white; text-decoration: none;">🤖 Telegram Bot →</a></div></div>
+<div id="modalGlobal" class="modal-pay"><div class="modal-content-inner"><div style="text-align: right; font-size: 36px; cursor: pointer;" id="closeModalCross">&times;</div><h3 style="margin-bottom: 20px;"><i class="fas fa-star" style="color:#FFD966;"></i> ОПЛАТА УСЛУГИ</h3><div class="clip-area" style="background:#121212;">Kaspi: 4400 4303 4792 1634</div><div class="clip-area" style="background:#121212;">ЮMoney: 5599 0020 9639 5761</div><div class="clip-area" style="background:#121212; display: flex; justify-content: space-between;">⭐ Telegram Stars: @YotamaruShopBot <button class="copy-btn-custom" data-clip="@YotamaruShopBot" style="padding: 4px 12px;">Коп</button></div><a href="https://t.me/YotamaruShopBot" target="_blank" style="display: block; text-align: center; background: #181818; padding: 14px; border-radius: 60px; margin-top: 30px; color: white; text-decoration: none;">🤖 Telegram Bot →</a></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
-    // THREE.JS фон — эффект глубины
+    // THREE.JS фон
     (function() {
         const canvas = document.getElementById('bg-canvas');
         const scene = new THREE.Scene();
@@ -557,13 +588,57 @@
         if(statusSpan && prog<100) statusSpan.innerText = `ЗАГРУЗКА ${prog}%`;
     }, 35);
 
-    // языковые данные — без лишних фраз, только нужные тексты
+    // языковые данные (RUS / KZK / ENG)
     const langData = {
-        ru: { srvTitle1:"🔥 Эмулятор YOTAMARU", srvPrice1:"3000₸ | 550₽ | 1250G", srvTitle2:"🔥 YOTAMARU + Optimization", srvPrice2:"4500₸ | 750₽ | 1750G", featA1:"Кинематографичный интерфейс + ZeroLag", featA2:"Полное отсутствие рекламы", featA3:"FPS Boost + плавность кадров", featA4:"HWID Lock система защиты", featA5:"Фикс сенсорики / без вылетов", featB1:"Latency Killer + экстремальный твикинг", featB2:"Стабильность CPU/GPU прошивки", featB3:"Bluestacks & система глубокая оптимизация", featB4:"VIP поддержка 24/7", featB5:"Комиссия оплачивается покупателем", bluestacksInfo:"⚡ О блюстаксе: Качественное визуальное оформление + полная оптимизация Bluestacks. Встроенный фикс сенсорики, отсутствие сбоев.", revText1:"“Абсолютный black опыт. Эмулятор летает, минимализм и мощь. Сенса настроена идеально. Лучшее вложение!”", revText2:"“Оптимизация превратила ПК в зверя, CS2 400+ стабильных фпс. Black сервис и молниеносный саппорт.”", revText3:"“Премиум качество, всё чётко. Лучший сервис в нише, без воды, поддержка 24/7.”", ratingSpanBlock:"✦ РЕЙТИНГ 5.0 (1200+ отзывов) ✦" },
-        kz: { srvTitle1:"🔥 YOTAMARU эмуляторы", srvPrice1:"3000₸ | 550₽ | 1250G", srvTitle2:"🔥 YOTAMARU + Оңтайландыру", srvPrice2:"4500₸ | 750₽ | 1750G", featA1:"Кинематографиялық интерфейс + ZeroLag", featA2:"Жарнаманың толық болмауы", featA3:"FPS арттыру + тегіс кадрлар", featA4:"HWID кіру жүйесі", featA5:"Сенсорды түзету / ақаусыз", featB1:"Latency Killer + твикинг", featB2:"CPU/GPU тұрақтылығы", featB3:"Bluestacks және терең оңтайландыру", featB4:"VIP қолдау 24/7", featB5:"Комиссия сатып алушыға жүктеледі", bluestacksInfo:"⚡ Bluestacks туралы: сапалы визуалды безендіру + толық оңтайландыру, сенсорды түзету.", revText1:"“Эмулятор керемет ұшады, сенсор өте дәл. Қара элит!”", revText2:"“Оптимизация ПК-ны аңға айналдырды, CS2 400+ fps. Қара сервис.”", revText3:"“Үздік сервис, бәрі нақты, премиум сапа.”", ratingSpanBlock:"✦ Рейтинг 5.0 (1200+ пікір) ✦" },
-        en: { srvTitle1:"🔥 YOTAMARU Emulator", srvPrice1:"3000₸ | 550₽ | 1250G", srvTitle2:"🔥 YOTAMARU + Optimization", srvPrice2:"4500₸ | 750₽ | 1750G", featA1:"Cinematic UI + ZeroLag", featA2:"Completely ad-free", featA3:"FPS Boost + smooth frames", featA4:"HWID Lock system", featA5:"Sensor fix / no crashes", featB1:"Latency Killer + extreme tweaks", featB2:"CPU/GPU stability", featB3:"Bluestacks & deep system optimization", featB4:"VIP 24/7 support", featB5:"Buyer pays commission", bluestacksInfo:"⚡ About Bluestacks: Premium visual design + full optimization. Built-in sensor fix, no crashes.", revText1:"“Absolute black experience. Emulator flies, minimalistic power. Perfect sensor!”", revText2:"“Optimization turned my PC into a beast, CS2 400+ fps. Black service, instant support.”", revText3:"“Premium quality, crystal clear. Best service in the niche.”", ratingSpanBlock:"✦ RATING 5.0 (1200+ reviews) ✦" } };
-    let currentLang = 'ru';
-    function setLanguage(l) { const dict = langData[l]; if(!dict) return; document.getElementById('srvTitle1').innerText = dict.srvTitle1; document.getElementById('srvPrice1').innerText = dict.srvPrice1; document.getElementById('srvTitle2').innerText = dict.srvTitle2; document.getElementById('srvPrice2').innerText = dict.srvPrice2; document.getElementById('featA1').innerText = dict.featA1; document.getElementById('featA2').innerText = dict.featA2; document.getElementById('featA3').innerText = dict.featA3; document.getElementById('featA4').innerText = dict.featA4; document.getElementById('featA5').innerText = dict.featA5; document.getElementById('featB1').innerText = dict.featB1; document.getElementById('featB2').innerText = dict.featB2; document.getElementById('featB3').innerText = dict.featB3; document.getElementById('featB4').innerText = dict.featB4; document.getElementById('featB5').innerText = dict.featB5; document.getElementById('bluestacksInfo').innerHTML = dict.bluestacksInfo; document.getElementById('revText1').innerHTML = dict.revText1; document.getElementById('revText2').innerHTML = dict.revText2; document.getElementById('revText3').innerHTML = dict.revText3; document.getElementById('ratingSpanBlock').innerHTML = dict.ratingSpanBlock; document.querySelectorAll('.lang-badge').forEach(el=>el.classList.remove('active')); document.querySelector(`.lang-badge[data-lang="${l}"]`).classList.add('active'); }
+        ru: { 
+            srvTitle1:"Эмулятор YOTAMARU", srvPrice1:"3000₸ | 550₽ | 1250⭐", srvTitle2:"YOTAMARU + Optimization", srvPrice2:"4500₸ | 750₽ | 1750⭐", 
+            featA1:"Кинематографичный интерфейс + ZeroLag", featA2:"Полное отсутствие рекламы", featA3:"FPS Boost + плавность кадров", featA4:"HWID Lock система защиты", featA5:"Фикс сенсорики / без вылетов", 
+            featB1:"Latency Killer + экстремальный твикинг", featB2:"Стабильность CPU/GPU прошивки", featB3:"Bluestacks & система глубокая оптимизация", featB4:"VIP поддержка 24/7", featB5:"Комиссия оплачивается покупателем", 
+            bluestacksInfo:"⚡ О блюстаксе: Качественное визуальное оформление + полная оптимизация Bluestacks. Встроенный фикс сенсорики, отсутствие сбоев.", 
+            revText1:"“Абсолютный black опыт. Эмулятор летает, минимализм и мощь. Сенса настроена идеально. Лучшее вложение!”", revText2:"“Оптимизация превратила ПК в зверя, CS2 400+ стабильных фпс. Black сервис и молниеносный саппорт.”", revText3:"“Премиум качество, всё чётко. Лучший сервис в нише, без воды, поддержка 24/7.”", ratingSpanBlock:"✦ РЕЙТИНГ 5.0 (1200+ отзывов) ✦" 
+        },
+        kz: { 
+            srvTitle1:"YOTAMARU эмуляторы", srvPrice1:"3000₸ | 550₽ | 1250⭐", srvTitle2:"YOTAMARU + Оңтайландыру", srvPrice2:"4500₸ | 750₽ | 1750⭐", 
+            featA1:"Кинематографиялық интерфейс + ZeroLag", featA2:"Жарнаманың толық болмауы", featA3:"FPS арттыру + тегіс кадрлар", featA4:"HWID кіру жүйесі", featA5:"Сенсорды түзету / ақаусыз", 
+            featB1:"Latency Killer + твикинг", featB2:"CPU/GPU тұрақтылығы", featB3:"Bluestacks және терең оңтайландыру", featB4:"VIP қолдау 24/7", featB5:"Комиссия сатып алушыға жүктеледі", 
+            bluestacksInfo:"⚡ Bluestacks туралы: сапалы визуалды безендіру + толық оңтайландыру, сенсорды түзету.", 
+            revText1:"“Эмулятор керемет ұшады, сенсор өте дәл. Қара элит!”", revText2:"“Оптимизация ПК-ны аңға айналдырды, CS2 400+ fps. Қара сервис.”", revText3:"“Үздік сервис, бәрі нақты, премиум сапа.”", ratingSpanBlock:"✦ Рейтинг 5.0 (1200+ пікір) ✦" 
+        },
+        en: { 
+            srvTitle1:"YOTAMARU Emulator", srvPrice1:"3000₸ | 550₽ | 1250⭐", srvTitle2:"YOTAMARU + Optimization", srvPrice2:"4500₸ | 750₽ | 1750⭐", 
+            featA1:"Cinematic UI + ZeroLag", featA2:"Completely ad-free", featA3:"FPS Boost + smooth frames", featA4:"HWID Lock system", featA5:"Sensor fix / no crashes", 
+            featB1:"Latency Killer + extreme tweaks", featB2:"CPU/GPU stability", featB3:"Bluestacks & deep system optimization", featB4:"VIP 24/7 support", featB5:"Buyer pays commission", 
+            bluestacksInfo:"⚡ About Bluestacks: Premium visual design + full optimization. Built-in sensor fix, no crashes.", 
+            revText1:"“Absolute black experience. Emulator flies, minimalistic power. Perfect sensor!”", revText2:"“Optimization turned my PC into a beast, CS2 400+ fps. Black service, instant support.”", revText3:"“Premium quality, crystal clear. Best service in the niche.”", ratingSpanBlock:"✦ RATING 5.0 (1200+ reviews) ✦" 
+        } 
+    };
+    
+    function setLanguage(l) { 
+        const dict = langData[l]; 
+        if(!dict) return; 
+        document.getElementById('srvTitle1').innerText = dict.srvTitle1; 
+        document.getElementById('srvPrice1').innerText = dict.srvPrice1; 
+        document.getElementById('srvTitle2').innerText = dict.srvTitle2; 
+        document.getElementById('srvPrice2').innerText = dict.srvPrice2; 
+        document.getElementById('featA1').innerText = dict.featA1; 
+        document.getElementById('featA2').innerText = dict.featA2; 
+        document.getElementById('featA3').innerText = dict.featA3; 
+        document.getElementById('featA4').innerText = dict.featA4; 
+        document.getElementById('featA5').innerText = dict.featA5; 
+        document.getElementById('featB1').innerText = dict.featB1; 
+        document.getElementById('featB2').innerText = dict.featB2; 
+        document.getElementById('featB3').innerText = dict.featB3; 
+        document.getElementById('featB4').innerText = dict.featB4; 
+        document.getElementById('featB5').innerText = dict.featB5; 
+        document.getElementById('bluestacksInfo').innerHTML = dict.bluestacksInfo; 
+        document.getElementById('revText1').innerHTML = dict.revText1; 
+        document.getElementById('revText2').innerHTML = dict.revText2; 
+        document.getElementById('revText3').innerHTML = dict.revText3; 
+        document.getElementById('ratingSpanBlock').innerHTML = dict.ratingSpanBlock; 
+        document.querySelectorAll('.lang-badge').forEach(el=>el.classList.remove('active')); 
+        document.querySelector(`.lang-badge[data-lang="${l}"]`).classList.add('active'); 
+    }
+    
     document.querySelectorAll('.lang-badge').forEach(btn => btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang'))));
     
     // табы
@@ -580,6 +655,7 @@
     
     // копирование
     document.querySelectorAll('.copy-btn-custom').forEach(btn => { btn.addEventListener('click', () => { const text = btn.getAttribute('data-clip'); if(text) { navigator.clipboard.writeText(text); const old = btn.innerHTML; btn.innerHTML = '<i class="fas fa-check"></i> Copied!'; setTimeout(() => btn.innerHTML = old, 1300); } }); });
+    
     setLanguage('ru');
 </script>
 </body>
