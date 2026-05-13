@@ -3,79 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ошибка 404 — Страница не найдена</title>
+    <title>Сайт недоступен</title>
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f7f9fc;
-            color: #333;
+            background: #0a0a0a;
+            font-family: 'Segoe UI', 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Roboto', sans-serif;
+            min-height: 100vh;
             display: flex;
-            justify-content: center;
             align-items: center;
-            height: 100vh;
-            text-align: center;
+            justify-content: center;
+            color: #e0e0e0;
             padding: 20px;
+            position: relative;
+            overflow: hidden;
         }
+
+        /* тёмный градиентный фон */
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 20%, #111, #000000 90%);
+            z-index: -2;
+        }
+
+        /* лёгкая зернистость */
+        body::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: -1;
+        }
+
         .container {
-            max-width: 500px;
+            text-align: center;
+            max-width: 700px;
+            width: 100%;
+            background: rgba(5, 5, 5, 0.65);
+            backdrop-filter: blur(12px);
+            border-radius: 64px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 3rem 2rem;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.03);
+            animation: fadeUp 0.8s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
-        .error-code {
-            font-size: 120px;
-            font-weight: 900;
-            color: #4a90e2;
-            line-height: 1;
-            margin-bottom: 20px;
-            letter-spacing: -5px;
-            animation: float 4s ease-in-out infinite;
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        h1 {
-            font-size: 24px;
-            color: #2c3e50;
-            margin-bottom: 15px;
+
+        .glitch {
+            font-size: 8rem;
+            font-weight: 800;
+            letter-spacing: -4px;
+            background: linear-gradient(135deg, #aaa, #3a3a3a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 8px rgba(255,255,255,0.1);
+            margin-bottom: 1rem;
+            position: relative;
+            animation: glitchText 1.2s infinite alternate ease-in-out;
         }
-        p {
-            font-size: 16px;
-            color: #7f8c8d;
-            margin-bottom: 30px;
-            line-height: 1.5;
+
+        @keyframes glitchText {
+            0% {
+                text-shadow: -2px 0 rgba(255, 0, 0, 0.3), 2px 0 rgba(0, 255, 255, 0.3);
+                transform: skew(0deg);
+            }
+            25% {
+                text-shadow: 2px 0 rgba(255, 0, 0, 0.4), -2px 0 rgba(0, 255, 255, 0.2);
+            }
+            50% {
+                text-shadow: -1px 0 rgba(255, 0, 0, 0.2), 1px 0 rgba(0, 255, 255, 0.5);
+                transform: skew(1deg);
+            }
+            75% {
+                text-shadow: 1px 0 rgba(255, 0, 0, 0.5), -1px 0 rgba(0, 255, 255, 0.2);
+            }
+            100% {
+                text-shadow: -1px 0 rgba(255, 0, 0, 0.1), 2px 0 rgba(0, 255, 255, 0.3);
+                transform: skew(-0.5deg);
+            }
         }
-        .btn {
+
+        .code {
+            font-size: 1.3rem;
+            font-weight: 500;
+            letter-spacing: 4px;
+            color: #8b8b8b;
+            background: #0f0f0f;
             display: inline-block;
-            text-decoration: none;
-            background-color: #4a90e2;
-            color: #fff;
-            padding: 12px 30px;
-            border-radius: 25px;
+            padding: 6px 24px;
+            border-radius: 60px;
+            margin-bottom: 28px;
+            border: 0.5px solid #2a2a2a;
+            font-family: monospace;
+        }
+
+        h2 {
+            font-size: 2rem;
             font-weight: 600;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+            margin-bottom: 16px;
+            background: linear-gradient(120deg, #fff, #b0b0b0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
-        .btn:hover {
-            background-color: #357abd;
-            transform: translateY(-2px);
+
+        .message {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #bcbcbc;
+            margin: 20px 0 24px;
+            padding: 0 20px;
         }
-        .btn:active {
-            transform: translateY(0);
+
+        .status-card {
+            background: #0c0c0c80;
+            border-radius: 48px;
+            padding: 16px 20px;
+            margin: 32px 0 20px;
+            border-left: 3px solid #ff3b3b;
+            text-align: left;
+            font-size: 0.85rem;
+            backdrop-filter: blur(4px);
         }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+
+        .status-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-family: monospace;
+        }
+
+        .status-line span:first-child {
+            color: #999;
+        }
+
+        .status-line span:last-child {
+            color: #ff6b6b;
+            font-weight: 500;
+        }
+
+        .blink-red {
+            animation: blinkWarning 1.2s infinite;
+            font-weight: bold;
+        }
+
+        @keyframes blinkWarning {
+            0%, 100% { opacity: 1; text-shadow: 0 0 2px #ff0000aa; }
+            50% { opacity: 0.6; text-shadow: 0 0 6px #ff0000; }
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #333, #5a5a5a, #333, transparent);
+            margin: 24px 0;
+        }
+
+        .footer-note {
+            font-size: 0.7rem;
+            color: #555;
+            margin-top: 30px;
+        }
+
+        .icon-big {
+            font-size: 3rem;
+            margin-bottom: 12px;
+            color: #4a4a4a;
+        }
+
+        @media (max-width: 550px) {
+            .glitch { font-size: 4.8rem; }
+            h2 { font-size: 1.4rem; }
+            .container { padding: 2rem 1.2rem; }
         }
     </style>
 </head>
 <body>
-
-    <div class="container">
-        <div class="error-code">404</div>
-        <h1>Упс! Страница не найдена</h1>
-        <p>Возможно, указан неверный адрес, или страница была удалена владельцем сайта.</p>
-        <a href="/" class="btn">Вернуться на главную</a>
+<div class="container">
+    <div class="icon-big">
+        <i class="fas fa-ban"></i>
+    </div>
+    <div class="glitch">404</div>
+    <div class="code">ACCESS DENIED</div>
+    <h2>РЕСУРС ЗАКРЫТ</h2>
+    <div class="message">
+        Сайт YOTAMARU временно недоступен.<br>
+        Сервис приостановлен администрацией. Пожалуйста, проверьте актуальную информацию позже.
     </div>
 
+    <div class="status-card">
+        <div class="status-line">
+            <span>СТАТУС:</span>
+            <span class="blink-red">● НЕ ДОСТУПЕН</span>
+        </div>
+        <div class="status-line">
+            <span>КОД ОШИБКИ:</span>
+            <span>404 — ресурс не найден / закрыт</span>
+        </div>
+        <div class="status-line">
+            <span>СЕРВЕР:</span>
+            <span>offline (по требованию)</span>
+        </div>
+        <div class="status-line">
+            <span>ПОДДЕРЖКА:</span>
+            <span>приостановлена</span>
+        </div>
+    </div>
+
+    <hr>
+
+    <div style="font-size: 0.75rem; color: #6a6a6a;">
+        <i class="fas fa-shield-alt"></i> Проект YOTAMARU — технические работы.<br>
+        Информация обновляется. Приносим извинения за неудобства.
+    </div>
+    <div class="footer-note">
+        YOTAMARU  •  ERROR 404  •  PAGE LOCKED
+    </div>
+</div>
+
+<!-- иконки FontAwesome (подключаем на всякий, если нет) -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </body>
 </html>
